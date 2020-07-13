@@ -9,4 +9,5 @@ Revision history for Perl extension DestructAssign.
 0.2.5    2016.8.26
       Compatible with newer (5.25 up) perl
 
-0.2.4    
+0.2.4    2015.5.25
+      Move '-std=gnu99' from CCFLAGS to DEFIN
