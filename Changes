@@ -10,4 +10,7 @@ Revision history for Perl extension DestructAssign.
       Compatible with newer (5.25 up) perl
 
 0.2.4    2015.5.25
-      Move '-std=gnu99' from CCFLAGS to DEFINE in Makefile.PL to avoid Perl 5.22 XS module handsha
+      Move '-std=gnu99' from CCFLAGS to DEFINE in Makefile.PL to avoid Perl 5.22 XS module handshake problem.
+
+0.2.3    2014.12.10
+      Compatible with 
