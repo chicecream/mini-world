@@ -17,4 +17,5 @@ Revision history for Perl extension DestructAssign.
       Patched by Father Chrysostomos (sprout@cpan.org)
 
 0.2.2    2014.12.8
-      Compatible with the op tree of 
+      Compatible with the op tree of Perl 5.21.6.
+      More informative warning message when 
