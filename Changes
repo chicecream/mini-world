@@ -18,4 +18,6 @@ Revision history for Perl extension DestructAssign.
 
 0.2.2    2014.12.8
       Compatible with the op tree of Perl 5.21.6.
-      More informative warning message when 
+      More informative warning message when matching against in-compatible value type.
+
+0
