@@ -22,4 +22,10 @@ Revision history for Perl extension DestructAssign.
 
 0.2.1    2014.11.17
       Fix bug, which occurs when using variable name as key
-      at the first element of a hash 
+      at the first element of a hash pattern
+
+0.2      2014.11.3
+      Bump version
+
+0.1.4    2014.11.3
+ 
