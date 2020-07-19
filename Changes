@@ -36,4 +36,5 @@ Revision history for Perl extension DestructAssign.
       Fix bug when use pattern in a recursive sub
 
 0.1.2    2014.8.21
-      Fix bug when the first element 
+      Fix bug when the first element of an anonlist or an anonhash pattern
+      is a patter
