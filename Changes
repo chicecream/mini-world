@@ -21,4 +21,5 @@ Revision history for Perl extension DestructAssign.
       More informative warning message when matching against in-compatible value type.
 
 0.2.1    2014.11.17
-      Fix bug, which occurs when u
+      Fix bug, which occurs when using variable name as key
+      at the first element of a hash 
