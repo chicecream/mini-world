@@ -64,3 +64,55 @@ static int sv_alias_set(pTHX_ SV* sv, MAGIC *mg){
 }
 static MGVTBL sv_alias_vtbl = {
     sv_alias_get,
+    sv_alias_set,
+    (U32 (*)(pTHX_ SV*, MAGIC*)) NULL,
+    (int (*)(pTHX_ SV*, MAGIC*)) NULL,
+    (int (*)(pTHX_ SV*, MAGIC*)) NULL
+};
+
+static void prepare_anonlist_node(pTHX_ OP * parent, OP * o, U32 opt);
+static void prepare_anonhash_node(pTHX_ OP * parent, OP * o, U32 opt);
+
+static inline void my_sv_set(pTHX_ SV ** dst, SV ** src, U32 is_alias){
+    if( src ){
+        if( is_alias ){
+            sv_magicext(*dst, *src, PERL_MAGIC_ext, &sv_alias_vtbl, NULL, 0);
+        }
+        else{
+            SvGETMAGIC(*src);
+            SvSetMagicSV_nosteal(*dst, *src);
+        }
+    }
+    else{
+        if( is_alias ){
+            warn("take alias on a non-exist magic element");
+            SvSetSV(*dst, &PL_sv_undef);
+        }
+        else{
+            SvSetMagicSV(*dst, &PL_sv_undef);
+        }
+    }
+}
+
+static inline int anonlist_set_common(pTHX_ SV * sv, MAGIC * mg, U32 opt){
+    SV ** list_holder = (SV**)(mg->mg_ptr + sizeof(I32*));
+    I32 * const_index = *(I32**)mg->mg_ptr;
+    I32 nitems = (mg->mg_len - sizeof(I32*)) / sizeof(SV*);
+
+#ifdef DEBUG
+    printf("anonlist_set opt=%u, nitems=%d\nconst_index =", (unsigned int)opt, (int)nitems);
+    for(I32 i=0; const_index[i]<nitems; ++i)
+        printf(" %d", const_index[i]);
+    printf(" %d\n", nitems);
+#endif
+
+    if( !SvROK(sv) ){
+        warn("assign non-ref value but SvTYPE=%d to a list pattern", SvTYPE(sv));
+        return 0;
+    }
+
+    SV * src = SvRV(sv);
+    if( SvTYPE(src)!=SVt_PVAV ){
+        warn("assign non array ref value but a ref of SvTYPE=%d to a list pattern", SvTYPE(SvRV(sv)));
+        return 0;
+    }
