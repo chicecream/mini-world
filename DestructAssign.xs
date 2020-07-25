@@ -170,3 +170,66 @@ static inline int anonlist_set_common(pTHX_ SV * sv, MAGIC * mg, U32 opt){
 
                         ENTER;
                         SAVEFREESV(SvREFCNT_inc_simple_NN((SV*)dst));
+                        hv_clear(dst);
+                        while( key <= last_key ){
+                            SV ** ptr_key = av_fetch((AV*)src, key, 0);
+                            SV ** ptr_val = key < last_key ? av_fetch((AV*)src, key+1, 0) : NULL;
+                            SV * new_key;
+                            if( ptr_key )
+                                if( SvGMAGICAL(*ptr_key) )
+                                    new_key = sv_mortalcopy(*ptr_key);
+                                else
+                                    new_key = *ptr_key;
+                            else
+                                new_key = newSV(0);
+                            SV * new_val = newSV(0);
+                            my_sv_set(aTHX_ &new_val, ptr_val, i != -*const_index-1 && opt & OPT_ALIAS);
+                            HE * didstore = hv_store_ent(dst, new_key, new_val, 0);
+                            if( magic ){
+                                if( !didstore )
+                                    sv_2mortal(new_val);
+                                SvSETMAGIC(new_val);
+                            }
+                            key += 2;
+                        }
+                        LEAVE;
+                    }
+                    break;
+                default:
+                    {
+                        SV ** ptr_val = av_fetch((AV*)src, key, 0);
+                        my_sv_set(aTHX_ list_holder, ptr_val, (i != -*const_index-1 && opt & OPT_ALIAS));
+                    }
+            }
+            if( i == -*const_index-1 )
+                ++const_index;
+            ++key;
+        }
+    }
+    return 0;
+}
+static int anonlist_set(pTHX_ SV * sv, MAGIC * mg){
+    return anonlist_set_common(aTHX_ sv, mg, 0);
+}
+static int anonlist_alias_set(pTHX_ SV * sv, MAGIC * mg){
+    return anonlist_set_common(aTHX_ sv, mg, OPT_ALIAS);
+}
+
+static inline int anonhash_set_common(pTHX_ SV * sv, MAGIC * mg, U32 opt){
+    SV * src;
+    char *key = "";
+    STRLEN keylen = 0;
+    SV ** list_holder = (SV**)(mg->mg_ptr + sizeof(I32*));
+    I32 * const_index = *(I32**)mg->mg_ptr;
+    I32 nitems = (mg->mg_len - sizeof(I32*)) / sizeof(SV*);
+
+#ifdef DEBUG
+    printf("anonhash_set opt=%u\n", (unsigned int)opt);
+#endif
+
+    if( !SvROK(sv) ){
+        warn("assign non-ref value to a hash pattern");
+        return 0;
+    }
+
+    src = SvRV(sv);
