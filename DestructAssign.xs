@@ -116,3 +116,57 @@ static inline int anonlist_set_common(pTHX_ SV * sv, MAGIC * mg, U32 opt){
         warn("assign non array ref value but a ref of SvTYPE=%d to a list pattern", SvTYPE(SvRV(sv)));
         return 0;
     }
+
+    I32 key = 0;
+    for(I32 i=0; i<nitems; ++i, ++list_holder){
+        if( i==*const_index ){
+            if( SvOK(*list_holder) )
+                key = (I32) SvIV(*list_holder);
+            else
+                ++key;
+            ++const_index;
+        }
+        else{
+            switch( SvTYPE(*list_holder) ){
+                case SVt_PVAV:
+                    {
+                        AV *dst = (AV*)(*list_holder);
+                        int magic = SvMAGICAL(dst) != 0;
+                        I32 last_key = key < 0 ? -1 : AvFILL((AV*)src);
+
+                        ENTER;
+                        SAVEFREESV(SvREFCNT_inc_simple_NN((SV*)dst));
+                        av_clear(dst);
+                        av_extend(dst, last_key+1-key);
+                        I32 j = 0;
+                        while( key <= last_key ){
+                            SV ** ptr_val = av_fetch((AV*)src, key, 0);
+                            SV * new_sv = newSV(0);
+                            my_sv_set(aTHX_ &new_sv, ptr_val, i != -*const_index-1 && opt & OPT_ALIAS);
+                            SV ** didstore = av_store(dst, j, new_sv);
+                            if( magic ){
+                                if( !didstore )
+                                    sv_2mortal(new_sv);
+                                SvSETMAGIC(new_sv);
+                            }
+                            ++j;
+                            ++key;
+                        }
+#if PERL_VERSION_GE(5,14,0)
+                        if( PL_delaymagic & DM_ARRAY_ISA )
+                            SvSETMAGIC(*list_holder);
+#endif
+                        LEAVE;
+                    }
+                    break;
+                case SVt_PVHV:
+                    {
+                        HV *dst = (HV*)(*list_holder);
+                        int magic = SvMAGICAL(dst) != 0;
+                        I32 last_key = key < 0 ? -1 : AvFILL((AV*)src);
+
+                        if( key <= last_key && ((last_key - key) & 1) == 0 )
+                            Perl_warner(aTHX_ packWARN(WARN_MISC), "Odd number of elements in hash assignment");
+
+                        ENTER;
+                        SAVEFREESV(SvREFCNT_inc_simple_NN((SV*)dst));
