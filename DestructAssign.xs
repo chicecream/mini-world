@@ -290,3 +290,59 @@ static inline int anonhash_set_common(pTHX_ SV * sv, MAGIC * mg, U32 opt){
                 if( j>=0 ){ /* found */
                     SV ** target_val_ptr = av_fetch((AV*)src, j+1, (is_alias ? 1 : 0));
                     my_sv_set(aTHX_ list_holder, target_val_ptr, is_alias);
+                }
+                else{ /* not found */
+                    my_sv_set(aTHX_ list_holder, NULL, is_alias);
+                }
+            }
+            if( i == -*const_index-1 )
+                ++const_index;
+        }
+    }
+    return 0;
+}
+static int anonhash_alias_set(pTHX_ SV * sv, MAGIC * mg){
+    return anonhash_set_common(aTHX_ sv, mg, OPT_ALIAS);
+}
+static int anonhash_set(pTHX_ SV * sv, MAGIC * mg){
+    return anonhash_set_common(aTHX_ sv, mg, 0);
+}
+
+static inline void init_set_vtbl(MGVTBL *vtbl, int(*setter)(pTHX_ SV*, MAGIC*)){
+    vtbl->svt_get = NULL;
+    vtbl->svt_set = setter;
+    vtbl->svt_len = NULL;
+    vtbl->svt_clear = NULL;
+    vtbl->svt_free = NULL;
+}
+static MGVTBL anonlist_vtbl, anonlist_alias_vtbl, anonhash_vtbl, anonhash_alias_vtbl;
+
+static inline OP * my_pp_anonlisthash_common(pTHX_ MGVTBL *vtbl){
+    dVAR; dSP; dMARK;
+    int nitems = SP-MARK;
+    I32 holder_size = nitems * sizeof(SV*) + sizeof(I32*);
+    char * list_holder = alloca(holder_size);
+
+    Copy(MARK+1, list_holder + sizeof(I32*), nitems, SV*);
+    *(I32**)list_holder = (I32*)SvPVX(cSVOPx_sv(OpSIBLING(PL_op)));
+
+    SP = MARK+1;
+
+    SV * ret = SETs(sv_2mortal(newSV(0)));
+    SvUPGRADE(ret, SVt_PVMG);
+    sv_magicext(ret, ret, PERL_MAGIC_ext, vtbl, list_holder, holder_size);
+
+    RETURN;
+}
+static OP * my_pp_anonlist(pTHX){
+    return my_pp_anonlisthash_common(aTHX_ &anonlist_vtbl);
+}
+static OP * my_pp_anonlist_alias(pTHX){
+    return my_pp_anonlisthash_common(aTHX_ &anonlist_alias_vtbl);
+}
+static OP * my_pp_anonhash(pTHX){
+    return my_pp_anonlisthash_common(aTHX_ &anonhash_vtbl);
+}
+static OP * my_pp_anonhash_alias(pTHX){
+    return my_pp_anonlisthash_common(aTHX_ &anonhash_alias_vtbl);
+}
