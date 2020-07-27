@@ -346,3 +346,64 @@ static OP * my_pp_anonhash(pTHX){
 static OP * my_pp_anonhash_alias(pTHX){
     return my_pp_anonlisthash_common(aTHX_ &anonhash_alias_vtbl);
 }
+
+#ifndef PadlistARRAY
+typedef AV PADNAMELIST;
+typedef SV PADNAME;
+#endif
+
+#ifndef padnamelist_fetch
+#  define padnamelist_fetch(a,b) *av_fetch(a,b,FALSE)
+#endif
+
+/* Taken from pp_ctl.c in 5.8.8 */
+/* Thanks to Daniel Silva (dsilva @ github) */
+static CV*
+THX_find_runcv(pTHX_ U32 *db_seqp)
+{
+    PERL_SI      *si;
+
+    if (db_seqp)
+        *db_seqp = PL_curcop->cop_seq;
+    for (si = PL_curstackinfo; si; si = si->si_prev) {
+        I32 ix;
+        for (ix = si->si_cxix; ix >= 0; ix--) {
+            const PERL_CONTEXT *cx = &(si->si_cxstack[ix]);
+            if (CxTYPE(cx) == CXt_SUB || CxTYPE(cx) == CXt_FORMAT) {
+                CV * const cv = cx->blk_sub.cv;
+                /* skip DB:: code */
+                if (db_seqp && PL_debstash && CvSTASH(cv) == PL_debstash) {
+                    *db_seqp = cx->blk_oldcop->cop_seq;
+                    continue;
+                }
+                return cv;
+            }
+            else if (CxTYPE(cx) == CXt_EVAL && !CxTRYBLOCK(cx))
+                return PL_compcv;
+        }
+    }
+    return PL_main_cv;
+}
+#ifndef find_runcv
+#  define find_runcv(d) THX_find_runcv(aTHX_ d)
+#endif
+
+static OP* my_pp_fetch_next_padname(pTHX){
+#ifdef DEBUG
+    puts("my_pp_fetch_next_padname");
+#endif
+
+    CV *curr_cv = find_runcv(NULL);
+    if( curr_cv && CvPADLIST(curr_cv) ){
+        PADNAMELIST* padlist_av =
+#ifdef PadlistARRAY
+            PadlistNAMES(CvPADLIST(curr_cv));
+#else
+            (AV*)(*av_fetch((AV*)CvPADLIST(curr_cv), 0, FALSE));
+#endif
+        PADNAME* padname_sv = padnamelist_fetch(
+            padlist_av,
+            OpSIBLING(PL_op)->op_targ
+        );
+
+        STRLEN padnamelen;
