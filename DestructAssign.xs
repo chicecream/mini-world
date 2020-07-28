@@ -407,3 +407,52 @@ static OP* my_pp_fetch_next_padname(pTHX){
         );
 
         STRLEN padnamelen;
+        char * padname;
+#ifdef PadlistARRAY
+        padnamelen = PadnameLEN(padname_sv);
+        padname = PadnamePV(padname_sv);
+#else
+        padname = SvPV(padname_sv, padnamelen);
+#endif
+
+        if( padnamelen>=3 && padname[0]=='$' && padname[1]=='#' ){
+#ifdef DEBUG
+            printf("got name: %s\n", padname+2);
+#endif
+            sv_setpvn(cSVOP_sv, padname+2, padnamelen-2);
+        }
+        else{
+#ifdef DEBUG
+            printf("got name: %s\n", padname+1);
+#endif
+            sv_setpvn(cSVOP_sv, padname+1, padnamelen-1);
+        }
+    }
+
+    PL_op->op_ppaddr = PL_ppaddr[OP_CONST];
+
+#ifdef DEBUG
+    puts("my_pp_fetch_next_padname end");
+#endif
+
+    return PL_ppaddr[OP_CONST](aTHXR);
+}
+
+static void prepare_anonlisthash_list1(pTHX_ OP *o, U32 opt, UV *const_count, UV *pattern_count, int *last_is_const_p){
+    for(OP *kid=cLISTOPo->op_first; kid; kid=OpSIBLING(kid))
+        switch( kid->op_type ){
+            case OP_PUSHMARK:
+                break;
+            case OP_NULL:
+            case OP_LIST:
+                if( kid->op_flags & OPf_KIDS )
+                    prepare_anonlisthash_list1(aTHX_ kid, opt, const_count, pattern_count, last_is_const_p);
+                break;
+            case OP_ANONLIST:
+                ++*pattern_count;
+                prepare_anonlist_node(aTHX_ o, kid, opt);
+                kid = OpSIBLING(kid); /* skip pattern structure op node */
+                if( last_is_const_p )
+                    *last_is_const_p = 0;
+                break;
+            case OP_ANONHASH:
