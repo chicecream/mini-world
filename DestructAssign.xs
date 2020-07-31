@@ -456,3 +456,57 @@ static void prepare_anonlisthash_list1(pTHX_ OP *o, U32 opt, UV *const_count, UV
                     *last_is_const_p = 0;
                 break;
             case OP_ANONHASH:
+                ++*pattern_count;
+                prepare_anonhash_node(aTHX_ o, kid, opt);
+                kid = OpSIBLING(kid); /* skip pattern structure op node */
+                if( last_is_const_p )
+                    *last_is_const_p = 0;
+                break;
+            case OP_CONST:
+            case OP_UNDEF:
+                ++*const_count;
+                if( last_is_const_p )
+                    *last_is_const_p = 1;
+                break;
+            case OP_PADAV:
+            case OP_PADHV:
+            case OP_RV2AV:
+            case OP_RV2HV:
+                kid->op_flags |= OPf_REF;
+                /* fall through */
+            case OP_PADSV:
+            case OP_RV2SV:
+                if( last_is_const_p ){
+                    if( *last_is_const_p )
+                        *last_is_const_p = 0;
+                    else
+                        ++*const_count;
+                }
+                break;
+            default:
+                croak("invalid des pattern (can't contain %s)", OP_NAME(kid));
+        }
+}
+static void prepare_anonlisthash_list2(pTHX_ OP *o, U32 opt, I32 *const_index_buffer, I32 *p, I32 *q, int *last_is_const_p){
+    OP *kid0 = cLISTOPo->op_first;
+    for(OP *kid=OpSIBLING(kid0); kid; kid0=kid, kid=OpSIBLING(kid)){
+        if( (kid->op_flags & OPf_KIDS) && (kid->op_type == OP_LIST || kid->op_type == OP_NULL) ){
+            prepare_anonlisthash_list2(aTHX_ kid, opt, const_index_buffer, p, q, last_is_const_p);
+            continue;
+        }
+        if( kid->op_type == OP_CONST || kid->op_type == OP_UNDEF ){
+            const_index_buffer[(*p)++] = *q;
+            if( last_is_const_p )
+                *last_is_const_p = 1;
+        }
+        else if( kid->op_type == OP_ANONLIST || kid->op_type == OP_ANONHASH ){
+            const_index_buffer[(*p)++] = -*q-1;
+            kid = OpSIBLING(kid);
+            if( last_is_const_p )
+                *last_is_const_p = 0;
+        }
+        else{
+            if( last_is_const_p ){
+                if( *last_is_const_p ){
+                    *last_is_const_p = 0;
+                }
