@@ -510,3 +510,47 @@ static void prepare_anonlisthash_list2(pTHX_ OP *o, U32 opt, I32 *const_index_bu
                 if( *last_is_const_p ){
                     *last_is_const_p = 0;
                 }
+                else{
+#ifdef DEBUG
+                    printf("put const index\n");
+#endif
+                    const_index_buffer[(*p)++] = (*q)++;
+                    switch( kid->op_type ){
+                        case OP_PADSV:
+                        case OP_PADAV:
+                        case OP_PADHV: {
+                            OP * keyname_op = newSVOP(OP_CUSTOM, 0, newSV(0));
+                            keyname_op->op_ppaddr = my_pp_fetch_next_padname;
+#ifdef op_sibling_splice
+                            op_sibling_splice(o, kid0, 0, keyname_op);
+#else
+                            OpMORESIB_set(kid0, keyname_op);
+                            OpMORESIB_set(keyname_op, kid);
+#endif
+                            break;
+                        }
+                        case OP_RV2SV:
+                        case OP_RV2AV:
+                        case OP_RV2HV:
+                            if( kid->op_flags & OPf_KIDS ){
+                                OP * gvop = kUNOP->op_first;
+                                if( gvop->op_type == OP_GVSV || gvop->op_type == OP_GV ){
+#ifdef GvNAME_HEK
+                                    HEK * gv_name_hek = GvNAME_HEK(cGVOPx_gv(gvop));
+                                    SV * keyname_sv = newSVpvn(HEK_KEY(gv_name_hek), HEK_LEN(gv_name_hek));
+#else
+                                    GV * gv = cGVOPx_gv(gvop);
+                                    SV * keyname_sv = newSVpvn(GvNAME(gv), GvNAMELEN(gv));
+#endif
+                                    OP * keyname_op = newSVOP(OP_CONST, 0, keyname_sv);
+#ifdef op_sibling_splice
+                                    op_sibling_splice(o, kid0, 0,
+                                                      keyname_op);
+#else
+                                    OpMORESIB_set(kid0, keyname_op);
+                                    OpMORESIB_set(keyname_op, kid);
+#endif
+                                }
+                            }
+                            break;
+                    }
