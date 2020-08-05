@@ -554,3 +554,52 @@ static void prepare_anonlisthash_list2(pTHX_ OP *o, U32 opt, I32 *const_index_bu
                             }
                             break;
                     }
+                }
+            }
+        }
+        ++*q;
+    }
+}
+static void prepare_anonlisthash_node(pTHX_ OP *parent, OP *o, U32 opt,
+                                            int is_hash){
+    UV const_count = 0;
+    UV pattern_count = 0;
+    PERL_UNUSED_ARG(parent);
+
+    if( is_hash ){
+        int last_is_const = 0;
+        prepare_anonlisthash_list1(aTHX_ o, opt, &const_count, &pattern_count, &last_is_const);
+    }
+    else{
+        prepare_anonlisthash_list1(aTHX_ o, opt, &const_count, &pattern_count, NULL);
+    }
+
+#ifdef DEBUG
+    printf("const_count=%u, pattern_count=%u\n", (unsigned int)const_count, (unsigned int)pattern_count);
+#endif
+
+    I32 p = 0, q = 0;
+    I32 buffer_len = (const_count+pattern_count+1) * sizeof(I32);
+
+    SV *buffer_sv = newSV(buffer_len+1);
+    *(SvPVX(buffer_sv)+buffer_len) = '\0';
+
+    I32 * const_index_buffer = (I32*)SvPVX(buffer_sv);
+
+    if( is_hash ){
+        int last_is_const = 0;
+        prepare_anonlisthash_list2(aTHX_ o, opt, const_index_buffer, &p, &q, &last_is_const);
+    }
+    else{
+        prepare_anonlisthash_list2(aTHX_ o, opt, const_index_buffer, &p, &q, NULL);
+    }
+    const_index_buffer[p] = q;
+
+    #ifdef DEBUG
+    printf("const_index:");
+    for(I32 i=0; i<=p; ++i)
+        printf(" %d", const_index_buffer[i]);
+    puts("");
+    #endif
+
+    OP *buffer_op = newSVOP(OP_CONST, 0, buffer_sv);
