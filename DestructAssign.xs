@@ -645,3 +645,60 @@ static unsigned int traverse_args(pTHX_ U32 opt, unsigned int found_index,
     }
 
     /* use the second kid (the first arg) */
+    if( found_index==1 ){
+        switch( o->op_type ){
+           case OP_ANONLIST:
+                prepare_anonlist_node(aTHX_ parent, o, opt);
+                break;
+           case OP_ANONHASH:
+                prepare_anonhash_node(aTHX_ parent, o, opt);
+                break;
+           default:
+                croak("des arg must be exactly an anonymous list or anonymous hash");
+        }
+    }
+    else if( found_index==4 ){
+        croak("des arg must be exactly an anonymous list or anonymous hash");
+    }
+
+    return found_index+1;
+}
+
+static OP* my_pp_entersub(pTHX){
+    dVAR;
+    dMARK; /* drop the first pushmark */
+    dSP;
+    POPs; /* drop the sub name */
+#ifdef DEBUG
+    printf("my_pp_entersub\n");
+#endif
+    RETURN;
+}
+
+static OP* des_check(pTHX_ OP* o, GV *namegv, SV *ckobj){
+#ifdef DEBUG
+    analyse_op_tree(aTHX_ o, 0);
+#endif
+    if( o->op_flags & OPf_KIDS ){
+        unsigned int found_index = 0;
+        for(OP *kid=cUNOPo->op_first; kid; kid=OpSIBLING(kid))
+            found_index = traverse_args(aTHX_ 0, found_index, o, kid);
+        o->op_ppaddr = my_pp_entersub;
+    }
+    return o;
+}
+
+static OP* des_alias_check(pTHX_ OP* o, GV *namegv, SV *ckobj){
+#ifdef DEBUG
+    analyse_op_tree(aTHX_ o, 0);
+#endif
+    if( o->op_flags & OPf_KIDS ){
+        unsigned int found_index = 0;
+        for(OP *kid=cUNOPo->op_first; kid; kid=OpSIBLING(kid))
+            found_index = traverse_args(aTHX_ OPT_ALIAS,found_index,o,kid);
+        o->op_ppaddr = my_pp_entersub;
+    }
+    return o;
+}
+
+#if !PERL_VERSION_GE(5,14,0)
