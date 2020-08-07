@@ -603,3 +603,45 @@ static void prepare_anonlisthash_node(pTHX_ OP *parent, OP *o, U32 opt,
     #endif
 
     OP *buffer_op = newSVOP(OP_CONST, 0, buffer_sv);
+    buffer_op->op_type = OP_NULL;
+    buffer_op->op_targ = OP_CONST;
+#ifdef op_sibling_splice
+    op_sibling_splice(parent, o, 0, buffer_op);
+#else
+    OpMORESIB_set(buffer_op, OpSIBLING(o));
+    OpMORESIB_set(o, buffer_op);
+#endif
+}
+
+static void prepare_anonlist_node(pTHX_ OP * parent, OP * o, U32 opt){
+#ifdef DEBUG
+    printf("prepare anonlist node\n");
+#endif
+    prepare_anonlisthash_node(aTHX_ parent, o, opt, 0);
+    if( opt & OPT_ALIAS )
+        o->op_ppaddr = my_pp_anonlist_alias;
+    else
+        o->op_ppaddr = my_pp_anonlist;
+}
+
+static void prepare_anonhash_node(pTHX_ OP * parent, OP * o, U32 opt){
+#ifdef DEBUG
+    printf("prepare anonhash node\n");
+#endif
+    prepare_anonlisthash_node(aTHX_ parent, o, opt, 1);
+    if( opt & OPT_ALIAS )
+        o->op_ppaddr = my_pp_anonhash_alias;
+    else
+        o->op_ppaddr = my_pp_anonhash;
+}
+
+static unsigned int traverse_args(pTHX_ U32 opt, unsigned int found_index,
+                                        OP * parent, OP * o){
+    if( o->op_type == OP_NULL ){
+        if( o->op_flags & OPf_KIDS )
+            for(OP *kid=cUNOPo->op_first; kid; kid=OpSIBLING(kid))
+                found_index = traverse_args(aTHX_ opt, found_index, o,kid);
+        return found_index;
+    }
+
+    /* use the second kid (the first arg) */
