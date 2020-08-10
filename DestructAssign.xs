@@ -702,3 +702,52 @@ static OP* des_alias_check(pTHX_ OP* o, GV *namegv, SV *ckobj){
 }
 
 #if !PERL_VERSION_GE(5,14,0)
+static CV* my_des_cvs[2];
+static OP* (*orig_entersub_check)(pTHX_ OP*);
+static OP* my_entersub_check(pTHX_ OP* o){
+    CV *cv = NULL;
+    OP *cvop = OpSIBLING(((OpSIBLING(cUNOPo->op_first)) ? cUNOPo : ((UNOP*)cUNOPo->op_first))->op_first);
+    while( OpSIBLING(cvop) )
+        cvop = OpSIBLING(cvop);
+    if( cvop->op_type == OP_RV2CV && !(o->op_private & OPpENTERSUB_AMPER) ){
+        SVOP *tmpop = (SVOP*)((UNOP*)cvop)->op_first;
+        switch (tmpop->op_type) {
+            case OP_GV: {
+                GV *gv = cGVOPx_gv(tmpop);
+                cv = GvCVu(gv);
+                if (!cv)
+                    tmpop->op_private |= OPpEARLY_CV;
+            } break;
+            case OP_CONST: {
+                SV *sv = cSVOPx_sv(tmpop);
+                if (SvROK(sv) && SvTYPE(SvRV(sv)) == SVt_PVCV)
+                    cv = (CV*)SvRV(sv);
+            } break;
+        }
+        if( cv==my_des_cvs[0] )
+            return des_check(aTHX_ o, NULL, NULL);
+        if( cv==my_des_cvs[1] )
+            return des_alias_check(aTHX_ o, NULL, NULL);
+    }
+    return orig_entersub_check(aTHX_ o);
+}
+#endif
+
+MODULE = DestructAssign		PACKAGE = DestructAssign		
+
+INCLUDE: const-xs.inc
+
+BOOT:
+    init_set_vtbl(&anonlist_vtbl, anonlist_set);
+    init_set_vtbl(&anonlist_alias_vtbl, anonlist_alias_set);
+    init_set_vtbl(&anonhash_vtbl, anonhash_set);
+    init_set_vtbl(&anonhash_alias_vtbl, anonhash_alias_set);
+#if PERL_VERSION_GE(5,14,0)
+    cv_set_call_checker(get_cv("DestructAssign::des", TRUE), des_check, &PL_sv_undef);
+    cv_set_call_checker(get_cv("DestructAssign::des_alias", TRUE), des_alias_check, &PL_sv_undef);
+#else
+    my_des_cvs[0] = get_cv("DestructAssign::des", TRUE);
+    my_des_cvs[1] = get_cv("DestructAssign::des_alias", TRUE);
+    orig_entersub_check = PL_check[OP_ENTERSUB];
+    PL_check[OP_ENTERSUB] = my_entersub_check;
+#endif
