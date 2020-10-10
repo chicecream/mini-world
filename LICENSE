@@ -59,4 +59,5 @@ Definitions
     "Source" form means the source code, documentation source, and
     configuration files for the Package.
 
-    "Compiled" form means the compile
+    "Compiled" form means the compiled bytecode, object code, binary,
+    or any other form re
