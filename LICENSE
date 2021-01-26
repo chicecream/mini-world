@@ -158,4 +158,5 @@ provided the result does not expose a direct interface to the Package.
 Items That are Not Considered Part of a Modified Version
 
 (9) Works (including, but not limited to, modules and scripts) that
-merely extend or make use of the Package, do not, by themselves
+merely extend or make use of the Package, do not, by themselves, cause
+the Package to be a Modified Version.  In addition, s
