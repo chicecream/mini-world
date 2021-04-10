@@ -7,3 +7,5 @@ ppport.h
 README
 t/DestructAssign.t
 fallback/const-c.inc
+fallback/const-xs.inc
+lib/DestructAssign.pm
