@@ -1,3 +1,3 @@
 use 5.008009;
 use ExtUtils::MakeMaker;
-# See lib/ExtUtils/M
+# See lib/ExtUtils/MakeMaker.pm for details of how to influence
