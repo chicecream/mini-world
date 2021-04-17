@@ -5,4 +5,5 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     NAME              => 'DestructAssign',
     VERSION_FROM      => 'lib/DestructAssign.pm', # finds $VERSION
-    PREREQ_PM         =
+    PREREQ_PM         => {}, # e.g., Module::Name => 1.1
+    ($] >
