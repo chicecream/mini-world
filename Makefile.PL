@@ -4,4 +4,5 @@ use ExtUtils::MakeMaker;
 # the contents of the Makefile that is written.
 WriteMakefile(
     NAME              => 'DestructAssign',
-    VERSION_FROM      => 'lib/De
+    VERSION_FROM      => 'lib/DestructAssign.pm', # finds $VERSION
+    PREREQ_PM         =
