@@ -10,4 +10,5 @@ WriteMakefile(
       (ABSTRACT_FROM  => 'lib/DestructAssign.pm', # retrieve abstract from module
        AUTHOR         => 'Cindy Wang (CindyLinz) <cindy@cpan.org>') : ()),
     LIBS              => [''], # e.g., '-lm'
-    DEFINE
+    DEFINE            => '-std=gnu99', # e.g., '-DHAVE_SOMETHING'
+    IN
