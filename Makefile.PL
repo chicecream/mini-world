@@ -11,4 +11,6 @@ WriteMakefile(
        AUTHOR         => 'Cindy Wang (CindyLinz) <cindy@cpan.org>') : ()),
     LIBS              => [''], # e.g., '-lm'
     DEFINE            => '-std=gnu99', # e.g., '-DHAVE_SOMETHING'
-    INC               => '-I.', # e.g., '-I. -I/usr/include/ot
+    INC               => '-I.', # e.g., '-I. -I/usr/include/other'
+	# Un-comment this if you add C files to link with later:
+ 
