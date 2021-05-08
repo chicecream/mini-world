@@ -15,4 +15,5 @@ WriteMakefile(
 	# Un-comment this if you add C files to link with later:
     # OBJECT            => '$(O_FILES)', # link all the C files too
 );
-if  (eval {require ExtUtils::Constant; 1})
+if  (eval {require ExtUtils::Constant; 1}) {
+  # If you edit these definitions to change t
