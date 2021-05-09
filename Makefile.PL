@@ -16,4 +16,5 @@ WriteMakefile(
     # OBJECT            => '$(O_FILES)', # link all the C files too
 );
 if  (eval {require ExtUtils::Constant; 1}) {
-  # If you edit these definitions to change t
+  # If you edit these definitions to change the constants used by this module,
+  # you will need to use th
