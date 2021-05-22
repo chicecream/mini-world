@@ -21,4 +21,5 @@ if  (eval {require ExtUtils::Constant; 1}) {
   # files to replace their "fallback" counterparts before distributing your
   # changes.
   my @names = (qw());
-  ExtUtils::Constan
+  ExtUtils::Constant::WriteConstants(
+                                     N
