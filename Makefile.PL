@@ -22,4 +22,5 @@ if  (eval {require ExtUtils::Constant; 1}) {
   # changes.
   my @names = (qw());
   ExtUtils::Constant::WriteConstants(
-                                     N
+                                     NAME         => 'DestructAssign',
+                                
