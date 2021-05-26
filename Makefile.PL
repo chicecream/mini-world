@@ -24,4 +24,5 @@ if  (eval {require ExtUtils::Constant; 1}) {
   ExtUtils::Constant::WriteConstants(
                                      NAME         => 'DestructAssign',
                                      NAMES        => \@names,
-                   
+                                     DEFAULT_TYPE => 'IV',
+                
