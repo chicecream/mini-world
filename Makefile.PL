@@ -25,4 +25,4 @@ if  (eval {require ExtUtils::Constant; 1}) {
                                      NAME         => 'DestructAssign',
                                      NAMES        => \@names,
                                      DEFAULT_TYPE => 'IV',
-                
+                                     C_FILE       => 'const
