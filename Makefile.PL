@@ -26,4 +26,5 @@ if  (eval {require ExtUtils::Constant; 1}) {
                                      NAMES        => \@names,
                                      DEFAULT_TYPE => 'IV',
                                      C_FILE       => 'const-c.inc',
-                                     XS
+                                     XS_FILE      => 'const-xs.inc',
+                                 
