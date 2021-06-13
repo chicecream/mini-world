@@ -33,4 +33,5 @@ if  (eval {require ExtUtils::Constant; 1}) {
 else {
   use File::Copy;
   use File::Spec;
-  foreach my $f
+  foreach my $file ('const-c.inc', 'const-xs.inc') {
+    my $fallback = File::Spe
