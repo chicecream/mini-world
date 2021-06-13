@@ -34,4 +34,5 @@ else {
   use File::Copy;
   use File::Spec;
   foreach my $file ('const-c.inc', 'const-xs.inc') {
-    my $fallback = File::Spe
+    my $fallback = File::Spec->catfile('fallback', $file);
+    copy 
