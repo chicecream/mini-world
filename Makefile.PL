@@ -27,4 +27,10 @@ if  (eval {require ExtUtils::Constant; 1}) {
                                      DEFAULT_TYPE => 'IV',
                                      C_FILE       => 'const-c.inc',
                                      XS_FILE      => 'const-xs.inc',
-                                 
+                                  );
+
+}
+else {
+  use File::Copy;
+  use File::Spec;
+  foreach my $f
