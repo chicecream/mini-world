@@ -1,3 +1,7 @@
 # NAME
 
-De
+DestructAssign - Destructuring assignment
+
+# SYNOPSIS
+
+```per
