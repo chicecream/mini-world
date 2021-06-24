@@ -7,4 +7,6 @@ DestructAssign - Destructuring assignment
 ```perl
 use DestructAssign qw(des des_alias);
 
-my($w, $
+my($w, $x, $y, $z);
+our($X, $Y, $Z);
+des [$x, [undef, {y => $y}, undef,
