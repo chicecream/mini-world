@@ -4,4 +4,7 @@ DestructAssign - Destructuring assignment
 
 # SYNOPSIS
 
-```per
+```perl
+use DestructAssign qw(des des_alias);
+
+my($w, $
