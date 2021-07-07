@@ -19,4 +19,5 @@ des [3 => $w, $x, -2 => $y, $z] = [1..9];
 
 # use names of the variables in a hash pattern as keys when not assigned
 # use previously used key for a sub-pattern when not assigned
-des {$x, $A::B, $Y, [$a, $b]} = {x => 1, Y => [9, 8], B => 
+des {$x, $A::B, $Y, [$a, $b]} = {x => 1, Y => [9, 8], B => 3};
+# got ($x, $Y, $A::B, $a, $b) = (1, [9,8], 3, 9, 8);
