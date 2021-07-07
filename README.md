@@ -13,4 +13,6 @@ des [$x, [undef, {y => $y}, undef, $w], $z] = [2, [25, {x => 'x', y => 3}, 26, 1
 # got ($w, $x, $y, $z) = (1, 2, 3, 4)
 # (use undef as the skipping placeholder)
 
-# put skip index in the list patter
+# put skip index in the list pattern
+des [3 => $w, $x, -2 => $y, $z] = [1..9];
+# got ($w, $x,
