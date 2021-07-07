@@ -17,4 +17,5 @@ des [$x, [undef, {y => $y}, undef, $w], $z] = [2, [25, {x => 'x', y => 3}, 26, 1
 des [3 => $w, $x, -2 => $y, $z] = [1..9];
 # got ($w, $x, $y, $z) = (4, 5, 8, 9)
 
-# use names of the variables i
+# use names of the variables in a hash pattern as keys when not assigned
+# use previousl
