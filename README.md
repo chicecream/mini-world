@@ -22,4 +22,7 @@ des [3 => $w, $x, -2 => $y, $z] = [1..9];
 des {$x, $A::B, $Y, [$a, $b]} = {x => 1, Y => [9, 8], B => 3};
 # got ($x, $Y, $A::B, $a, $b) = (1, [9,8], 3, 9, 8);
 
-# use hash pattern to match against an array referen
+# use hash pattern to match against an array reference
+# So we can write:
+sub f {
+  des {my($score, $name, $det
