@@ -29,4 +29,6 @@ sub f {
   ...
 }
 f(
-  name 
+  name => 'Cindy',
+  score => 95,
+  detail => {math => 90, english =>
