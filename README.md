@@ -25,4 +25,8 @@ des {$x, $A::B, $Y, [$a, $b]} = {x => 1, Y => [9, 8], B => 3};
 # use hash pattern to match against an array reference
 # So we can write:
 sub f {
-  des {my($score, $name, $det
+  des {my($score, $name, $detail), {my($math, $english)}} = \@_;
+  ...
+}
+f(
+  name 
