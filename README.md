@@ -31,4 +31,8 @@ sub f {
 f(
   name => 'Cindy',
   score => 95,
-  detail => {math => 90, english =>
+  detail => {math => 90, english => 30, bios => 60},
+);
+
+
+# put @array or @hash in th
