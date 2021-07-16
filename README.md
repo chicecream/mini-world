@@ -35,4 +35,5 @@ f(
 );
 
 
-# put @array or @hash in th
+# put @array or @hash in the list pattern to eat all the remaining element
+my(@
