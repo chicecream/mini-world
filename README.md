@@ -38,4 +38,6 @@ f(
 # put @array or @hash in the list pattern to eat all the remaining element
 my(@array, %hash);
 des [3 => @array, -4 => %hash] = [1..8];
-# got 
+# got @array = (4..8), %hash = (5 => 6, 7 => 8)
+
+# put the same index or
