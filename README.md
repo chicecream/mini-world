@@ -36,4 +36,6 @@ f(
 
 
 # put @array or @hash in the list pattern to eat all the remaining element
-my(@
+my(@array, %hash);
+des [3 => @array, -4 => %hash] = [1..8];
+# got 
