@@ -41,4 +41,5 @@ des [3 => @array, -4 => %hash] = [1..8];
 # got @array = (4..8), %hash = (5 => 6, 7 => 8)
 
 # put the same index or hash key
-#  when you need to capture different granularity on the
+#  when you need to capture different granularity on the same data structure
+#  (notice that you can use du
