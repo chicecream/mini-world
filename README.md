@@ -42,4 +42,5 @@ des [3 => @array, -4 => %hash] = [1..8];
 
 # put the same index or hash key
 #  when you need to capture different granularity on the same data structure
-#  (notice that you can use du
+#  (notice that you can use duplicated keys in the hash pattern)
+des {x => $x, x =
