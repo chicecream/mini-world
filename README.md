@@ -49,4 +49,8 @@ des {x => $x, x => [$y, $z]} = {x => [1, 2]};
 # use the alias semantics
 my $data = [1, 2, 3];
 des_alias [undef, $x] = $data;
-$x =
+$x = 20;
+# got $data = [1, 20, 3]
+
+{
+  # mixed with lexical v
