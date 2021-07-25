@@ -47,4 +47,6 @@ des {x => $x, x => [$y, $z]} = {x => [1, 2]};
 # got $x = [1,2], $y = 1, $z = 2
 
 # use the alias semantics
-my
+my $data = [1, 2, 3];
+des_alias [undef, $x] = $data;
+$x =
