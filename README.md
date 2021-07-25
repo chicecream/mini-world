@@ -44,4 +44,7 @@ des [3 => @array, -4 => %hash] = [1..8];
 #  when you need to capture different granularity on the same data structure
 #  (notice that you can use duplicated keys in the hash pattern)
 des {x => $x, x => [$y, $z]} = {x => [1, 2]};
-# got $x = [1,2],
+# got $x = [1,2], $y = 1, $z = 2
+
+# use the alias semantics
+my
