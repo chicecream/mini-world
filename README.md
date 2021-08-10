@@ -54,4 +54,9 @@ $x = 20;
 
 {
   # mixed with lexical variable introduction
-  des [my($i, $j), { k => my $k }]
+  des [my($i, $j), { k => my $k }] = [1, 2, {k => 3}];
+  # got my($i, $j, $k) = (1, 2, 3)
+}
+```
+
+# DESCRIPTI
