@@ -53,4 +53,5 @@ $x = 20;
 # got $data = [1, 20, 3]
 
 {
-  # mixed with lexical v
+  # mixed with lexical variable introduction
+  des [my($i, $j), { k => my $k }]
