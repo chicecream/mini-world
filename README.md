@@ -73,4 +73,5 @@ I expect it to bring following benefits:
     With this mod, you can do:
 
     ```perl
-    sub f
+    sub f {
+      des {my($id, $title, $x, $y, $width, $height)} = 
