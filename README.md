@@ -69,4 +69,8 @@ I expect it to bring following benefits:
 
 - provide named parameters more easily
 
-    Named parameters are good when the number of parameters is la
+    Named parameters are good when the number of parameters is large (more than 4).
+    With this mod, you can do:
+
+    ```perl
+    sub f
