@@ -63,3 +63,6 @@ $x = 20;
 
 This mod provides destructuring assignment for Perl.
 You can capture (by value) or bind (by alias) variables into
+part of a potentially large and complex data structure.
+
+I expect 
