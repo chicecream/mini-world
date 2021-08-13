@@ -74,4 +74,10 @@ I expect it to bring following benefits:
 
     ```perl
     sub f {
-      des {my($id, $title, $x, $y, $width, $height)} = 
+      des {my($id, $title, $x, $y, $width, $height)} = \@_;
+      # The order is not important.
+      ...
+    }
+
+    f(
+    
