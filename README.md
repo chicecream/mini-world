@@ -69,4 +69,4 @@ I expect it to bring following benefits:
 
 - provide named parameters more easily
 
-    
+    Named parameters are good when the number of parameters is la
