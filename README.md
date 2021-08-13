@@ -59,4 +59,6 @@ $x = 20;
 }
 ```
 
-# DESCRIPTI
+# DESCRIPTION
+
+This mod provides destructuring assignment for Per
