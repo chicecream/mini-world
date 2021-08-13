@@ -61,4 +61,5 @@ $x = 20;
 
 # DESCRIPTION
 
-This mod provides destructuring assignment for Per
+This mod provides destructuring assignment for Perl.
+You can capture (by value) or bind (by alias) variables into
