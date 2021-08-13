@@ -80,4 +80,6 @@ I expect it to bring following benefits:
     }
 
     f(
-    
+      id => 1,
+      title => 'Untitled',
+      x => 10, y => 
