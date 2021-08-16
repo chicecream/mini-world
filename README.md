@@ -82,4 +82,8 @@ I expect it to bring following benefits:
     f(
       id => 1,
       title => 'Untitled',
-      x => 10, y => 
+      x => 10, y => 10,
+      width => 200, height => 150,
+    );
+    ```
+
