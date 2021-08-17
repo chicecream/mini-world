@@ -87,4 +87,6 @@ I expect it to bring following benefits:
     );
     ```
 
-- enhance the readability by pointing out all the eleme
+- enhance the readability by pointing out all the elements you might touch at the begining of each subroutine
+
+  
