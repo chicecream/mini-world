@@ -89,4 +89,5 @@ I expect it to bring following benefits:
 
 - enhance the readability by pointing out all the elements you might touch at the begining of each subroutine
 
-    It's a good habit to name parameters instead of access @
+    It's a good habit to name parameters instead of access @\_ directly
+    (except you want to modify caller's a
