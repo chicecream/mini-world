@@ -92,4 +92,4 @@ I expect it to bring following benefits:
     It's a good habit to name parameters instead of access @\_ directly
     (except you want to modify caller's arguments).
     This mod extend the ability to name parameters in the deep structure.
-    You can explicitly li
+    You can explicitly list all the elements you might touch in the subroutine.
