@@ -93,3 +93,7 @@ I expect it to bring following benefits:
     (except you want to modify caller's arguments).
     This mod extend the ability to name parameters in the deep structure.
     You can explicitly list all the elements you might touch in the subroutine.
+
+    ```perl
+    sub f {
+      des [my $x, { id => my $id
