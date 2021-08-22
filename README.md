@@ -106,4 +106,8 @@ I expect it to bring following benefits:
 
     ```perl
     sub add {
-      des_alias [my($
+      des_alias [my($a, $b, $sum)] = \@_;
+      $sum = $a + $b;
+    }
+
+  
