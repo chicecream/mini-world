@@ -111,4 +111,8 @@ I expect it to bring following benefits:
     }
 
     my($a, $b, $c) = (1, 2, 0);
-    add($a, $b, $
+    add($a, $b, $c);
+    # $c = 3
+    ```
+
+- enhance the performance by avoiding r
