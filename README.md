@@ -98,4 +98,4 @@ I expect it to bring following benefits:
     sub f {
       des [my $x, { id => my $id, amount => my $amount }] = \@_;
       # or use des_alias, if you need to modify the passed parameters.
-      des_alias 
+      des_alias [my $x, { id => my $id, amount => my $amount }] = \
