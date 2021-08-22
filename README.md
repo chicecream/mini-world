@@ -110,4 +110,5 @@ I expect it to bring following benefits:
       $sum = $a + $b;
     }
 
-  
+    my($a, $b, $c) = (1, 2, 0);
+    add($a, $b, $
