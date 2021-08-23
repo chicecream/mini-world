@@ -117,4 +117,7 @@ I expect it to bring following benefits:
 
 - enhance the performance by avoiding repeatedly digging into complex data structures
 
-    Suppo
+    Suppose we have data structures like this:
+
+    ```perl
+    my $play
