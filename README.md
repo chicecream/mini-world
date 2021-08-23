@@ -115,4 +115,6 @@ I expect it to bring following benefits:
     # $c = 3
     ```
 
-- enhance the performance by avoiding r
+- enhance the performance by avoiding repeatedly digging into complex data structures
+
+    Suppo
