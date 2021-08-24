@@ -120,4 +120,7 @@ I expect it to bring following benefits:
     Suppose we have data structures like this:
 
     ```perl
-    my $play
+    my $player1 = {
+      id => 25,
+      hp => 8100,
+      a
