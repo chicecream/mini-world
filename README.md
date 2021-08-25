@@ -125,4 +125,6 @@ I expect it to bring following benefits:
       hp => 8100,
       armor => {
         body => {
-          id => 2
+          id => 21,
+          name => 'iron suit',
+          protect => 
