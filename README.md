@@ -123,4 +123,6 @@ I expect it to bring following benefits:
     my $player1 = {
       id => 25,
       hp => 8100,
-      a
+      armor => {
+        body => {
+          id => 2
