@@ -127,4 +127,7 @@ I expect it to bring following benefits:
         body => {
           id => 21,
           name => 'iron suit',
-          protect => 
+          protect => 10,
+          durability => 100,
+        },
+        h
