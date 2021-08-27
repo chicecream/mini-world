@@ -135,4 +135,10 @@ I expect it to bring following benefits:
           name => 'iron sword',
           attack => 15,
           durability => 100,
+        },
+      },
+    };
+    my $player2 = ...;
+    ```
+
     
