@@ -130,4 +130,6 @@ I expect it to bring following benefits:
           protect => 10,
           durability => 100,
         },
-        h
+        hand => {
+          id => 29,
+          name => 'iron sword',
