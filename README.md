@@ -133,3 +133,6 @@ I expect it to bring following benefits:
         hand => {
           id => 29,
           name => 'iron sword',
+          attack => 15,
+          durability => 100,
+    
