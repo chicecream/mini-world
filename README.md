@@ -144,4 +144,6 @@ I expect it to bring following benefits:
     Instead of
 
     ```perl
-    while( $player1->{hp}>0 && $play
+    while( $player1->{hp}>0 && $player2->{hp}>0 ) {
+      my $hit1 =
+          ($player
