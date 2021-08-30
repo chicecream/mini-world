@@ -141,4 +141,7 @@ I expect it to bring following benefits:
     my $player2 = ...;
     ```
 
-    
+    Instead of
+
+    ```perl
+    while( $player1->{hp}>0 && $play
