@@ -146,4 +146,5 @@ I expect it to bring following benefits:
     ```perl
     while( $player1->{hp}>0 && $player2->{hp}>0 ) {
       my $hit1 =
-          ($player1->{armor}{hand}{durability} && $player1->{
+          ($player1->{armor}{hand}{durability} && $player1->{armor}{hand}{attack}) -
+          ($player2->{armor}{body}{durability} && $play
