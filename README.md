@@ -150,4 +150,4 @@ I expect it to bring following benefits:
           ($player2->{armor}{body}{durability} && $player2->{armor}{body}{protect});
       my $hit2 =
           ($player2->{armor}{hand}{durability} && $player2->{armor}{hand}{attack}) -
-          ($player
+          ($player1->{armor}{body}{durability} && $player1->{armor}{bod
