@@ -157,4 +157,5 @@ I expect it to bring following benefits:
       $player1->{hp} -= $hit2;
       $player2->{hp} -= $hit1;
 
-      --$player1->{armor}{hand}{durabil
+      --$player1->{armor}{hand}{durability} if( $player1->{armor}{hand}{durability} );
+      --$player1->{arm
