@@ -159,4 +159,4 @@ I expect it to bring following benefits:
 
       --$player1->{armor}{hand}{durability} if( $player1->{armor}{hand}{durability} );
       --$player1->{armor}{body}{durability} if( $player1->{armor}{body}{durability} );
-   
+      --$player2->{armor}{hand}{durability} if( $player2-
