@@ -152,4 +152,7 @@ I expect it to bring following benefits:
           ($player2->{armor}{hand}{durability} && $player2->{armor}{hand}{attack}) -
           ($player1->{armor}{body}{durability} && $player1->{armor}{body}{protect});
       $hit1 = 1 if( $hit1 <= 0 );
-      $hit
+      $hit2 = 1 if( $hit2 <= 0 );
+
+      $player1->{hp} -= $hit2;
+      $
