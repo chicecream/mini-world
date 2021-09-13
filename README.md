@@ -155,4 +155,6 @@ I expect it to bring following benefits:
       $hit2 = 1 if( $hit2 <= 0 );
 
       $player1->{hp} -= $hit2;
-      $
+      $player2->{hp} -= $hit1;
+
+      --$player1->{armor}{hand}{durabil
