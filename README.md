@@ -162,4 +162,11 @@ I expect it to bring following benefits:
       --$player2->{armor}{hand}{durability} if( $player2->{armor}{hand}{durability} );
       --$player2->{armor}{body}{durability} if( $player2->{armor}{body}{durability} );
     }
-   
+    ```
+
+    We could write
+
+    ```perl
+    des_alias [
+      {
+ 
