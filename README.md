@@ -169,4 +169,7 @@ I expect it to bring following benefits:
     ```perl
     des_alias [
       {
- 
+        hp => my $hp1,
+        armor => {
+          body => {
+           
