@@ -172,4 +172,5 @@ I expect it to bring following benefits:
         hp => my $hp1,
         armor => {
           body => {
-           
+            protect => my $protect1,
+            durability => my 
