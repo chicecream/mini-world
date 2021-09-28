@@ -177,4 +177,9 @@ I expect it to bring following benefits:
           },
           hand => {
             attack => my $attack1,
-            durability => my $hand_du
+            durability => my $hand_dura1,
+          },
+        }
+      },
+      {
+        hp => m
