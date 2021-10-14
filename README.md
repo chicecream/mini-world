@@ -182,4 +182,7 @@ I expect it to bring following benefits:
         }
       },
       {
-        hp => m
+        hp => my $hp2,
+        armor => {
+          body => {
+            pr
