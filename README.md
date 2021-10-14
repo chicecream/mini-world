@@ -186,4 +186,7 @@ I expect it to bring following benefits:
         armor => {
           body => {
             protect => my $protect2,
-            durability => my $body_dura
+            durability => my $body_dura2,
+          },
+          hand => {
+            attac
