@@ -197,4 +197,4 @@ I expect it to bring following benefits:
     ] = [$player1, $player2];
 
     while( hp1>0 && hp2>0 ) {
-      my $hit1 = ($h
+      my $hit1 = ($hand_dura1 && $attack1) - ($body_dura2 && $protect2);
