@@ -198,4 +198,6 @@ I expect it to bring following benefits:
 
     while( hp1>0 && hp2>0 ) {
       my $hit1 = ($hand_dura1 && $attack1) - ($body_dura2 && $protect2);
-      my $hit2 = ($hand_dura2 && $attack2) - ($body_dura
+      my $hit2 = ($hand_dura2 && $attack2) - ($body_dura1 && $protect1);
+      $hit1 = 1 if( $hit1 <= 0 );
+      $
