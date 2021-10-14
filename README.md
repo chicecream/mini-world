@@ -190,4 +190,8 @@ I expect it to bring following benefits:
           },
           hand => {
             attack => my $attack2,
-            durability => my $hand_dura
+            durability => my $hand_dura2,
+          },
+        }
+      },
+    ] = [$play
