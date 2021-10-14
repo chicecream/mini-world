@@ -189,4 +189,5 @@ I expect it to bring following benefits:
             durability => my $body_dura2,
           },
           hand => {
-            attac
+            attack => my $attack2,
+            durability => my $hand_dura
