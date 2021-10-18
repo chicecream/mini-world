@@ -203,4 +203,6 @@ I expect it to bring following benefits:
       $hit2 = 1 if( $hit2 <= 0 );
 
       $hp1 -= $hit2;
-   
+      $hp2 -= $hit1;
+
+      --$hand_dura1 if( $hand
