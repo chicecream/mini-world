@@ -207,4 +207,5 @@ I expect it to bring following benefits:
 
       --$hand_dura1 if( $hand_dura1 );
       --$body_dura1 if( $body_dura1 );
-     
+      --$hand_dura2 if( $hand_dura2 );
+      --$body_dura2 if( $body_dura
