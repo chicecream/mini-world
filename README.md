@@ -205,4 +205,6 @@ I expect it to bring following benefits:
       $hp1 -= $hit2;
       $hp2 -= $hit1;
 
-      --$hand_dura1 if( $hand
+      --$hand_dura1 if( $hand_dura1 );
+      --$body_dura1 if( $body_dura1 );
+     
