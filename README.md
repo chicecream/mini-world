@@ -212,4 +212,10 @@ I expect it to bring following benefits:
     }
     ```
 
-This mod is tested in Perl 5.8.9, 5.10.1, 5.12.5, 5.14.4, 5.16.3, 5.18.2, 5.20.0, 5.21.6, 5
+This mod is tested in Perl 5.8.9, 5.10.1, 5.12.5, 5.14.4, 5.16.3, 5.18.2, 5.20.0, 5.21.6, 5.21.7 on x86\_64.
+
+## EXPORT
+
+None by default.
+
+- d
