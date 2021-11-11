@@ -218,4 +218,6 @@ This mod is tested in Perl 5.8.9, 5.10.1, 5.12.5, 5.14.4, 5.16.3, 5.18.2, 5.20.0
 
 None by default.
 
-- d
+- des pattern = $value
+
+    The value semantics of destructuring as
