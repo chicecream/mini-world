@@ -220,4 +220,6 @@ None by default.
 
 - des pattern = $value
 
-    The value semantics of destructuring as
+    The value semantics of destructuring assignment.
+
+    The captured data elements a
