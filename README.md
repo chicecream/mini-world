@@ -224,4 +224,6 @@ None by default.
 
     The captured data elements are copied out to the variables.
 
-- des\_alias pattern 
+- des\_alias pattern = $value
+
+    The alias semantics of destructuring assignment
