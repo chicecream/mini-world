@@ -222,4 +222,6 @@ None by default.
 
     The value semantics of destructuring assignment.
 
-    The captured data elements a
+    The captured data elements are copied out to the variables.
+
+- des\_alias pattern 
