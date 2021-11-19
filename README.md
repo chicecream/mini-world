@@ -227,3 +227,5 @@ None by default.
 - des\_alias pattern = $value
 
     The alias semantics of destructuring assignment
+
+    The captured data elements are bound to the variabl
