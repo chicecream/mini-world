@@ -228,4 +228,5 @@ None by default.
 
     The alias semantics of destructuring assignment
 
-    The captured data elements are bound to the variabl
+    The captured data elements are bound to the variables.
+    After the binding, write to or read from the vari
