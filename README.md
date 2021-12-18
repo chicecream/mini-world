@@ -232,4 +232,5 @@ None by default.
     After the binding, write to or read from the variables will
     affect the bound data.
 
-    Be careful th
+    Be careful that once you bind a variable to a data element,
+    there's 
