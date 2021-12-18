@@ -233,4 +233,5 @@ None by default.
     affect the bound data.
 
     Be careful that once you bind a variable to a data element,
-    there's 
+    there's no easy way to unbind it.
+    It's recommende
