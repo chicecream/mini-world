@@ -234,4 +234,4 @@ None by default.
 
     Be careful that once you bind a variable to a data element,
     there's no easy way to unbind it.
-    It's recommende
+    It's recommended to use brand new lexical variables or localized variab
