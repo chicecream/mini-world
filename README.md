@@ -239,4 +239,8 @@ None by default.
     Like this..
 
     ```perl
-    # some vari
+    # some variables outside..
+    my $a = 123;
+    our $y = 456;
+
+ 
