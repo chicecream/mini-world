@@ -243,4 +243,6 @@ None by default.
     my $a = 123;
     our $y = 456;
 
- 
+    my $data = [1, 2]; # the target data
+    {
+        des_alia
