@@ -255,4 +255,6 @@ None by default.
     # $data = [5, 6]; # the $data will not be changed.
     ```
 
-## P
+## PATTERN
+
+The only argument to `des` or `des_alias` shoul
