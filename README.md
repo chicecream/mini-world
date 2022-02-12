@@ -249,4 +249,6 @@ None by default.
         $a = 5; $y = 6;
         # $data = [5, 6];
     }
-    # back to
+    # back to original, unbound $a and $y.
+    $a = 7;
+    $y 
