@@ -251,4 +251,8 @@ None by default.
     }
     # back to original, unbound $a and $y.
     $a = 7;
-    $y 
+    $y = 8;
+    # $data = [5, 6]; # the $data will not be changed.
+    ```
+
+## P
