@@ -246,4 +246,7 @@ None by default.
     my $data = [1, 2]; # the target data
     {
         des_alias [my $a, local $y] = $data;
-        $a =
+        $a = 5; $y = 6;
+        # $data = [5, 6];
+    }
+    # back to
