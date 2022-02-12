@@ -245,4 +245,5 @@ None by default.
 
     my $data = [1, 2]; # the target data
     {
-        des_alia
+        des_alias [my $a, local $y] = $data;
+        $a =
