@@ -260,4 +260,8 @@ None by default.
 The only argument to `des` or `des_alias` should be
 an anonymous list \[..\] or anonymous hash {..}.
 
-The el
+The elements of them could be
+
+- anonymous list \[..\]
+
+   
