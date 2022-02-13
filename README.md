@@ -257,4 +257,7 @@ None by default.
 
 ## PATTERN
 
-The only argument to `des` or `des_alias` shoul
+The only argument to `des` or `des_alias` should be
+an anonymous list \[..\] or anonymous hash {..}.
+
+The el
