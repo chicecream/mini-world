@@ -270,4 +270,10 @@ The elements of them could be
 
     To match a hash reference or an array reference
 
-- scalar variable $x
+- scalar variable $xx
+
+    To capture the data element
+
+- array variable @xx
+
+    This 
