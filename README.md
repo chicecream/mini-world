@@ -268,4 +268,6 @@ The elements of them could be
 
 - anonymous hash {..}
 
-    To 
+    To match a hash reference or an array reference
+
+- scalar variable $x
