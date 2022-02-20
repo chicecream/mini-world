@@ -276,4 +276,6 @@ The elements of them could be
 
 - array variable @xx
 
-    This 
+    This can be used only in an anonymous list, not hash.
+
+    T
