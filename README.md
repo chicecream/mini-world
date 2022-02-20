@@ -278,4 +278,4 @@ The elements of them could be
 
     This can be used only in an anonymous list, not hash.
 
-    T
+    To capture all the remaining data element of the current
