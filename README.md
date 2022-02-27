@@ -282,4 +282,8 @@ The elements of them could be
     from current offset.
 
     When using in alias semantics, each element of the array variable will
-    be bound to data element indi
+    be bound to data element individually.
+
+- hash variable %xx
+
+    This can be used only in a
