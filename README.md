@@ -281,4 +281,5 @@ The elements of them could be
     To capture all the remaining data element of the current array
     from current offset.
 
-    When using in alias semantics, each element of the array vari
+    When using in alias semantics, each element of the array variable will
+    be bound to data element indi
