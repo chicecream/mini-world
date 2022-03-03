@@ -286,4 +286,6 @@ The elements of them could be
 
 - hash variable %xx
 
-    This can be used only in a
+    This can be used only in an anonymous list, not hash.
+
+    To capture all the r
