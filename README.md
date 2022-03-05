@@ -288,4 +288,5 @@ The elements of them could be
 
     This can be used only in an anonymous list, not hash.
 
-    To capture all the r
+    To capture all the remaining data element of the current array
+    f
