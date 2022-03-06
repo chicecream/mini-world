@@ -292,4 +292,8 @@ The elements of them could be
     from current offset.
 
     When using in alias semantics, only the values of the hash variable
-    will be bound to data
+    will be bound to data element, individually.
+
+- constant undef
+
+    When usin
