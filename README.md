@@ -296,4 +296,6 @@ The elements of them could be
 
 - constant undef
 
-    When using in an anonymous list, it is used as a skipping placehol
+    When using in an anonymous list, it is used as a skipping placeholder.
+
+    When using in an anonymous hash, it is used to s
