@@ -291,4 +291,5 @@ The elements of them could be
     To capture all the remaining data element of the current array
     from current offset.
 
-    When using in alias semantics, only th
+    When using in alias semantics, only the values of the hash variable
+    will be bound to data
