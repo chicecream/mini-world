@@ -298,4 +298,6 @@ The elements of them could be
 
     When using in an anonymous list, it is used as a skipping placeholder.
 
-    When using in an anonymous hash, it is used to s
+    When using in an anonymous hash, it is used to set the next capturing key to ''.
+
+- constant string or
