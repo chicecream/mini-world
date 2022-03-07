@@ -300,4 +300,6 @@ The elements of them could be
 
     When using in an anonymous hash, it is used to set the next capturing key to ''.
 
-- constant string or
+- constant string or number
+
+    When using in an anonymous list, we'll take it as
