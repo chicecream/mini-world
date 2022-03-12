@@ -305,4 +305,4 @@ The elements of them could be
     When using in an anonymous list, we'll take it as a numer to set
     the next capturing offset.
 
-   
+    When using in an anonymous hash, we'll take it 
