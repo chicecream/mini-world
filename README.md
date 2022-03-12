@@ -302,4 +302,7 @@ The elements of them could be
 
 - constant string or number
 
-    When using in an anonymous list, we'll take it as
+    When using in an anonymous list, we'll take it as a numer to set
+    the next capturing offset.
+
+   
