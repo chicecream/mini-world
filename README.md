@@ -310,4 +310,4 @@ The elements of them could be
 
 # SEE ALSO
 
-This m
+This mod's github [https://github.com/CindyLinz/Perl-DestructAssign
