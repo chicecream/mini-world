@@ -311,4 +311,5 @@ The elements of them could be
 # SEE ALSO
 
 This mod's github [https://github.com/CindyLinz/Perl-DestructAssign](https://github.com/CindyLinz/Perl-DestructAssign).
-It's welcome to discuss with me when you encounter bugs, o
+It's welcome to discuss with me when you encounter bugs, or
+if you think that some patterns are also useful but the mod didn't
