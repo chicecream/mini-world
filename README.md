@@ -314,4 +314,4 @@ This mod's github [https://github.com/CindyLinz/Perl-DestructAssign](https://git
 It's welcome to discuss with me when you encounter bugs, or
 if you think that some patterns are also useful but the mod didn't provide them yet.
 
-I also found a similar mod on github. (no cpan page) [https://github.com/hirokidaichi/p5-Data-
+I also found a similar mod on github. (no cpan page) [https://github.com/hirokidaichi/p5-Data-Destructuring-Assignment](https://github.com/hirok
