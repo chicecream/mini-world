@@ -316,4 +316,5 @@ if you think that some patterns are also useful but the mod didn't provide them 
 
 I also found a similar mod on github. (no cpan page) [https://github.com/hirokidaichi/p5-Data-Destructuring-Assignment](https://github.com/hirokidaichi/p5-Data-Destructuring-Assignment)
 It's implemented in pure Perl with tied structures.
-Because it's pure Perl, we need to pass references directly on the left hand s
+Because it's pure Perl, we need to pass references directly on the left hand side.
+It can't take advantage on hash pattern with duplica
