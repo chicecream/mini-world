@@ -318,4 +318,8 @@ I also found a similar mod on github. (no cpan page) [https://github.com/hirokid
 It's implemented in pure Perl with tied structures.
 Because it's pure Perl, we need to pass references directly on the left hand side.
 It can't take advantage on hash pattern with duplicated keys.
-It didn't provide alias semantics either
+It didn't provide alias semantics either, though it could be added easily if needed.
+
+# AUTHOR
+
+Ci
