@@ -322,4 +322,8 @@ It didn't provide alias semantics either, though it could be added easily if nee
 
 # AUTHOR
 
-Ci
+Cindy Wang (CindyLinz) <cindy@cpan.org>
+
+# CONTRIBUTOR
+
+F
