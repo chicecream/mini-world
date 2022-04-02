@@ -326,4 +326,6 @@ Cindy Wang (CindyLinz) <cindy@cpan.org>
 
 # CONTRIBUTOR
 
-F
+Father Chrysostomos <sprout@cpan.org>
+
+# COPYRIGHT AND LICENSE
