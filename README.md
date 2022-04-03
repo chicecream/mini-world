@@ -329,3 +329,7 @@ Cindy Wang (CindyLinz) <cindy@cpan.org>
 Father Chrysostomos <sprout@cpan.org>
 
 # COPYRIGHT AND LICENSE
+
+Copyright (C) 2014 by Cindy Wang (CindyLinz)
+
+This l
