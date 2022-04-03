@@ -332,4 +332,4 @@ Father Chrysostomos <sprout@cpan.org>
 
 Copyright (C) 2014 by Cindy Wang (CindyLinz)
 
-This l
+This library is free software; you can redistribute it 
