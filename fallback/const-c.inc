@@ -6,4 +6,6 @@
 #define PERL_constant_ISNV	5
 #define PERL_constant_ISPV	6
 #define PERL_constant_ISPVN	7
-#define PERL_cons
+#define PERL_constant_ISSV	8
+#define PERL_constant_ISUNDEF	9
+#define PERL_co
