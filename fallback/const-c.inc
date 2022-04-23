@@ -8,4 +8,7 @@
 #define PERL_constant_ISPVN	7
 #define PERL_constant_ISSV	8
 #define PERL_constant_ISUNDEF	9
-#define PERL_co
+#define PERL_constant_ISUV	10
+#define PERL_constant_ISYES	11
+
+#ifnd
