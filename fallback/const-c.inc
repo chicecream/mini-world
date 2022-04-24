@@ -12,4 +12,6 @@
 #define PERL_constant_ISYES	11
 
 #ifndef NVTYPE
-typedef double NV; /* 5.6 and later define NVTYPE, and typede
+typedef double NV; /* 5.6 and later define NVTYPE, and typedef NV to it.  */
+#endif
+#ifndef aTHX_
