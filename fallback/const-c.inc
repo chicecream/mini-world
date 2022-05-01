@@ -18,4 +18,8 @@ typedef double NV; /* 5.6 and later define NVTYPE, and typedef NV to it.  */
 #define aTHX_ /* 5.6 or later define this for threading support.  */
 #endif
 #ifndef pTHX_
-#define pTHX_ /* 5.6 or later define this for threading suppo
+#define pTHX_ /* 5.6 or later define this for threading support.  */
+#endif
+
+static int
+constant (pTHX_ const char *name,
