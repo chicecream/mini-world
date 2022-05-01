@@ -23,4 +23,5 @@ typedef double NV; /* 5.6 and later define NVTYPE, and typedef NV to it.  */
 
 static int
 constant (pTHX_ const char *name, STRLEN len) {
-  /* Initially switch on the length
+  /* Initially switch on the length of the name.  */
+  /* When generated this function re
