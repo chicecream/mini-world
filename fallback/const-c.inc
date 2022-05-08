@@ -26,4 +26,5 @@ constant (pTHX_ const char *name, STRLEN len) {
   /* Initially switch on the length of the name.  */
   /* When generated this function returned values for the list of names given
      in this section of perl code.  Rather than manually editing these functions
-     to add or remove constants, which would result 
+     to add or remove constants, which would result in this comment and section
+     of code becoming inaccur
