@@ -31,4 +31,4 @@ constant (pTHX_ const char *name, STRLEN len) {
      code, and use it to regenerate a new set of constant functions which you
      then use to replace the originals.
 
-     
+     Regenerate these constant functions by feeding this entire sour
