@@ -28,4 +28,7 @@ constant (pTHX_ const char *name, STRLEN len) {
      in this section of perl code.  Rather than manually editing these functions
      to add or remove constants, which would result in this comment and section
      of code becoming inaccurate, we recommend that you edit this section of
-     code, and use it to regenerate a new set of constant functions which 
+     code, and use it to regenerate a new set of constant functions which you
+     then use to replace the originals.
+
+     
