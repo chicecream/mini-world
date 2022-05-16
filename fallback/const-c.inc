@@ -35,4 +35,6 @@ constant (pTHX_ const char *name, STRLEN len) {
      perl -x
 
 #!/usr/bin/perl -w
-use ExtUtils::Constant qw (constant_types C_constant
+use ExtUtils::Constant qw (constant_types C_constant XS_constant);
+
+my $types = {map {($_, 1)}
