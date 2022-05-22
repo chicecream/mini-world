@@ -40,4 +40,5 @@ use ExtUtils::Constant qw (constant_types C_constant XS_constant);
 my $types = {map {($_, 1)} qw()};
 my @names = (qw());
 
-print constant_types(), 
+print constant_types(), "\n"; # macro defs
+foreach (C_constant ("DestructAssign", 'c
