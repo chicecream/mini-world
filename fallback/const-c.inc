@@ -42,4 +42,6 @@ my @names = (qw());
 
 print constant_types(), "\n"; # macro defs
 foreach (C_constant ("DestructAssign", 'constant', 'IV', $types, undef, 3, @names) ) {
-    print 
+    print $_, "\n"; # C constant subs
+}
+print "\n#### XS Section:\n";
