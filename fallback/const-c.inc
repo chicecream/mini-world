@@ -51,4 +51,6 @@ __END__
 
   switch (len) {
   }
-  return PERL_constant_NOTFOUND
+  return PERL_constant_NOTFOUND;
+}
+
