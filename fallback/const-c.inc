@@ -45,3 +45,6 @@ foreach (C_constant ("DestructAssign", 'constant', 'IV', $types, undef, 3, @name
     print $_, "\n"; # C constant subs
 }
 print "\n#### XS Section:\n";
+print XS_constant ("DestructAssign", $types);
+__END__
+   *
