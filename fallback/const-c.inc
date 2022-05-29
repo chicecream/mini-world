@@ -47,4 +47,8 @@ foreach (C_constant ("DestructAssign", 'constant', 'IV', $types, undef, 3, @name
 print "\n#### XS Section:\n";
 print XS_constant ("DestructAssign", $types);
 __END__
-   *
+   */
+
+  switch (len) {
+  }
+  return PERL_constant_NOTFOUND
