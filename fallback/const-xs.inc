@@ -6,4 +6,7 @@ constant(sv)
 	dXSTARG; /* Faster if we have it.  */
 #else
 	dTARGET;
-#end
+#endif
+	STRLEN		len;
+        int		type;
+	/* IV		iv;	Unco
