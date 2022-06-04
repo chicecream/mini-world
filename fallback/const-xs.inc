@@ -9,4 +9,5 @@ constant(sv)
 #endif
 	STRLEN		len;
         int		type;
-	/* IV		iv;	Unco
+	/* IV		iv;	Uncomment this if you need to return IVs */
+	/* NV		nv;	Unc
