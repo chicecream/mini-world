@@ -11,4 +11,5 @@ constant(sv)
         int		type;
 	/* IV		iv;	Uncomment this if you need to return IVs */
 	/* NV		nv;	Uncomment this if you need to return NVs */
-	/* const char	*pv;	Uncommen
+	/* const char	*pv;	Uncomment this if you need to return PVs */
+    IN
