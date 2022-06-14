@@ -12,4 +12,7 @@ constant(sv)
 	/* IV		iv;	Uncomment this if you need to return IVs */
 	/* NV		nv;	Uncomment this if you need to return NVs */
 	/* const char	*pv;	Uncomment this if you need to return PVs */
-    IN
+    INPUT:
+	SV *		sv;
+        const char *	s = SvPV(sv, len);
+    
