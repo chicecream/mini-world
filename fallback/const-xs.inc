@@ -15,4 +15,6 @@ constant(sv)
     INPUT:
 	SV *		sv;
         const char *	s = SvPV(sv, len);
-    
+    PPCODE:
+	type = constant(aTHX_ s, len);
+      /* Ret
