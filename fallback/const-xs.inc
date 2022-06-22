@@ -17,4 +17,5 @@ constant(sv)
         const char *	s = SvPV(sv, len);
     PPCODE:
 	type = constant(aTHX_ s, len);
-      /* Return 1 or 2 items. First is error message, or 
+      /* Return 1 or 2 items. First is error message, or undef if no error.
+           Second, if 
