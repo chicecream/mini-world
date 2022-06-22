@@ -19,4 +19,6 @@ constant(sv)
 	type = constant(aTHX_ s, len);
       /* Return 1 or 2 items. First is error message, or undef if no error.
            Second, if present, is found value */
-        switch (
+        switch (type) {
+        case PERL_constant_NOTFOUND:
+       
