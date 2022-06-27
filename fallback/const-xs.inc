@@ -21,4 +21,5 @@ constant(sv)
            Second, if present, is found value */
         switch (type) {
         case PERL_constant_NOTFOUND:
-       
+          sv =
+	    sv_2mortal(newSVpvf("%s is not a v
