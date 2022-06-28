@@ -23,4 +23,6 @@ constant(sv)
         case PERL_constant_NOTFOUND:
           sv =
 	    sv_2mortal(newSVpvf("%s is not a valid DestructAssign macro", s));
-          PUSHs(sv)
+          PUSHs(sv);
+          break;
+        case PERL_constant_NOT
