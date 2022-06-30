@@ -27,4 +27,4 @@ constant(sv)
           break;
         case PERL_constant_NOTDEF:
           sv = sv_2mortal(newSVpvf(
-	    "
+	    "Your vendor has not defined DestructAssign macro 
