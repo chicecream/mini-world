@@ -32,4 +32,6 @@ constant(sv)
           PUSHs(sv);
           break;
 	/* Uncomment this if you need to return IVs
-        case 
+        case PERL_constant_ISIV:
+          EXTEND(SP, 1);
+          PUSHs(
