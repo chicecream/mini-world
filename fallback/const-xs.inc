@@ -38,4 +38,6 @@ constant(sv)
           PUSHi(iv);
           break; */
 	/* Uncomment this if you need to return NOs
-        case PERL_co
+        case PERL_constant_ISNO:
+          EXTEND(SP, 1);
+          PUSHs(&PL_s
