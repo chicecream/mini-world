@@ -37,3 +37,5 @@ constant(sv)
           PUSHs(&PL_sv_undef);
           PUSHi(iv);
           break; */
+	/* Uncomment this if you need to return NOs
+        case PERL_co
