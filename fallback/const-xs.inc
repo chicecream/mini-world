@@ -42,4 +42,6 @@ constant(sv)
           EXTEND(SP, 1);
           PUSHs(&PL_sv_undef);
           PUSHs(&PL_sv_no);
-          break
+          break; */
+	/* Uncomment this if you need to return NVs
+    
