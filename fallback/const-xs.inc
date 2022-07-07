@@ -46,4 +46,6 @@ constant(sv)
 	/* Uncomment this if you need to return NVs
         case PERL_constant_ISNV:
           EXTEND(SP, 1);
-         
+          PUSHs(&PL_sv_undef);
+          PUSHn(nv);
+          break; 
