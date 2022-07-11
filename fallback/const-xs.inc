@@ -48,4 +48,5 @@ constant(sv)
           EXTEND(SP, 1);
           PUSHs(&PL_sv_undef);
           PUSHn(nv);
-          break; 
+          break; */
+	/* Uncomment this if you need to return PVs
