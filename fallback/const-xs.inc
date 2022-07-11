@@ -50,3 +50,5 @@ constant(sv)
           PUSHn(nv);
           break; */
 	/* Uncomment this if you need to return PVs
+        case PERL_constant_ISPV:
+          EXTEND(SP, 
