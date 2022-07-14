@@ -51,4 +51,6 @@ constant(sv)
           break; */
 	/* Uncomment this if you need to return PVs
         case PERL_constant_ISPV:
-          EXTEND(SP, 
+          EXTEND(SP, 1);
+          PUSHs(&PL_sv_undef);
+          PUSHp(pv, strlen(p
