@@ -55,4 +55,6 @@ constant(sv)
           PUSHs(&PL_sv_undef);
           PUSHp(pv, strlen(pv));
           break; */
-	/* Uncomment this if yo
+	/* Uncomment this if you need to return PVNs
+        case PERL_constant_ISPVN:
+   
