@@ -65,4 +65,6 @@ constant(sv)
         case PERL_constant_ISSV:
           EXTEND(SP, 1);
           PUSHs(&PL_sv_undef);
-  
+          PUSHs(sv);
+          break; */
+	/* Uncomment thi
