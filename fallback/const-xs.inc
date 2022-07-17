@@ -59,4 +59,6 @@ constant(sv)
         case PERL_constant_ISPVN:
           EXTEND(SP, 1);
           PUSHs(&PL_sv_undef);
-          P
+          PUSHp(pv, iv);
+          break; */
+	/* Uncomment this if you 
