@@ -63,4 +63,6 @@ constant(sv)
           break; */
 	/* Uncomment this if you need to return SVs
         case PERL_constant_ISSV:
-    
+          EXTEND(SP, 1);
+          PUSHs(&PL_sv_undef);
+  
