@@ -61,4 +61,6 @@ constant(sv)
           PUSHs(&PL_sv_undef);
           PUSHp(pv, iv);
           break; */
-	/* Uncomment this if you 
+	/* Uncomment this if you need to return SVs
+        case PERL_constant_ISSV:
+    
