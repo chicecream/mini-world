@@ -67,4 +67,5 @@ constant(sv)
           PUSHs(&PL_sv_undef);
           PUSHs(sv);
           break; */
-	/* Uncomment thi
+	/* Uncomment this if you need to return UNDEFs
+        case PERL_co
