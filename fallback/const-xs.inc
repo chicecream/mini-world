@@ -70,4 +70,6 @@ constant(sv)
 	/* Uncomment this if you need to return UNDEFs
         case PERL_constant_ISUNDEF:
           break; */
-	/* Uncomment this if 
+	/* Uncomment this if you need to return UVs
+        case PERL_constant_ISUV:
+      
