@@ -76,4 +76,5 @@ constant(sv)
           PUSHs(&PL_sv_undef);
           PUSHu((UV)iv);
           break; */
-	/* Uncomment 
+	/* Uncomment this if you need to return YESs
+        case PERL_con
