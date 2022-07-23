@@ -74,3 +74,6 @@ constant(sv)
         case PERL_constant_ISUV:
           EXTEND(SP, 1);
           PUSHs(&PL_sv_undef);
+          PUSHu((UV)iv);
+          break; */
+	/* Uncomment 
