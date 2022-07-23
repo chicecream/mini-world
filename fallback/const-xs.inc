@@ -72,4 +72,5 @@ constant(sv)
           break; */
 	/* Uncomment this if you need to return UVs
         case PERL_constant_ISUV:
-      
+          EXTEND(SP, 1);
+          PUSHs(&PL_sv_undef);
