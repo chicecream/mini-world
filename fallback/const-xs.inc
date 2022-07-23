@@ -77,4 +77,6 @@ constant(sv)
           PUSHu((UV)iv);
           break; */
 	/* Uncomment this if you need to return YESs
-        case PERL_con
+        case PERL_constant_ISYES:
+          EXTEND(SP, 1);
+          PUS
