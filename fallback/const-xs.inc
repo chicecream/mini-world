@@ -81,4 +81,7 @@ constant(sv)
           EXTEND(SP, 1);
           PUSHs(&PL_sv_undef);
           PUSHs(&PL_sv_yes);
-          br
+          break; */
+        default:
+          sv = sv_2mortal(newSVpvf(
+	   
