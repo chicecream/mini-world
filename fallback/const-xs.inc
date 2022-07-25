@@ -79,4 +79,6 @@ constant(sv)
 	/* Uncomment this if you need to return YESs
         case PERL_constant_ISYES:
           EXTEND(SP, 1);
-          PUS
+          PUSHs(&PL_sv_undef);
+          PUSHs(&PL_sv_yes);
+          br
