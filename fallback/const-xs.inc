@@ -84,4 +84,4 @@ constant(sv)
           break; */
         default:
           sv = sv_2mortal(newSVpvf(
-	   
+	    "Unexpected return type %d while processing DestructAssign m
