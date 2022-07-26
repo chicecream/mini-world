@@ -86,4 +86,5 @@ constant(sv)
           sv = sv_2mortal(newSVpvf(
 	    "Unexpected return type %d while processing DestructAssign macro %s, used",
                type, s));
-          PUSHs(s
+          PUSHs(sv);
+        }
