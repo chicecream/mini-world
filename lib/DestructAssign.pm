@@ -152,3 +152,47 @@ Even if you want to modify caller's arguments, you can still use "des_alias" to 
 
   my($a, $b, $c) = (1, 2, 0);
   add($a, $b, $c);
+  # $c = 3
+
+=item enhance the performance by avoiding repeatedly digging into complex data structures
+
+Suppose we have data structures like this:
+
+  my $player1 = {
+    id => 25,
+    hp => 8100,
+    armor => {
+      body => {
+        id => 21,
+        name => 'iron suit',
+        protect => 10,
+        durability => 100,
+      },
+      hand => {
+        id => 29,
+        name => 'iron sword',
+        attack => 15,
+        durability => 100,
+      },
+    },
+  };
+  my $player2 = ...;
+
+Instead of
+
+  while( $player1->{hp}>0 && $player2->{hp}>0 ) {
+    my $hit1 =
+        ($player1->{armor}{hand}{durability} && $player1->{armor}{hand}{attack}) -
+        ($player2->{armor}{body}{durability} && $player2->{armor}{body}{protect});
+    my $hit2 =
+        ($player2->{armor}{hand}{durability} && $player2->{armor}{hand}{attack}) -
+        ($player1->{armor}{body}{durability} && $player1->{armor}{body}{protect});
+    $hit1 = 1 if( $hit1 <= 0 );
+    $hit2 = 1 if( $hit2 <= 0 );
+
+    $player1->{hp} -= $hit2;
+    $player2->{hp} -= $hit1;
+
+    --$player1->{armor}{hand}{durability} if( $player1->{armor}{hand}{durability} );
+    --$player1->{armor}{body}{durability} if( $player1->{armor}{body}{durability} );
+    --$player2->{armor}{hand}{durability} if( $player2->{armor}{hand}{durability} );
