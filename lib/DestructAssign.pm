@@ -196,3 +196,61 @@ Instead of
     --$player1->{armor}{hand}{durability} if( $player1->{armor}{hand}{durability} );
     --$player1->{armor}{body}{durability} if( $player1->{armor}{body}{durability} );
     --$player2->{armor}{hand}{durability} if( $player2->{armor}{hand}{durability} );
+    --$player2->{armor}{body}{durability} if( $player2->{armor}{body}{durability} );
+  }
+
+We could write
+
+  des_alias [
+    {
+      hp => my $hp1,
+      armor => {
+        body => {
+          protect => my $protect1,
+          durability => my $body_dura1,
+        },
+        hand => {
+          attack => my $attack1,
+          durability => my $hand_dura1,
+        },
+      }
+    },
+    {
+      hp => my $hp2,
+      armor => {
+        body => {
+          protect => my $protect2,
+          durability => my $body_dura2,
+        },
+        hand => {
+          attack => my $attack2,
+          durability => my $hand_dura2,
+        },
+      }
+    },
+  ] = [$player1, $player2];
+
+  while( hp1>0 && hp2>0 ) {
+    my $hit1 = ($hand_dura1 && $attack1) - ($body_dura2 && $protect2);
+    my $hit2 = ($hand_dura2 && $attack2) - ($body_dura1 && $protect1);
+    $hit1 = 1 if( $hit1 <= 0 );
+    $hit2 = 1 if( $hit2 <= 0 );
+
+    $hp1 -= $hit2;
+    $hp2 -= $hit1;
+
+    --$hand_dura1 if( $hand_dura1 );
+    --$body_dura1 if( $body_dura1 );
+    --$hand_dura2 if( $hand_dura2 );
+    --$body_dura2 if( $body_dura2 );
+  }
+
+=back
+
+This mod is tested in Perl 5.8.9, 5.10.1, 5.12.5, 5.14.4, 5.16.3, 5.18.2, 5.20.0, 5.21.6, 5.21.7 on x86_64.
+
+=head2 EXPORT
+
+None by default.
+
+=over 4
