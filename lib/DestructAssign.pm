@@ -87,3 +87,68 @@ DestructAssign - Destructuring assignment
   # put the same index or hash key
   #  when you need to capture different granularity on the same data structure
   #  (notice that you can use duplicated keys in the hash pattern)
+  des {x => $x, x => [$y, $z]} = {x => [1, 2]};
+  # got $x = [1,2], $y = 1, $z = 2
+
+  # use the alias semantics
+  my $data = [1, 2, 3];
+  des_alias [undef, $x] = $data;
+  $x = 20;
+  # got $data = [1, 20, 3]
+
+  {
+    # mixed with lexical variable introduction
+    des [my($i, $j), { k => my $k }] = [1, 2, {k => 3}];
+    # got my($i, $j, $k) = (1, 2, 3)
+  }
+
+=head1 DESCRIPTION
+
+This mod provides destructuring assignment for Perl.
+You can capture (by value) or bind (by alias) variables into
+part of a potentially large and complex data structure.
+
+I expect it to bring following benefits:
+
+=over 4
+
+=item provide named parameters more easily
+
+Named parameters are good when the number of parameters is large (more than 4).
+With this mod, you can do:
+
+  sub f {
+    des {my($id, $title, $x, $y, $width, $height)} = \@_;
+    # The order is not important.
+    ...
+  }
+
+  f(
+    id => 1,
+    title => 'Untitled',
+    x => 10, y => 10,
+    width => 200, height => 150,
+  );
+
+=item enhance the readability by pointing out all the elements you might touch at the begining of each subroutine
+
+It's a good habit to name parameters instead of access @_ directly
+(except you want to modify caller's arguments).
+This mod extend the ability to name parameters in the deep structure.
+You can explicitly list all the elements you might touch in the subroutine.
+
+  sub f {
+    des [my $x, { id => my $id, amount => my $amount }] = \@_;
+    # or use des_alias, if you need to modify the passed parameters.
+    des_alias [my $x, { id => my $id, amount => my $amount }] = \@_;
+  }
+
+Even if you want to modify caller's arguments, you can still use "des_alias" to name them.
+
+  sub add {
+    des_alias [my($a, $b, $sum)] = \@_;
+    $sum = $a + $b;
+  }
+
+  my($a, $b, $c) = (1, 2, 0);
+  add($a, $b, $c);
