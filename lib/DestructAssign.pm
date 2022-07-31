@@ -254,3 +254,63 @@ This mod is tested in Perl 5.8.9, 5.10.1, 5.12.5, 5.14.4, 5.16.3, 5.18.2, 5.20.0
 None by default.
 
 =over 4
+
+=item des pattern = $value
+
+The value semantics of destructuring assignment.
+
+The captured data elements are copied out to the variables.
+
+=item des_alias pattern = $value
+
+The alias semantics of destructuring assignment
+
+The captured data elements are bound to the variables.
+After the binding, write to or read from the variables will
+affect the bound data.
+
+Be careful that once you bind a variable to a data element,
+there's no easy way to unbind it.
+It's recommended to use brand new lexical variables or localized variables to do it.
+
+Like this..
+
+  # some variables outside..
+  my $a = 123;
+  our $y = 456;
+
+  my $data = [1, 2]; # the target data
+  {
+      des_alias [my $a, local $y] = $data;
+      $a = 5; $y = 6;
+      # $data = [5, 6];
+  }
+  # back to original, unbound $a and $y.
+  $a = 7;
+  $y = 8;
+  # $data = [5, 6]; # the $data will not be changed.
+
+=back
+
+=head2 PATTERN
+
+The only argument to C<des> or C<des_alias> should be
+an anonymous list [..] or anonymous hash {..}.
+
+The elements of them could be
+
+=over 4
+
+=item anonymous list [..]
+
+To match a list reference
+
+=item anonymous hash {..}
+
+To match a hash reference or an array reference
+
+=item scalar variable $xx
+
+To capture the data element
+
+=item array variable @xx
