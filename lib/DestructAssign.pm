@@ -314,3 +314,57 @@ To match a hash reference or an array reference
 To capture the data element
 
 =item array variable @xx
+
+This can be used only in an anonymous list, not hash.
+
+To capture all the remaining data element of the current array
+from current offset.
+
+When using in alias semantics, each element of the array variable will
+be bound to data element individually.
+
+=item hash variable %xx
+
+This can be used only in an anonymous list, not hash.
+
+To capture all the remaining data element of the current array
+from current offset.
+
+When using in alias semantics, only the values of the hash variable
+will be bound to data element, individually.
+
+=item constant undef
+
+When using in an anonymous list, it is used as a skipping placeholder.
+
+When using in an anonymous hash, it is used to set the next capturing key to ''.
+
+=item constant string or number
+
+When using in an anonymous list, we'll take it as a numer to set
+the next capturing offset.
+
+When using in an anonymous hash, we'll take it as a string to set
+the next capturing key.
+
+=back
+
+=head1 SEE ALSO
+
+This mod's github L<https://github.com/CindyLinz/Perl-DestructAssign>.
+It's welcome to discuss with me when you encounter bugs, or
+if you think that some patterns are also useful but the mod didn't provide them yet.
+
+I also found a similar mod on github. (no cpan page) L<https://github.com/hirokidaichi/p5-Data-Destructuring-Assignment>
+It's implemented in pure Perl with tied structures.
+Because it's pure Perl, we need to pass references directly on the left hand side.
+It can't take advantage on hash pattern with duplicated keys.
+It didn't provide alias semantics either, though it could be added easily if needed.
+
+=head1 AUTHOR
+
+Cindy Wang (CindyLinz) <cindy@cpan.org>
+
+=head1 CONTRIBUTOR
+
+Father Chrysostomos <sprout@cpan.org>
