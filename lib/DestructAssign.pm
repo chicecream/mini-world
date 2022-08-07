@@ -368,3 +368,14 @@ Cindy Wang (CindyLinz) <cindy@cpan.org>
 =head1 CONTRIBUTOR
 
 Father Chrysostomos <sprout@cpan.org>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2014 by Cindy Wang (CindyLinz)
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself, either Perl version 5.18.2 or,
+at your option, any later version of Perl 5 you may have available.
+
+
+=cut
