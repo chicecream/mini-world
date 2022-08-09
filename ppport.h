@@ -42,3 +42,67 @@ ppport.h - Perl/Pollution/Portability version 3.28
   --cplusplus                 accept C++ comments
 
   --quiet                     don't output anything except fatal errors
+  --nodiag                    don't show diagnostics
+  --nohints                   don't show hints
+  --nochanges                 don't suggest changes
+  --nofilter                  don't filter input files
+
+  --strip                     strip all script and doc functionality from
+                              ppport.h
+
+  --list-provided             list provided API
+  --list-unsupported          list unsupported API
+  --api-info=name             show Perl API portability information
+
+=head1 COMPATIBILITY
+
+This version of F<ppport.h> is designed to support operation with Perl
+installations back to 5.003, and has been tested up to 5.20.
+
+=head1 OPTIONS
+
+=head2 --help
+
+Display a brief usage summary.
+
+=head2 --version
+
+Display the version of F<ppport.h>.
+
+=head2 --patch=I<file>
+
+If this option is given, a single patch file will be created if
+any changes are suggested. This requires a working diff program
+to be installed on your system.
+
+=head2 --copy=I<suffix>
+
+If this option is given, a copy of each file will be saved with
+the given suffix that contains the suggested changes. This does
+not require any external programs. Note that this does not
+automagically add a dot between the original filename and the
+suffix. If you want the dot, you have to include it in the option
+argument.
+
+If neither C<--patch> or C<--copy> are given, the default is to
+simply print the diffs for each file. This requires either
+C<Text::Diff> or a C<diff> program to be installed.
+
+=head2 --diff=I<program>
+
+Manually set the diff program and options to use. The default
+is to use C<Text::Diff>, when installed, and output unified
+context diffs.
+
+=head2 --compat-version=I<version>
+
+Tell F<ppport.h> to check for compatibility with the given
+Perl version. The default is to check for compatibility with Perl
+version 5.003. You can use this option to reduce the output
+of F<ppport.h> if you intend to be backward compatible only
+down to a certain Perl version.
+
+=head2 --cplusplus
+
+Usually, F<ppport.h> will detect C++ style comments and
+replace them with C style comments for portability reasons.
