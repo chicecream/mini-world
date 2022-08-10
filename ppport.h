@@ -208,3 +208,58 @@ file), use:
     #define NEED_variable
 
 For a global function or variable (used in multiple source files),
+use:
+
+    #define NEED_function_GLOBAL
+    #define NEED_variable_GLOBAL
+
+Note that you mustn't have more than one global request for the
+same function or variable in your project.
+
+    Function / Variable       Static Request               Global Request
+    -----------------------------------------------------------------------------------------
+    PL_parser                 NEED_PL_parser               NEED_PL_parser_GLOBAL
+    PL_signals                NEED_PL_signals              NEED_PL_signals_GLOBAL
+    caller_cx()               NEED_caller_cx               NEED_caller_cx_GLOBAL
+    eval_pv()                 NEED_eval_pv                 NEED_eval_pv_GLOBAL
+    grok_bin()                NEED_grok_bin                NEED_grok_bin_GLOBAL
+    grok_hex()                NEED_grok_hex                NEED_grok_hex_GLOBAL
+    grok_number()             NEED_grok_number             NEED_grok_number_GLOBAL
+    grok_numeric_radix()      NEED_grok_numeric_radix      NEED_grok_numeric_radix_GLOBAL
+    grok_oct()                NEED_grok_oct                NEED_grok_oct_GLOBAL
+    load_module()             NEED_load_module             NEED_load_module_GLOBAL
+    mg_findext()              NEED_mg_findext              NEED_mg_findext_GLOBAL
+    my_snprintf()             NEED_my_snprintf             NEED_my_snprintf_GLOBAL
+    my_sprintf()              NEED_my_sprintf              NEED_my_sprintf_GLOBAL
+    my_strlcat()              NEED_my_strlcat              NEED_my_strlcat_GLOBAL
+    my_strlcpy()              NEED_my_strlcpy              NEED_my_strlcpy_GLOBAL
+    newCONSTSUB()             NEED_newCONSTSUB             NEED_newCONSTSUB_GLOBAL
+    newRV_noinc()             NEED_newRV_noinc             NEED_newRV_noinc_GLOBAL
+    newSV_type()              NEED_newSV_type              NEED_newSV_type_GLOBAL
+    newSVpvn_flags()          NEED_newSVpvn_flags          NEED_newSVpvn_flags_GLOBAL
+    newSVpvn_share()          NEED_newSVpvn_share          NEED_newSVpvn_share_GLOBAL
+    pv_display()              NEED_pv_display              NEED_pv_display_GLOBAL
+    pv_escape()               NEED_pv_escape               NEED_pv_escape_GLOBAL
+    pv_pretty()               NEED_pv_pretty               NEED_pv_pretty_GLOBAL
+    sv_2pv_flags()            NEED_sv_2pv_flags            NEED_sv_2pv_flags_GLOBAL
+    sv_2pvbyte()              NEED_sv_2pvbyte              NEED_sv_2pvbyte_GLOBAL
+    sv_catpvf_mg()            NEED_sv_catpvf_mg            NEED_sv_catpvf_mg_GLOBAL
+    sv_catpvf_mg_nocontext()  NEED_sv_catpvf_mg_nocontext  NEED_sv_catpvf_mg_nocontext_GLOBAL
+    sv_pvn_force_flags()      NEED_sv_pvn_force_flags      NEED_sv_pvn_force_flags_GLOBAL
+    sv_setpvf_mg()            NEED_sv_setpvf_mg            NEED_sv_setpvf_mg_GLOBAL
+    sv_setpvf_mg_nocontext()  NEED_sv_setpvf_mg_nocontext  NEED_sv_setpvf_mg_nocontext_GLOBAL
+    sv_unmagicext()           NEED_sv_unmagicext           NEED_sv_unmagicext_GLOBAL
+    vload_module()            NEED_vload_module            NEED_vload_module_GLOBAL
+    vnewSVpvf()               NEED_vnewSVpvf               NEED_vnewSVpvf_GLOBAL
+    warner()                  NEED_warner                  NEED_warner_GLOBAL
+
+To avoid namespace conflicts, you can change the namespace of the
+explicitly exported functions / variables using the C<DPPP_NAMESPACE>
+macro. Just C<#define> the macro before including C<ppport.h>:
+
+    #define DPPP_NAMESPACE MyOwnNamespace_
+    #include "ppport.h"
+
+The default namespace is C<DPPP_>.
+
+=back
