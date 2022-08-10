@@ -166,3 +166,45 @@ expression.
 
 In order for a Perl extension (XS) module to be as portable as possible
 across differing versions of Perl itself, certain steps need to be taken.
+
+=over 4
+
+=item *
+
+Including this header is the first major one. This alone will give you
+access to a large part of the Perl API that hasn't been available in
+earlier Perl releases. Use
+
+    perl ppport.h --list-provided
+
+to see which API elements are provided by ppport.h.
+
+=item *
+
+You should avoid using deprecated parts of the API. For example, using
+global Perl variables without the C<PL_> prefix is deprecated. Also,
+some API functions used to have a C<perl_> prefix. Using this form is
+also deprecated. You can safely use the supported API, as F<ppport.h>
+will provide wrappers for older Perl versions.
+
+=item *
+
+If you use one of a few functions or variables that were not present in
+earlier versions of Perl, and that can't be provided using a macro, you
+have to explicitly request support for these functions by adding one or
+more C<#define>s in your source code before the inclusion of F<ppport.h>.
+
+These functions or variables will be marked C<explicit> in the list shown
+by C<--list-provided>.
+
+Depending on whether you module has a single or multiple files that
+use such functions or variables, you want either C<static> or global
+variants.
+
+For a C<static> function or variable (used only in a single source
+file), use:
+
+    #define NEED_function
+    #define NEED_variable
+
+For a global function or variable (used in multiple source files),
