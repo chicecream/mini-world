@@ -106,3 +106,63 @@ down to a certain Perl version.
 
 Usually, F<ppport.h> will detect C++ style comments and
 replace them with C style comments for portability reasons.
+Using this option instructs F<ppport.h> to leave C++
+comments untouched.
+
+=head2 --quiet
+
+Be quiet. Don't print anything except fatal errors.
+
+=head2 --nodiag
+
+Don't output any diagnostic messages. Only portability
+alerts will be printed.
+
+=head2 --nohints
+
+Don't output any hints. Hints often contain useful portability
+notes. Warnings will still be displayed.
+
+=head2 --nochanges
+
+Don't suggest any changes. Only give diagnostic output and hints
+unless these are also deactivated.
+
+=head2 --nofilter
+
+Don't filter the list of input files. By default, files not looking
+like source code (i.e. not *.xs, *.c, *.cc, *.cpp or *.h) are skipped.
+
+=head2 --strip
+
+Strip all script and documentation functionality from F<ppport.h>.
+This reduces the size of F<ppport.h> dramatically and may be useful
+if you want to include F<ppport.h> in smaller modules without
+increasing their distribution size too much.
+
+The stripped F<ppport.h> will have a C<--unstrip> option that allows
+you to undo the stripping, but only if an appropriate C<Devel::PPPort>
+module is installed.
+
+=head2 --list-provided
+
+Lists the API elements for which compatibility is provided by
+F<ppport.h>. Also lists if it must be explicitly requested,
+if it has dependencies, and if there are hints or warnings for it.
+
+=head2 --list-unsupported
+
+Lists the API elements that are known not to be supported by
+F<ppport.h> and below which version of Perl they probably
+won't be available or work.
+
+=head2 --api-info=I<name>
+
+Show portability information for API elements matching I<name>.
+If I<name> is surrounded by slashes, it is interpreted as a regular
+expression.
+
+=head1 DESCRIPTION
+
+In order for a Perl extension (XS) module to be as portable as possible
+across differing versions of Perl itself, certain steps need to be taken.
