@@ -263,3 +263,55 @@ macro. Just C<#define> the macro before including C<ppport.h>:
 The default namespace is C<DPPP_>.
 
 =back
+
+The good thing is that most of the above can be checked by running
+F<ppport.h> on your source code. See the next section for
+details.
+
+=head1 EXAMPLES
+
+To verify whether F<ppport.h> is needed for your module, whether you
+should make any changes to your code, and whether any special defines
+should be used, F<ppport.h> can be run as a Perl script to check your
+source code. Simply say:
+
+    perl ppport.h
+
+The result will usually be a list of patches suggesting changes
+that should at least be acceptable, if not necessarily the most
+efficient solution, or a fix for all possible problems.
+
+If you know that your XS module uses features only available in
+newer Perl releases, if you're aware that it uses C++ comments,
+and if you want all suggestions as a single patch file, you could
+use something like this:
+
+    perl ppport.h --compat-version=5.6.0 --cplusplus --patch=test.diff
+
+If you only want your code to be scanned without any suggestions
+for changes, use:
+
+    perl ppport.h --nochanges
+
+You can specify a different C<diff> program or options, using
+the C<--diff> option:
+
+    perl ppport.h --diff='diff -C 10'
+
+This would output context diffs with 10 lines of context.
+
+If you want to create patched copies of your files instead, use:
+
+    perl ppport.h --copy=.new
+
+To display portability information for the C<newSVpvn> function,
+use:
+
+    perl ppport.h --api-info=newSVpvn
+
+Since the argument to C<--api-info> can be a regular expression,
+you can use
+
+    perl ppport.h --api-info=/_nomg$/
+
+to display portability information for all C<_nomg> functions or
