@@ -315,3 +315,60 @@ you can use
     perl ppport.h --api-info=/_nomg$/
 
 to display portability information for all C<_nomg> functions or
+
+    perl ppport.h --api-info=/./
+
+to display information for all known API elements.
+
+=head1 BUGS
+
+If this version of F<ppport.h> is causing failure during
+the compilation of this module, please check if newer versions
+of either this module or C<Devel::PPPort> are available on CPAN
+before sending a bug report.
+
+If F<ppport.h> was generated using the latest version of
+C<Devel::PPPort> and is causing failure of this module, please
+file a bug report here: L<https://github.com/mhx/Devel-PPPort/issues/>
+
+Please include the following information:
+
+=over 4
+
+=item 1.
+
+The complete output from running "perl -V"
+
+=item 2.
+
+This file.
+
+=item 3.
+
+The name and version of the module you were trying to build.
+
+=item 4.
+
+A full log of the build that failed.
+
+=item 5.
+
+Any other information that you think could be relevant.
+
+=back
+
+For the latest version of this code, please get the C<Devel::PPPort>
+module from CPAN.
+
+=head1 COPYRIGHT
+
+Version 3.x, Copyright (c) 2004-2013, Marcus Holland-Moritz.
+
+Version 2.x, Copyright (C) 2001, Paul Marquess.
+
+Version 1.x, Copyright (C) 1999, Kenneth Albanowski.
+
+This program is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself.
+
+=head1 SEE ALSO
