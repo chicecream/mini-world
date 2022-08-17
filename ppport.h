@@ -372,3 +372,66 @@ This program is free software; you can redistribute it and/or
 modify it under the same terms as Perl itself.
 
 =head1 SEE ALSO
+
+See L<Devel::PPPort>.
+
+=cut
+
+use strict;
+
+# Disable broken TRIE-optimization
+BEGIN { eval '${^RE_TRIE_MAXBUF} = -1' if $] >= 5.009004 && $] <= 5.009005 }
+
+my $VERSION = 3.28;
+
+my %opt = (
+  quiet     => 0,
+  diag      => 1,
+  hints     => 1,
+  changes   => 1,
+  cplusplus => 0,
+  filter    => 1,
+  strip     => 0,
+  version   => 0,
+);
+
+my($ppport) = $0 =~ /([\w.]+)$/;
+my $LF = '(?:\r\n|[\r\n])';   # line feed
+my $HS = "[ \t]";             # horizontal whitespace
+
+# Never use C comments in this file!
+my $ccs  = '/'.'*';
+my $cce  = '*'.'/';
+my $rccs = quotemeta $ccs;
+my $rcce = quotemeta $cce;
+
+eval {
+  require Getopt::Long;
+  Getopt::Long::GetOptions(\%opt, qw(
+    help quiet diag! filter! hints! changes! cplusplus strip version
+    patch=s copy=s diff=s compat-version=s
+    list-provided list-unsupported api-info=s
+  )) or usage();
+};
+
+if ($@ and grep /^-/, @ARGV) {
+  usage() if "@ARGV" =~ /^--?h(?:elp)?$/;
+  die "Getopt::Long not found. Please don't use any options.\n";
+}
+
+if ($opt{version}) {
+  print "This is $0 $VERSION.\n";
+  exit 0;
+}
+
+usage() if $opt{help};
+strip() if $opt{strip};
+
+if (exists $opt{'compat-version'}) {
+  my($r,$v,$s) = eval { parse_version($opt{'compat-version'}) };
+  if ($@) {
+    die "Invalid version number format: '$opt{'compat-version'}'\n";
+  }
+  die "Only Perl 5 is supported\n" if $r != 5;
+  die "Invalid version number: $opt{'compat-version'}\n" if $v >= 1000 || $s >= 1000;
+  $opt{'compat-version'} = sprintf "%d.%03d%03d", $r, $v, $s;
