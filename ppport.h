@@ -435,3 +435,69 @@ if (exists $opt{'compat-version'}) {
   die "Only Perl 5 is supported\n" if $r != 5;
   die "Invalid version number: $opt{'compat-version'}\n" if $v >= 1000 || $s >= 1000;
   $opt{'compat-version'} = sprintf "%d.%03d%03d", $r, $v, $s;
+}
+else {
+  $opt{'compat-version'} = 5;
+}
+
+my %API = map { /^(\w+)\|([^|]*)\|([^|]*)\|(\w*)$/
+                ? ( $1 => {
+                      ($2                  ? ( base     => $2 ) : ()),
+                      ($3                  ? ( todo     => $3 ) : ()),
+                      (index($4, 'v') >= 0 ? ( varargs  => 1  ) : ()),
+                      (index($4, 'p') >= 0 ? ( provided => 1  ) : ()),
+                      (index($4, 'n') >= 0 ? ( nothxarg => 1  ) : ()),
+                    } )
+                : die "invalid spec: $_" } qw(
+ASCII_TO_NEED||5.007001|n
+AvFILLp|5.004050||p
+AvFILL|||
+BhkDISABLE||5.021008|
+BhkENABLE||5.021008|
+BhkENTRY_set||5.021008|
+BhkENTRY|||
+BhkFLAGS|||
+CALL_BLOCK_HOOKS|||
+CLASS|||n
+CPERLscope|5.005000||p
+CX_CURPAD_SAVE|||
+CX_CURPAD_SV|||
+CopFILEAV|5.006000||p
+CopFILEGV_set|5.006000||p
+CopFILEGV|5.006000||p
+CopFILESV|5.006000||p
+CopFILE_set|5.006000||p
+CopFILE|5.006000||p
+CopSTASHPV_set|5.006000||p
+CopSTASHPV|5.006000||p
+CopSTASH_eq|5.006000||p
+CopSTASH_set|5.006000||p
+CopSTASH|5.006000||p
+CopyD|5.009002|5.004050|p
+Copy|||
+CvPADLIST||5.008001|
+CvSTASH|||
+CvWEAKOUTSIDE|||
+DEFSV_set|5.010001||p
+DEFSV|5.004050||p
+END_EXTERN_C|5.005000||p
+ENTER|||
+ERRSV|5.004050||p
+EXTEND|||
+EXTERN_C|5.005000||p
+F0convert|||n
+FREETMPS|||
+GIMME_V||5.004000|n
+GIMME|||n
+GROK_NUMERIC_RADIX|5.007002||p
+G_ARRAY|||
+G_DISCARD|||
+G_EVAL|||
+G_METHOD|5.006001||p
+G_NOARGS|||
+G_SCALAR|||
+G_VOID||5.004000|
+GetVars|||
+GvAV|||
+GvCV|||
+GvHV|||
