@@ -2847,3 +2847,67 @@ yyparse|||
 yyunlex|||
 yywarn|||
 );
+
+if (exists $opt{'list-unsupported'}) {
+  my $f;
+  for $f (sort { lc $a cmp lc $b } keys %API) {
+    next unless $API{$f}{todo};
+    print "$f ", '.'x(40-length($f)), " ", format_version($API{$f}{todo}), "\n";
+  }
+  exit 0;
+}
+
+# Scan for possible replacement candidates
+
+my(%replace, %need, %hints, %warnings, %depends);
+my $replace = 0;
+my($hint, $define, $function);
+
+sub find_api
+{
+  my $code = shift;
+  $code =~ s{
+    / (?: \*[^*]*\*+(?:[^$ccs][^*]*\*+)* / | /[^\r\n]*)
+  | "[^"\\]*(?:\\.[^"\\]*)*"
+  | '[^'\\]*(?:\\.[^'\\]*)*' }{}egsx;
+  grep { exists $API{$_} } $code =~ /(\w+)/mg;
+}
+
+while (<DATA>) {
+  if ($hint) {
+    my $h = $hint->[0] eq 'Hint' ? \%hints : \%warnings;
+    if (m{^\s*\*\s(.*?)\s*$}) {
+      for (@{$hint->[1]}) {
+        $h->{$_} ||= '';  # suppress warning with older perls
+        $h->{$_} .= "$1\n";
+      }
+    }
+    else { undef $hint }
+  }
+
+  $hint = [$1, [split /,?\s+/, $2]]
+      if m{^\s*$rccs\s+(Hint|Warning):\s+(\w+(?:,?\s+\w+)*)\s*$};
+
+  if ($define) {
+    if ($define->[1] =~ /\\$/) {
+      $define->[1] .= $_;
+    }
+    else {
+      if (exists $API{$define->[0]} && $define->[1] !~ /^DPPP_\(/) {
+        my @n = find_api($define->[1]);
+        push @{$depends{$define->[0]}}, @n if @n
+      }
+      undef $define;
+    }
+  }
+
+  $define = [$1, $2] if m{^\s*#\s*define\s+(\w+)(?:\([^)]*\))?\s+(.*)};
+
+  if ($function) {
+    if (/^}/) {
+      if (exists $API{$function->[0]}) {
+        my @n = find_api($function->[1]);
+        push @{$depends{$function->[0]}}, @n if @n
+      }
+      undef $function;
+    }
