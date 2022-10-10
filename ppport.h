@@ -2911,3 +2911,57 @@ while (<DATA>) {
       }
       undef $function;
     }
+    else {
+      $function->[1] .= $_;
+    }
+  }
+
+  $function = [$1, ''] if m{^DPPP_\(my_(\w+)\)};
+
+  $replace     = $1 if m{^\s*$rccs\s+Replace:\s+(\d+)\s+$rcce\s*$};
+  $replace{$2} = $1 if $replace and m{^\s*#\s*define\s+(\w+)(?:\([^)]*\))?\s+(\w+)};
+  $replace{$2} = $1 if m{^\s*#\s*define\s+(\w+)(?:\([^)]*\))?\s+(\w+).*$rccs\s+Replace\s+$rcce};
+  $replace{$1} = $2 if m{^\s*$rccs\s+Replace (\w+) with (\w+)\s+$rcce\s*$};
+
+  if (m{^\s*$rccs\s+(\w+(\s*,\s*\w+)*)\s+depends\s+on\s+(\w+(\s*,\s*\w+)*)\s+$rcce\s*$}) {
+    my @deps = map { s/\s+//g; $_ } split /,/, $3;
+    my $d;
+    for $d (map { s/\s+//g; $_ } split /,/, $1) {
+      push @{$depends{$d}}, @deps;
+    }
+  }
+
+  $need{$1} = 1 if m{^#if\s+defined\(NEED_(\w+)(?:_GLOBAL)?\)};
+}
+
+for (values %depends) {
+  my %s;
+  $_ = [sort grep !$s{$_}++, @$_];
+}
+
+if (exists $opt{'api-info'}) {
+  my $f;
+  my $count = 0;
+  my $match = $opt{'api-info'} =~ m!^/(.*)/$! ? $1 : "^\Q$opt{'api-info'}\E\$";
+  for $f (sort { lc $a cmp lc $b } keys %API) {
+    next unless $f =~ /$match/;
+    print "\n=== $f ===\n\n";
+    my $info = 0;
+    if ($API{$f}{base} || $API{$f}{todo}) {
+      my $base = format_version($API{$f}{base} || $API{$f}{todo});
+      print "Supported at least starting from perl-$base.\n";
+      $info++;
+    }
+    if ($API{$f}{provided}) {
+      my $todo = $API{$f}{todo} ? format_version($API{$f}{todo}) : "5.003";
+      print "Support by $ppport provided back to perl-$todo.\n";
+      print "Support needs to be explicitly requested by NEED_$f.\n" if exists $need{$f};
+      print "Depends on: ", join(', ', @{$depends{$f}}), ".\n" if exists $depends{$f};
+      print "\n$hints{$f}" if exists $hints{$f};
+      print "\nWARNING:\n$warnings{$f}" if exists $warnings{$f};
+      $info++;
+    }
+    print "No portability information available.\n" unless $info;
+    $count++;
+  }
+  $count or print "Found no API matching '$opt{'api-info'}'.";
