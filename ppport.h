@@ -2965,3 +2965,60 @@ if (exists $opt{'api-info'}) {
     $count++;
   }
   $count or print "Found no API matching '$opt{'api-info'}'.";
+  print "\n";
+  exit 0;
+}
+
+if (exists $opt{'list-provided'}) {
+  my $f;
+  for $f (sort { lc $a cmp lc $b } keys %API) {
+    next unless $API{$f}{provided};
+    my @flags;
+    push @flags, 'explicit' if exists $need{$f};
+    push @flags, 'depend'   if exists $depends{$f};
+    push @flags, 'hint'     if exists $hints{$f};
+    push @flags, 'warning'  if exists $warnings{$f};
+    my $flags = @flags ? '  ['.join(', ', @flags).']' : '';
+    print "$f$flags\n";
+  }
+  exit 0;
+}
+
+my @files;
+my @srcext = qw( .xs .c .h .cc .cpp -c.inc -xs.inc );
+my $srcext = join '|', map { quotemeta $_ } @srcext;
+
+if (@ARGV) {
+  my %seen;
+  for (@ARGV) {
+    if (-e) {
+      if (-f) {
+        push @files, $_ unless $seen{$_}++;
+      }
+      else { warn "'$_' is not a file.\n" }
+    }
+    else {
+      my @new = grep { -f } glob $_
+          or warn "'$_' does not exist.\n";
+      push @files, grep { !$seen{$_}++ } @new;
+    }
+  }
+}
+else {
+  eval {
+    require File::Find;
+    File::Find::find(sub {
+      $File::Find::name =~ /($srcext)$/i
+          and push @files, $File::Find::name;
+    }, '.');
+  };
+  if ($@) {
+    @files = map { glob "*$_" } @srcext;
+  }
+}
+
+if (!@ARGV || $opt{filter}) {
+  my(@in, @out);
+  my %xsc = map { /(.*)\.xs$/ ? ("$1.c" => 1, "$1.cc" => 1) : () } @files;
+  for (@files) {
+    my $out = exists $xsc{$_} || /\b\Q$ppport\E$/i || !/($srcext)$/i;
