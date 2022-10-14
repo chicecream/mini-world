@@ -3022,3 +3022,43 @@ if (!@ARGV || $opt{filter}) {
   my %xsc = map { /(.*)\.xs$/ ? ("$1.c" => 1, "$1.cc" => 1) : () } @files;
   for (@files) {
     my $out = exists $xsc{$_} || /\b\Q$ppport\E$/i || !/($srcext)$/i;
+    push @{ $out ? \@out : \@in }, $_;
+  }
+  if (@ARGV && @out) {
+    warning("Skipping the following files (use --nofilter to avoid this):\n| ", join "\n| ", @out);
+  }
+  @files = @in;
+}
+
+die "No input files given!\n" unless @files;
+
+my(%files, %global, %revreplace);
+%revreplace = reverse %replace;
+my $filename;
+my $patch_opened = 0;
+
+for $filename (@files) {
+  unless (open IN, "<$filename") {
+    warn "Unable to read from $filename: $!\n";
+    next;
+  }
+
+  info("Scanning $filename ...");
+
+  my $c = do { local $/; <IN> };
+  close IN;
+
+  my %file = (orig => $c, changes => 0);
+
+  # Temporarily remove C/XS comments and strings from the code
+  my @ccom;
+
+  $c =~ s{
+    ( ^$HS*\#$HS*include\b[^\r\n]+\b(?:\Q$ppport\E|XSUB\.h)\b[^\r\n]*
+    | ^$HS*\#$HS*(?:define|elif|if(?:def)?)\b[^\r\n]* )
+  | ( ^$HS*\#[^\r\n]*
+    | "[^"\\]*(?:\\.[^"\\]*)*"
+    | '[^'\\]*(?:\\.[^'\\]*)*'
+    | / (?: \*[^*]*\*+(?:[^$ccs][^*]*\*+)* / | /[^\r\n]* ) )
+  }{ defined $2 and push @ccom, $2;
+     defined $1 ? $1 : "$ccs$#ccom$cce" }mgsex;
