@@ -3062,3 +3062,63 @@ for $filename (@files) {
     | / (?: \*[^*]*\*+(?:[^$ccs][^*]*\*+)* / | /[^\r\n]* ) )
   }{ defined $2 and push @ccom, $2;
      defined $1 ? $1 : "$ccs$#ccom$cce" }mgsex;
+
+  $file{ccom} = \@ccom;
+  $file{code} = $c;
+  $file{has_inc_ppport} = $c =~ /^$HS*#$HS*include[^\r\n]+\b\Q$ppport\E\b/m;
+
+  my $func;
+
+  for $func (keys %API) {
+    my $match = $func;
+    $match .= "|$revreplace{$func}" if exists $revreplace{$func};
+    if ($c =~ /\b(?:Perl_)?($match)\b/) {
+      $file{uses_replace}{$1}++ if exists $revreplace{$func} && $1 eq $revreplace{$func};
+      $file{uses_Perl}{$func}++ if $c =~ /\bPerl_$func\b/;
+      if (exists $API{$func}{provided}) {
+        $file{uses_provided}{$func}++;
+        if (!exists $API{$func}{base} || $API{$func}{base} > $opt{'compat-version'}) {
+          $file{uses}{$func}++;
+          my @deps = rec_depend($func);
+          if (@deps) {
+            $file{uses_deps}{$func} = \@deps;
+            for (@deps) {
+              $file{uses}{$_} = 0 unless exists $file{uses}{$_};
+            }
+          }
+          for ($func, @deps) {
+            $file{needs}{$_} = 'static' if exists $need{$_};
+          }
+        }
+      }
+      if (exists $API{$func}{todo} && $API{$func}{todo} > $opt{'compat-version'}) {
+        if ($c =~ /\b$func\b/) {
+          $file{uses_todo}{$func}++;
+        }
+      }
+    }
+  }
+
+  while ($c =~ /^$HS*#$HS*define$HS+(NEED_(\w+?)(_GLOBAL)?)\b/mg) {
+    if (exists $need{$2}) {
+      $file{defined $3 ? 'needed_global' : 'needed_static'}{$2}++;
+    }
+    else { warning("Possibly wrong #define $1 in $filename") }
+  }
+
+  for (qw(uses needs uses_todo needed_global needed_static)) {
+    for $func (keys %{$file{$_}}) {
+      push @{$global{$_}{$func}}, $filename;
+    }
+  }
+
+  $files{$filename} = \%file;
+}
+
+# Globally resolve NEED_'s
+my $need;
+for $need (keys %{$global{needs}}) {
+  if (@{$global{needs}{$need}} > 1) {
+    my @targets = @{$global{needs}{$need}};
+    my @t = grep $files{$_}{needed_global}{$need}, @targets;
+    @targets = @t if @t;
