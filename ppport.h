@@ -3338,3 +3338,53 @@ close PATCH if $patch_opened;
 
 exit 0;
 
+
+sub try_use { eval "use @_;"; return $@ eq '' }
+
+sub mydiff
+{
+  local *F = shift;
+  my($file, $str) = @_;
+  my $diff;
+
+  if (exists $opt{diff}) {
+    $diff = run_diff($opt{diff}, $file, $str);
+  }
+
+  if (!defined $diff and try_use('Text::Diff')) {
+    $diff = Text::Diff::diff($file, \$str, { STYLE => 'Unified' });
+    $diff = <<HEADER . $diff;
+--- $file
++++ $file.patched
+HEADER
+  }
+
+  if (!defined $diff) {
+    $diff = run_diff('diff -u', $file, $str);
+  }
+
+  if (!defined $diff) {
+    $diff = run_diff('diff', $file, $str);
+  }
+
+  if (!defined $diff) {
+    error("Cannot generate a diff. Please install Text::Diff or use --copy.");
+    return;
+  }
+
+  print F $diff;
+}
+
+sub run_diff
+{
+  my($prog, $file, $str) = @_;
+  my $tmp = 'dppptemp';
+  my $suf = 'aaa';
+  my $diff = '';
+  local *F;
+
+  while (-e "$tmp.$suf") { $suf++ }
+  $tmp = "$tmp.$suf";
+
+  if (open F, ">$tmp") {
+    print F $str;
