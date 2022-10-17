@@ -3229,3 +3229,44 @@ for $filename (@files) {
       my $suffix = $type eq 'global' ? '_GLOBAL' : '';
       unless (exists $file{"needed_$type"}{$func}) {
         if ($type eq 'global') {
+          diag("Files [@{$global{needs}{$func}}] need $func, adding global request");
+        }
+        else {
+          diag("File needs $func, adding static request");
+        }
+        $pp .= "#define NEED_$func$suffix\n";
+      }
+    }
+
+    if ($pp && ($c =~ s/^(?=$HS*#$HS*define$HS+NEED_\w+)/$pp/m)) {
+      $pp = '';
+      $file{changes}++;
+    }
+
+    unless ($file{has_inc_ppport}) {
+      diag("Needs to include '$ppport'");
+      $pp .= qq(#include "$ppport"\n)
+    }
+
+    if ($pp) {
+      $file{changes} += ($c =~ s/^($HS*#$HS*define$HS+NEED_\w+.*?)^/$1$pp/ms)
+                     || ($c =~ s/^(?=$HS*#$HS*include.*\Q$ppport\E)/$pp/m)
+                     || ($c =~ s/^($HS*#$HS*include.*XSUB.*\s*?)^/$1$pp/m)
+                     || ($c =~ s/^/$pp/);
+    }
+  }
+  else {
+    if ($file{has_inc_ppport}) {
+      diag("No need to include '$ppport'");
+      $file{changes} += ($c =~ s/^$HS*?#$HS*include.*\Q$ppport\E.*?$LF//m);
+    }
+  }
+
+  # put back in our C comments
+  my $ix;
+  my $cppc = 0;
+  my @ccom = @{$file{ccom}};
+  for $ix (0 .. $#ccom) {
+    if (!$opt{cplusplus} && $ccom[$ix] =~ s!^//!!) {
+      $cppc++;
+      $file{changes} += $c =~ s/$rccs$ix$rcce/$ccs$ccom[$ix] $cce/;
