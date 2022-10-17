@@ -3122,3 +3122,52 @@ for $need (keys %{$global{needs}}) {
     my @targets = @{$global{needs}{$need}};
     my @t = grep $files{$_}{needed_global}{$need}, @targets;
     @targets = @t if @t;
+    @t = grep /\.xs$/i, @targets;
+    @targets = @t if @t;
+    my $target = shift @targets;
+    $files{$target}{needs}{$need} = 'global';
+    for (@{$global{needs}{$need}}) {
+      $files{$_}{needs}{$need} = 'extern' if $_ ne $target;
+    }
+  }
+}
+
+for $filename (@files) {
+  exists $files{$filename} or next;
+
+  info("=== Analyzing $filename ===");
+
+  my %file = %{$files{$filename}};
+  my $func;
+  my $c = $file{code};
+  my $warnings = 0;
+
+  for $func (sort keys %{$file{uses_Perl}}) {
+    if ($API{$func}{varargs}) {
+      unless ($API{$func}{nothxarg}) {
+        my $changes = ($c =~ s{\b(Perl_$func\s*\(\s*)(?!aTHX_?)(\)|[^\s)]*\))}
+                              { $1 . ($2 eq ')' ? 'aTHX' : 'aTHX_ ') . $2 }ge);
+        if ($changes) {
+          warning("Doesn't pass interpreter argument aTHX to Perl_$func");
+          $file{changes} += $changes;
+        }
+      }
+    }
+    else {
+      warning("Uses Perl_$func instead of $func");
+      $file{changes} += ($c =~ s{\bPerl_$func(\s*)\((\s*aTHX_?)?\s*}
+                                {$func$1(}g);
+    }
+  }
+
+  for $func (sort keys %{$file{uses_replace}}) {
+    warning("Uses $func instead of $replace{$func}");
+    $file{changes} += ($c =~ s/\b$func\b/$replace{$func}/g);
+  }
+
+  for $func (sort keys %{$file{uses_provided}}) {
+    if ($file{uses}{$func}) {
+      if (exists $file{uses_deps}{$func}) {
+        diag("Uses $func, which depends on ", join(', ', @{$file{uses_deps}{$func}}));
+      }
+      else {
