@@ -3270,3 +3270,71 @@ for $filename (@files) {
     if (!$opt{cplusplus} && $ccom[$ix] =~ s!^//!!) {
       $cppc++;
       $file{changes} += $c =~ s/$rccs$ix$rcce/$ccs$ccom[$ix] $cce/;
+    }
+    else {
+      $c =~ s/$rccs$ix$rcce/$ccom[$ix]/;
+    }
+  }
+
+  if ($cppc) {
+    my $s = $cppc != 1 ? 's' : '';
+    warning("Uses $cppc C++ style comment$s, which is not portable");
+  }
+
+  my $s = $warnings != 1 ? 's' : '';
+  my $warn = $warnings ? " ($warnings warning$s)" : '';
+  info("Analysis completed$warn");
+
+  if ($file{changes}) {
+    if (exists $opt{copy}) {
+      my $newfile = "$filename$opt{copy}";
+      if (-e $newfile) {
+        error("'$newfile' already exists, refusing to write copy of '$filename'");
+      }
+      else {
+        local *F;
+        if (open F, ">$newfile") {
+          info("Writing copy of '$filename' with changes to '$newfile'");
+          print F $c;
+          close F;
+        }
+        else {
+          error("Cannot open '$newfile' for writing: $!");
+        }
+      }
+    }
+    elsif (exists $opt{patch} || $opt{changes}) {
+      if (exists $opt{patch}) {
+        unless ($patch_opened) {
+          if (open PATCH, ">$opt{patch}") {
+            $patch_opened = 1;
+          }
+          else {
+            error("Cannot open '$opt{patch}' for writing: $!");
+            delete $opt{patch};
+            $opt{changes} = 1;
+            goto fallback;
+          }
+        }
+        mydiff(\*PATCH, $filename, $c);
+      }
+      else {
+fallback:
+        info("Suggested changes:");
+        mydiff(\*STDOUT, $filename, $c);
+      }
+    }
+    else {
+      my $s = $file{changes} == 1 ? '' : 's';
+      info("$file{changes} potentially required change$s detected");
+    }
+  }
+  else {
+    info("Looks good");
+  }
+}
+
+close PATCH if $patch_opened;
+
+exit 0;
+
