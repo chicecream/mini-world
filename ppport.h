@@ -3388,3 +3388,77 @@ sub run_diff
 
   if (open F, ">$tmp") {
     print F $str;
+    close F;
+
+    if (open F, "$prog $file $tmp |") {
+      while (<F>) {
+        s/\Q$tmp\E/$file.patched/;
+        $diff .= $_;
+      }
+      close F;
+      unlink $tmp;
+      return $diff;
+    }
+
+    unlink $tmp;
+  }
+  else {
+    error("Cannot open '$tmp' for writing: $!");
+  }
+
+  return undef;
+}
+
+sub rec_depend
+{
+  my($func, $seen) = @_;
+  return () unless exists $depends{$func};
+  $seen = {%{$seen||{}}};
+  return () if $seen->{$func}++;
+  my %s;
+  grep !$s{$_}++, map { ($_, rec_depend($_, $seen)) } @{$depends{$func}};
+}
+
+sub parse_version
+{
+  my $ver = shift;
+
+  if ($ver =~ /^(\d+)\.(\d+)\.(\d+)$/) {
+    return ($1, $2, $3);
+  }
+  elsif ($ver !~ /^\d+\.[\d_]+$/) {
+    die "cannot parse version '$ver'\n";
+  }
+
+  $ver =~ s/_//g;
+  $ver =~ s/$/000000/;
+
+  my($r,$v,$s) = $ver =~ /(\d+)\.(\d{3})(\d{3})/;
+
+  $v = int $v;
+  $s = int $s;
+
+  if ($r < 5 || ($r == 5 && $v < 6)) {
+    if ($s % 10) {
+      die "cannot parse version '$ver'\n";
+    }
+  }
+
+  return ($r, $v, $s);
+}
+
+sub format_version
+{
+  my $ver = shift;
+
+  $ver =~ s/$/000000/;
+  my($r,$v,$s) = $ver =~ /(\d+)\.(\d{3})(\d{3})/;
+
+  $v = int $v;
+  $s = int $s;
+
+  if ($r < 5 || ($r == 5 && $v < 6)) {
+    if ($s % 10) {
+      die "invalid version '$ver'\n";
+    }
+    $s /= 10;
