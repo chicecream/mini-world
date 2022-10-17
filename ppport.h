@@ -3171,3 +3171,61 @@ for $filename (@files) {
         diag("Uses $func, which depends on ", join(', ', @{$file{uses_deps}{$func}}));
       }
       else {
+        diag("Uses $func");
+      }
+    }
+    $warnings += hint($func);
+  }
+
+  unless ($opt{quiet}) {
+    for $func (sort keys %{$file{uses_todo}}) {
+      print "*** WARNING: Uses $func, which may not be portable below perl ",
+            format_version($API{$func}{todo}), ", even with '$ppport'\n";
+      $warnings++;
+    }
+  }
+
+  for $func (sort keys %{$file{needed_static}}) {
+    my $message = '';
+    if (not exists $file{uses}{$func}) {
+      $message = "No need to define NEED_$func if $func is never used";
+    }
+    elsif (exists $file{needs}{$func} && $file{needs}{$func} ne 'static') {
+      $message = "No need to define NEED_$func when already needed globally";
+    }
+    if ($message) {
+      diag($message);
+      $file{changes} += ($c =~ s/^$HS*#$HS*define$HS+NEED_$func\b.*$LF//mg);
+    }
+  }
+
+  for $func (sort keys %{$file{needed_global}}) {
+    my $message = '';
+    if (not exists $global{uses}{$func}) {
+      $message = "No need to define NEED_${func}_GLOBAL if $func is never used";
+    }
+    elsif (exists $file{needs}{$func}) {
+      if ($file{needs}{$func} eq 'extern') {
+        $message = "No need to define NEED_${func}_GLOBAL when already needed globally";
+      }
+      elsif ($file{needs}{$func} eq 'static') {
+        $message = "No need to define NEED_${func}_GLOBAL when only used in this file";
+      }
+    }
+    if ($message) {
+      diag($message);
+      $file{changes} += ($c =~ s/^$HS*#$HS*define$HS+NEED_${func}_GLOBAL\b.*$LF//mg);
+    }
+  }
+
+  $file{needs_inc_ppport} = keys %{$file{uses}};
+
+  if ($file{needs_inc_ppport}) {
+    my $pp = '';
+
+    for $func (sort keys %{$file{needs}}) {
+      my $type = $file{needs}{$func};
+      next if $type eq 'extern';
+      my $suffix = $type eq 'global' ? '_GLOBAL' : '';
+      unless (exists $file{"needed_$type"}{$func}) {
+        if ($type eq 'global') {
