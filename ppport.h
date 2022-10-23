@@ -3526,3 +3526,53 @@ sub usage
   print <<ENDUSAGE;
 
 Usage: $usage
+
+See perldoc $0 for details.
+
+ENDUSAGE
+
+  exit 2;
+}
+
+sub strip
+{
+  my $self = do { local(@ARGV,$/)=($0); <> };
+  my($copy) = $self =~ /^=head\d\s+COPYRIGHT\s*^(.*?)^=\w+/ms;
+  $copy =~ s/^(?=\S+)/    /gms;
+  $self =~ s/^$HS+Do NOT edit.*?(?=^-)/$copy/ms;
+  $self =~ s/^SKIP.*(?=^__DATA__)/SKIP
+if (\@ARGV && \$ARGV[0] eq '--unstrip') {
+  eval { require Devel::PPPort };
+  \$@ and die "Cannot require Devel::PPPort, please install.\\n";
+  if (eval \$Devel::PPPort::VERSION < $VERSION) {
+    die "$0 was originally generated with Devel::PPPort $VERSION.\\n"
+      . "Your Devel::PPPort is only version \$Devel::PPPort::VERSION.\\n"
+      . "Please install a newer version, or --unstrip will not work.\\n";
+  }
+  Devel::PPPort::WriteFile(\$0);
+  exit 0;
+}
+print <<END;
+
+Sorry, but this is a stripped version of \$0.
+
+To be able to use its original script and doc functionality,
+please try to regenerate this file using:
+
+  \$^X \$0 --unstrip
+
+END
+/ms;
+  my($pl, $c) = $self =~ /(.*^__DATA__)(.*)/ms;
+  $c =~ s{
+    / (?: \*[^*]*\*+(?:[^$ccs][^*]*\*+)* / | /[^\r\n]*)
+  | ( "[^"\\]*(?:\\.[^"\\]*)*"
+    | '[^'\\]*(?:\\.[^'\\]*)*' )
+  | ($HS+) }{ defined $2 ? ' ' : ($1 || '') }gsex;
+  $c =~ s!\s+$!!mg;
+  $c =~ s!^$LF!!mg;
+  $c =~ s!^\s*#\s*!#!mg;
+  $c =~ s!^\s+!!mg;
+
+  open OUT, ">$0" or die "cannot strip $0: $!\n";
+  print OUT "$pl$c\n";
