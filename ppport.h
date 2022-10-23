@@ -3462,3 +3462,67 @@ sub format_version
       die "invalid version '$ver'\n";
     }
     $s /= 10;
+
+    $ver = sprintf "%d.%03d", $r, $v;
+    $s > 0 and $ver .= sprintf "_%02d", $s;
+
+    return $ver;
+  }
+
+  return sprintf "%d.%d.%d", $r, $v, $s;
+}
+
+sub info
+{
+  $opt{quiet} and return;
+  print @_, "\n";
+}
+
+sub diag
+{
+  $opt{quiet} and return;
+  $opt{diag} and print @_, "\n";
+}
+
+sub warning
+{
+  $opt{quiet} and return;
+  print "*** ", @_, "\n";
+}
+
+sub error
+{
+  print "*** ERROR: ", @_, "\n";
+}
+
+my %given_hints;
+my %given_warnings;
+sub hint
+{
+  $opt{quiet} and return;
+  my $func = shift;
+  my $rv = 0;
+  if (exists $warnings{$func} && !$given_warnings{$func}++) {
+    my $warn = $warnings{$func};
+    $warn =~ s!^!*** !mg;
+    print "*** WARNING: $func\n", $warn;
+    $rv++;
+  }
+  if ($opt{hints} && exists $hints{$func} && !$given_hints{$func}++) {
+    my $hint = $hints{$func};
+    $hint =~ s/^/   /mg;
+    print "   --- hint for $func ---\n", $hint;
+  }
+  $rv;
+}
+
+sub usage
+{
+  my($usage) = do { local(@ARGV,$/)=($0); <> } =~ /^=head\d$HS+SYNOPSIS\s*^(.*?)\s*^=/ms;
+  my %M = ( 'I' => '*' );
+  $usage =~ s/^\s*perl\s+\S+/$^X $0/;
+  $usage =~ s/([A-Z])<([^>]+)>/$M{$1}$2$M{$1}/g;
+
+  print <<ENDUSAGE;
+
+Usage: $usage
