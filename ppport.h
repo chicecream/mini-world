@@ -3674,3 +3674,64 @@ __DATA__
 
 #ifndef PERL_UCHAR_MAX
 #  ifdef UCHAR_MAX
+#    define PERL_UCHAR_MAX ((unsigned char)UCHAR_MAX)
+#  else
+#    ifdef MAXUCHAR
+#      define PERL_UCHAR_MAX ((unsigned char)MAXUCHAR)
+#    else
+#      define PERL_UCHAR_MAX ((unsigned char)~(unsigned)0)
+#    endif
+#  endif
+#endif
+
+#ifndef PERL_USHORT_MIN
+#  define PERL_USHORT_MIN ((unsigned short)0)
+#endif
+
+#ifndef PERL_USHORT_MAX
+#  ifdef USHORT_MAX
+#    define PERL_USHORT_MAX ((unsigned short)USHORT_MAX)
+#  else
+#    ifdef MAXUSHORT
+#      define PERL_USHORT_MAX ((unsigned short)MAXUSHORT)
+#    else
+#      ifdef USHRT_MAX
+#        define PERL_USHORT_MAX ((unsigned short)USHRT_MAX)
+#      else
+#        define PERL_USHORT_MAX ((unsigned short)~(unsigned)0)
+#      endif
+#    endif
+#  endif
+#endif
+
+#ifndef PERL_SHORT_MAX
+#  ifdef SHORT_MAX
+#    define PERL_SHORT_MAX ((short)SHORT_MAX)
+#  else
+#    ifdef MAXSHORT    /* Often used in <values.h> */
+#      define PERL_SHORT_MAX ((short)MAXSHORT)
+#    else
+#      ifdef SHRT_MAX
+#        define PERL_SHORT_MAX ((short)SHRT_MAX)
+#      else
+#        define PERL_SHORT_MAX ((short) (PERL_USHORT_MAX >> 1))
+#      endif
+#    endif
+#  endif
+#endif
+
+#ifndef PERL_SHORT_MIN
+#  ifdef SHORT_MIN
+#    define PERL_SHORT_MIN ((short)SHORT_MIN)
+#  else
+#    ifdef MINSHORT
+#      define PERL_SHORT_MIN ((short)MINSHORT)
+#    else
+#      ifdef SHRT_MIN
+#        define PERL_SHORT_MIN ((short)SHRT_MIN)
+#      else
+#        define PERL_SHORT_MIN (-PERL_SHORT_MAX - ((3 & -1) == 3))
+#      endif
+#    endif
+#  endif
+#endif
