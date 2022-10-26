@@ -3628,3 +3628,49 @@ __DATA__
 #endif
 
 #ifndef dTHXa
+#  define dTHXa(x)                       dNOOP
+#endif
+#ifndef pTHX
+#  define pTHX                           void
+#endif
+
+#ifndef pTHX_
+#  define pTHX_
+#endif
+
+#ifndef aTHX
+#  define aTHX
+#endif
+
+#ifndef aTHX_
+#  define aTHX_
+#endif
+
+#if (PERL_BCDVERSION < 0x5006000)
+#  ifdef USE_THREADS
+#    define aTHXR  thr
+#    define aTHXR_ thr,
+#  else
+#    define aTHXR
+#    define aTHXR_
+#  endif
+#  define dTHXR  dTHR
+#else
+#  define aTHXR  aTHX
+#  define aTHXR_ aTHX_
+#  define dTHXR  dTHX
+#endif
+#ifndef dTHXoa
+#  define dTHXoa(x)                      dTHXa(x)
+#endif
+
+#ifdef I_LIMITS
+#  include <limits.h>
+#endif
+
+#ifndef PERL_UCHAR_MIN
+#  define PERL_UCHAR_MIN ((unsigned char)0)
+#endif
+
+#ifndef PERL_UCHAR_MAX
+#  ifdef UCHAR_MAX
