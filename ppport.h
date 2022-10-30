@@ -3735,3 +3735,50 @@ __DATA__
 #    endif
 #  endif
 #endif
+
+#ifndef PERL_UINT_MAX
+#  ifdef UINT_MAX
+#    define PERL_UINT_MAX ((unsigned int)UINT_MAX)
+#  else
+#    ifdef MAXUINT
+#      define PERL_UINT_MAX ((unsigned int)MAXUINT)
+#    else
+#      define PERL_UINT_MAX (~(unsigned int)0)
+#    endif
+#  endif
+#endif
+
+#ifndef PERL_UINT_MIN
+#  define PERL_UINT_MIN ((unsigned int)0)
+#endif
+
+#ifndef PERL_INT_MAX
+#  ifdef INT_MAX
+#    define PERL_INT_MAX ((int)INT_MAX)
+#  else
+#    ifdef MAXINT    /* Often used in <values.h> */
+#      define PERL_INT_MAX ((int)MAXINT)
+#    else
+#      define PERL_INT_MAX ((int)(PERL_UINT_MAX >> 1))
+#    endif
+#  endif
+#endif
+
+#ifndef PERL_INT_MIN
+#  ifdef INT_MIN
+#    define PERL_INT_MIN ((int)INT_MIN)
+#  else
+#    ifdef MININT
+#      define PERL_INT_MIN ((int)MININT)
+#    else
+#      define PERL_INT_MIN (-PERL_INT_MAX - ((3 & -1) == 3))
+#    endif
+#  endif
+#endif
+
+#ifndef PERL_ULONG_MAX
+#  ifdef ULONG_MAX
+#    define PERL_ULONG_MAX ((unsigned long)ULONG_MAX)
+#  else
+#    ifdef MAXULONG
+#      define PERL_ULONG_MAX ((unsigned long)MAXULONG)
