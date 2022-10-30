@@ -4065,3 +4065,58 @@ __DATA__
 
 #ifndef XPUSHu
 #  define XPUSHu(u)                      STMT_START { sv_setuv(TARG, (UV)(u)); XPUSHTARG; } STMT_END
+#endif
+
+#ifdef HAS_MEMCMP
+#ifndef memNE
+#  define memNE(s1,s2,l)                 (memcmp(s1,s2,l))
+#endif
+
+#ifndef memEQ
+#  define memEQ(s1,s2,l)                 (!memcmp(s1,s2,l))
+#endif
+
+#else
+#ifndef memNE
+#  define memNE(s1,s2,l)                 (bcmp(s1,s2,l))
+#endif
+
+#ifndef memEQ
+#  define memEQ(s1,s2,l)                 (!bcmp(s1,s2,l))
+#endif
+
+#endif
+#ifndef memEQs
+#  define memEQs(s1, l, s2)              \
+                   (sizeof(s2)-1 == l && memEQ(s1, (s2 ""), (sizeof(s2)-1)))
+#endif
+
+#ifndef memNEs
+#  define memNEs(s1, l, s2)              !memEQs(s1, l, s2)
+#endif
+#ifndef MoveD
+#  define MoveD(s,d,n,t)                 memmove((char*)(d),(char*)(s), (n) * sizeof(t))
+#endif
+
+#ifndef CopyD
+#  define CopyD(s,d,n,t)                 memcpy((char*)(d),(char*)(s), (n) * sizeof(t))
+#endif
+
+#ifdef HAS_MEMSET
+#ifndef ZeroD
+#  define ZeroD(d,n,t)                   memzero((char*)(d), (n) * sizeof(t))
+#endif
+
+#else
+#ifndef ZeroD
+#  define ZeroD(d,n,t)                   ((void)memzero((char*)(d), (n) * sizeof(t)), d)
+#endif
+
+#endif
+#ifndef PoisonWith
+#  define PoisonWith(d,n,t,b)            (void)memset((char*)(d), (U8)(b), (n) * sizeof(t))
+#endif
+
+#ifndef PoisonNew
+#  define PoisonNew(d,n,t)               PoisonWith(d,n,t,0xAB)
+#endif
