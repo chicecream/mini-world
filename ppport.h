@@ -3840,3 +3840,57 @@ __DATA__
 #      ifdef MAXLONGLONG
 #        define PERL_QUAD_MAX ((long long)MAXLONGLONG)
 #      else
+#        define PERL_QUAD_MAX ((long long) (PERL_UQUAD_MAX >> 1))
+#      endif
+#    endif
+#  endif
+
+#  ifndef PERL_QUAD_MIN
+#    ifdef LONGLONG_MIN
+#      define PERL_QUAD_MIN ((long long)LONGLONG_MIN)
+#    else
+#      ifdef MINLONGLONG
+#        define PERL_QUAD_MIN ((long long)MINLONGLONG)
+#      else
+#        define PERL_QUAD_MIN (-PERL_QUAD_MAX - ((3 & -1) == 3))
+#      endif
+#    endif
+#  endif
+#endif
+
+/* This is based on code from 5.003 perl.h */
+#ifdef HAS_QUAD
+#  ifdef cray
+#ifndef IVTYPE
+#  define IVTYPE                         int
+#endif
+
+#ifndef IV_MIN
+#  define IV_MIN                         PERL_INT_MIN
+#endif
+
+#ifndef IV_MAX
+#  define IV_MAX                         PERL_INT_MAX
+#endif
+
+#ifndef UV_MIN
+#  define UV_MIN                         PERL_UINT_MIN
+#endif
+
+#ifndef UV_MAX
+#  define UV_MAX                         PERL_UINT_MAX
+#endif
+
+#    ifdef INTSIZE
+#ifndef IVSIZE
+#  define IVSIZE                         INTSIZE
+#endif
+
+#    endif
+#  else
+#    if defined(convex) || defined(uts)
+#ifndef IVTYPE
+#  define IVTYPE                         long long
+#endif
+
+#ifndef IV_MIN
