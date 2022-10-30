@@ -3953,3 +3953,60 @@ __DATA__
 #endif
 
 #ifndef PERL_QUAD_MIN
+#  define PERL_QUAD_MIN                  IV_MIN
+#endif
+
+#ifndef PERL_QUAD_MAX
+#  define PERL_QUAD_MAX                  IV_MAX
+#endif
+
+#ifndef PERL_UQUAD_MIN
+#  define PERL_UQUAD_MIN                 UV_MIN
+#endif
+
+#ifndef PERL_UQUAD_MAX
+#  define PERL_UQUAD_MAX                 UV_MAX
+#endif
+
+#else
+#ifndef IVTYPE
+#  define IVTYPE                         long
+#endif
+
+#ifndef LONGSIZE
+#  define LONGSIZE                       4
+#endif
+
+#ifndef IV_MIN
+#  define IV_MIN                         PERL_LONG_MIN
+#endif
+
+#ifndef IV_MAX
+#  define IV_MAX                         PERL_LONG_MAX
+#endif
+
+#ifndef UV_MIN
+#  define UV_MIN                         PERL_ULONG_MIN
+#endif
+
+#ifndef UV_MAX
+#  define UV_MAX                         PERL_ULONG_MAX
+#endif
+
+#endif
+
+#ifndef IVSIZE
+#  ifdef LONGSIZE
+#    define IVSIZE LONGSIZE
+#  else
+#    define IVSIZE 4 /* A bold guess, but the best we can make. */
+#  endif
+#endif
+#ifndef UVTYPE
+#  define UVTYPE                         unsigned IVTYPE
+#endif
+
+#ifndef UVSIZE
+#  define UVSIZE                         IVSIZE
+#endif
+#ifndef sv_setuv
