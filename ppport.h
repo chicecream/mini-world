@@ -4120,3 +4120,62 @@ __DATA__
 #ifndef PoisonNew
 #  define PoisonNew(d,n,t)               PoisonWith(d,n,t,0xAB)
 #endif
+
+#ifndef PoisonFree
+#  define PoisonFree(d,n,t)              PoisonWith(d,n,t,0xEF)
+#endif
+
+#ifndef Poison
+#  define Poison(d,n,t)                  PoisonFree(d,n,t)
+#endif
+#ifndef Newx
+#  define Newx(v,n,t)                    New(0,v,n,t)
+#endif
+
+#ifndef Newxc
+#  define Newxc(v,n,t,c)                 Newc(0,v,n,t,c)
+#endif
+
+#ifndef Newxz
+#  define Newxz(v,n,t)                   Newz(0,v,n,t)
+#endif
+
+#ifndef PERL_UNUSED_DECL
+#  ifdef HASATTRIBUTE
+#    if (defined(__GNUC__) && defined(__cplusplus)) || defined(__INTEL_COMPILER)
+#      define PERL_UNUSED_DECL
+#    else
+#      define PERL_UNUSED_DECL __attribute__((unused))
+#    endif
+#  else
+#    define PERL_UNUSED_DECL
+#  endif
+#endif
+
+#ifndef PERL_UNUSED_ARG
+#  if defined(lint) && defined(S_SPLINT_S) /* www.splint.org */
+#    include <note.h>
+#    define PERL_UNUSED_ARG(x) NOTE(ARGUNUSED(x))
+#  else
+#    define PERL_UNUSED_ARG(x) ((void)x)
+#  endif
+#endif
+
+#ifndef PERL_UNUSED_VAR
+#  define PERL_UNUSED_VAR(x) ((void)x)
+#endif
+
+#ifndef PERL_UNUSED_CONTEXT
+#  ifdef USE_ITHREADS
+#    define PERL_UNUSED_CONTEXT PERL_UNUSED_ARG(my_perl)
+#  else
+#    define PERL_UNUSED_CONTEXT
+#  endif
+#endif
+#ifndef NOOP
+#  define NOOP                           /*EMPTY*/(void)0
+#endif
+
+#ifndef dNOOP
+#  define dNOOP                          extern int /*@unused@*/ Perl___notused PERL_UNUSED_DECL
+#endif
