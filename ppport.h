@@ -4179,3 +4179,44 @@ __DATA__
 #ifndef dNOOP
 #  define dNOOP                          extern int /*@unused@*/ Perl___notused PERL_UNUSED_DECL
 #endif
+
+#ifndef NVTYPE
+#  if defined(USE_LONG_DOUBLE) && defined(HAS_LONG_DOUBLE)
+#    define NVTYPE long double
+#  else
+#    define NVTYPE double
+#  endif
+typedef NVTYPE NV;
+#endif
+
+#ifndef INT2PTR
+#  if (IVSIZE == PTRSIZE) && (UVSIZE == PTRSIZE)
+#    define PTRV                  UV
+#    define INT2PTR(any,d)        (any)(d)
+#  else
+#    if PTRSIZE == LONGSIZE
+#      define PTRV                unsigned long
+#    else
+#      define PTRV                unsigned
+#    endif
+#    define INT2PTR(any,d)        (any)(PTRV)(d)
+#  endif
+#endif
+
+#ifndef PTR2ul
+#  if PTRSIZE == LONGSIZE
+#    define PTR2ul(p)     (unsigned long)(p)
+#  else
+#    define PTR2ul(p)     INT2PTR(unsigned long,p)
+#  endif
+#endif
+#ifndef PTR2nat
+#  define PTR2nat(p)                     (PTRV)(p)
+#endif
+
+#ifndef NUM2PTR
+#  define NUM2PTR(any,d)                 (any)PTR2nat(d)
+#endif
+
+#ifndef PTR2IV
+#  define PTR2IV(p)                      INT2PTR(IV,p)
