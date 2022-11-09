@@ -4220,3 +4220,58 @@ typedef NVTYPE NV;
 
 #ifndef PTR2IV
 #  define PTR2IV(p)                      INT2PTR(IV,p)
+#endif
+
+#ifndef PTR2UV
+#  define PTR2UV(p)                      INT2PTR(UV,p)
+#endif
+
+#ifndef PTR2NV
+#  define PTR2NV(p)                      NUM2PTR(NV,p)
+#endif
+
+#undef START_EXTERN_C
+#undef END_EXTERN_C
+#undef EXTERN_C
+#ifdef __cplusplus
+#  define START_EXTERN_C extern "C" {
+#  define END_EXTERN_C }
+#  define EXTERN_C extern "C"
+#else
+#  define START_EXTERN_C
+#  define END_EXTERN_C
+#  define EXTERN_C extern
+#endif
+
+#if defined(PERL_GCC_PEDANTIC)
+#  ifndef PERL_GCC_BRACE_GROUPS_FORBIDDEN
+#    define PERL_GCC_BRACE_GROUPS_FORBIDDEN
+#  endif
+#endif
+
+#if defined(__GNUC__) && !defined(PERL_GCC_BRACE_GROUPS_FORBIDDEN) && !defined(__cplusplus)
+#  ifndef PERL_USE_GCC_BRACE_GROUPS
+#    define PERL_USE_GCC_BRACE_GROUPS
+#  endif
+#endif
+
+#undef STMT_START
+#undef STMT_END
+#ifdef PERL_USE_GCC_BRACE_GROUPS
+#  define STMT_START    (void)( /* gcc supports ``({ STATEMENTS; })'' */
+#  define STMT_END      )
+#else
+#  if defined(VOIDFLAGS) && (VOIDFLAGS) && (defined(sun) || defined(__sun__)) && !defined(__GNUC__)
+#    define STMT_START  if (1)
+#    define STMT_END    else (void)0
+#  else
+#    define STMT_START  do
+#    define STMT_END    while (0)
+#  endif
+#endif
+#ifndef boolSV
+#  define boolSV(b)                      ((b) ? &PL_sv_yes : &PL_sv_no)
+#endif
+
+/* DEFSV appears first in 5.004_56 */
+#ifndef DEFSV
