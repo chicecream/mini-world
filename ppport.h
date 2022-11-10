@@ -4275,3 +4275,50 @@ typedef NVTYPE NV;
 
 /* DEFSV appears first in 5.004_56 */
 #ifndef DEFSV
+#  define DEFSV                          GvSV(PL_defgv)
+#endif
+
+#ifndef SAVE_DEFSV
+#  define SAVE_DEFSV                     SAVESPTR(GvSV(PL_defgv))
+#endif
+
+#ifndef DEFSV_set
+#  define DEFSV_set(sv)                  (DEFSV = (sv))
+#endif
+
+/* Older perls (<=5.003) lack AvFILLp */
+#ifndef AvFILLp
+#  define AvFILLp                        AvFILL
+#endif
+#ifndef ERRSV
+#  define ERRSV                          get_sv("@",FALSE)
+#endif
+
+/* Hint: gv_stashpvn
+ * This function's backport doesn't support the length parameter, but
+ * rather ignores it. Portability can only be ensured if the length
+ * parameter is used for speed reasons, but the length can always be
+ * correctly computed from the string argument.
+ */
+#ifndef gv_stashpvn
+#  define gv_stashpvn(str,len,create)    gv_stashpv(str,create)
+#endif
+
+/* Replace: 1 */
+#ifndef get_cv
+#  define get_cv                         perl_get_cv
+#endif
+
+#ifndef get_sv
+#  define get_sv                         perl_get_sv
+#endif
+
+#ifndef get_av
+#  define get_av                         perl_get_av
+#endif
+
+#ifndef get_hv
+#  define get_hv                         perl_get_hv
+#endif
+
+/* Replace: 0 */
