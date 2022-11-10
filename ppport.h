@@ -4379,3 +4379,59 @@ typedef NVTYPE NV;
 #endif
 #ifndef PERL_HASH
 #  define PERL_HASH(hash,str,len)        \
+     STMT_START { \
+        const char *s_PeRlHaSh = str; \
+        I32 i_PeRlHaSh = len; \
+        U32 hash_PeRlHaSh = 0; \
+        while (i_PeRlHaSh--) \
+            hash_PeRlHaSh = hash_PeRlHaSh * 33 + *s_PeRlHaSh++; \
+        (hash) = hash_PeRlHaSh; \
+    } STMT_END
+#endif
+
+#ifndef PERLIO_FUNCS_DECL
+# ifdef PERLIO_FUNCS_CONST
+#  define PERLIO_FUNCS_DECL(funcs) const PerlIO_funcs funcs
+#  define PERLIO_FUNCS_CAST(funcs) (PerlIO_funcs*)(funcs)
+# else
+#  define PERLIO_FUNCS_DECL(funcs) PerlIO_funcs funcs
+#  define PERLIO_FUNCS_CAST(funcs) (funcs)
+# endif
+#endif
+
+/* provide these typedefs for older perls */
+#if (PERL_BCDVERSION < 0x5009003)
+
+# ifdef ARGSproto
+typedef OP* (CPERLscope(*Perl_ppaddr_t))(ARGSproto);
+# else
+typedef OP* (CPERLscope(*Perl_ppaddr_t))(pTHX);
+# endif
+
+typedef OP* (CPERLscope(*Perl_check_t)) (pTHX_ OP*);
+
+#endif
+#ifndef isPSXSPC
+#  define isPSXSPC(c)                    (isSPACE(c) || (c) == '\v')
+#endif
+
+#ifndef isBLANK
+#  define isBLANK(c)                     ((c) == ' ' || (c) == '\t')
+#endif
+
+#ifdef EBCDIC
+#ifndef isALNUMC
+#  define isALNUMC(c)                    isalnum(c)
+#endif
+
+#ifndef isASCII
+#  define isASCII(c)                     isascii(c)
+#endif
+
+#ifndef isCNTRL
+#  define isCNTRL(c)                     iscntrl(c)
+#endif
+
+#ifndef isGRAPH
+#  define isGRAPH(c)                     isgraph(c)
+#endif
