@@ -4322,3 +4322,60 @@ typedef NVTYPE NV;
 #endif
 
 /* Replace: 0 */
+#ifndef dUNDERBAR
+#  define dUNDERBAR                      dNOOP
+#endif
+
+#ifndef UNDERBAR
+#  define UNDERBAR                       DEFSV
+#endif
+#ifndef dAX
+#  define dAX                            I32 ax = MARK - PL_stack_base + 1
+#endif
+
+#ifndef dITEMS
+#  define dITEMS                         I32 items = SP - MARK
+#endif
+#ifndef dXSTARG
+#  define dXSTARG                        SV * targ = sv_newmortal()
+#endif
+#ifndef dAXMARK
+#  define dAXMARK                        I32 ax = POPMARK; \
+                               register SV ** const mark = PL_stack_base + ax++
+#endif
+#ifndef XSprePUSH
+#  define XSprePUSH                      (sp = PL_stack_base + ax - 1)
+#endif
+
+#if (PERL_BCDVERSION < 0x5005000)
+#  undef XSRETURN
+#  define XSRETURN(off)                                   \
+      STMT_START {                                        \
+          PL_stack_sp = PL_stack_base + ax + ((off) - 1); \
+          return;                                         \
+      } STMT_END
+#endif
+#ifndef XSPROTO
+#  define XSPROTO(name)                  void name(pTHX_ CV* cv)
+#endif
+
+#ifndef SVfARG
+#  define SVfARG(p)                      ((void*)(p))
+#endif
+#ifndef PERL_ABS
+#  define PERL_ABS(x)                    ((x) < 0 ? -(x) : (x))
+#endif
+#ifndef dVAR
+#  define dVAR                           dNOOP
+#endif
+#ifndef SVf
+#  define SVf                            "_"
+#endif
+#ifndef UTF8_MAXBYTES
+#  define UTF8_MAXBYTES                  UTF8_MAXLEN
+#endif
+#ifndef CPERLscope
+#  define CPERLscope(x)                  x
+#endif
+#ifndef PERL_HASH
+#  define PERL_HASH(hash,str,len)        \
