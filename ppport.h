@@ -4492,3 +4492,59 @@ typedef OP* (CPERLscope(*Perl_check_t)) (pTHX_ OP*);
 #endif
 
 #ifndef isXDIGIT
+#  define isXDIGIT(c)                    (isDIGIT(c) || ((c) >= 'a' && (c) <= 'f') || ((c) >= 'A' && (c) <= 'F'))
+#endif
+
+#endif
+
+/* Until we figure out how to support this in older perls... */
+#if (PERL_BCDVERSION >= 0x5008000)
+#ifndef HeUTF8
+#  define HeUTF8(he)                     ((HeKLEN(he) == HEf_SVKEY) ?            \
+                                 SvUTF8(HeKEY_sv(he)) :                 \
+                                 (U32)HeKUTF8(he))
+#endif
+
+#endif
+
+#ifndef PERL_SIGNALS_UNSAFE_FLAG
+
+#define PERL_SIGNALS_UNSAFE_FLAG 0x0001
+
+#if (PERL_BCDVERSION < 0x5008000)
+#  define D_PPP_PERL_SIGNALS_INIT   PERL_SIGNALS_UNSAFE_FLAG
+#else
+#  define D_PPP_PERL_SIGNALS_INIT   0
+#endif
+
+#if defined(NEED_PL_signals)
+static U32 DPPP_(my_PL_signals) = D_PPP_PERL_SIGNALS_INIT;
+#elif defined(NEED_PL_signals_GLOBAL)
+U32 DPPP_(my_PL_signals) = D_PPP_PERL_SIGNALS_INIT;
+#else
+extern U32 DPPP_(my_PL_signals);
+#endif
+#define PL_signals DPPP_(my_PL_signals)
+
+#endif
+
+/* Hint: PL_ppaddr
+ * Calling an op via PL_ppaddr requires passing a context argument
+ * for threaded builds. Since the context argument is different for
+ * 5.005 perls, you can use aTHXR (supplied by ppport.h), which will
+ * automatically be defined as the correct argument.
+ */
+
+#if (PERL_BCDVERSION <= 0x5005005)
+/* Replace: 1 */
+#  define PL_ppaddr                 ppaddr
+#  define PL_no_modify              no_modify
+/* Replace: 0 */
+#endif
+
+#if (PERL_BCDVERSION <= 0x5004005)
+/* Replace: 1 */
+#  define PL_DBsignal               DBsignal
+#  define PL_DBsingle               DBsingle
+#  define PL_DBsub                  DBsub
+#  define PL_DBtrace                DBtrace
