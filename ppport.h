@@ -4435,3 +4435,60 @@ typedef OP* (CPERLscope(*Perl_check_t)) (pTHX_ OP*);
 #ifndef isGRAPH
 #  define isGRAPH(c)                     isgraph(c)
 #endif
+
+#ifndef isPRINT
+#  define isPRINT(c)                     isprint(c)
+#endif
+
+#ifndef isPUNCT
+#  define isPUNCT(c)                     ispunct(c)
+#endif
+
+#ifndef isXDIGIT
+#  define isXDIGIT(c)                    isxdigit(c)
+#endif
+
+#else
+# if (PERL_BCDVERSION < 0x5010000)
+/* Hint: isPRINT
+ * The implementation in older perl versions includes all of the
+ * isSPACE() characters, which is wrong. The version provided by
+ * Devel::PPPort always overrides a present buggy version.
+ */
+#  undef isPRINT
+# endif
+
+#ifdef HAS_QUAD
+# ifdef U64TYPE
+#  define WIDEST_UTYPE U64TYPE
+# else
+#  define WIDEST_UTYPE Quad_t
+# endif
+#else
+# define WIDEST_UTYPE U32
+#endif
+#ifndef isALNUMC
+#  define isALNUMC(c)                    (isALPHA(c) || isDIGIT(c))
+#endif
+
+#ifndef isASCII
+#  define isASCII(c)                     ((WIDEST_UTYPE) (c) <= 127)
+#endif
+
+#ifndef isCNTRL
+#  define isCNTRL(c)                     ((WIDEST_UTYPE) (c) < ' ' || (c) == 127)
+#endif
+
+#ifndef isGRAPH
+#  define isGRAPH(c)                     (isALNUM(c) || isPUNCT(c))
+#endif
+
+#ifndef isPRINT
+#  define isPRINT(c)                     (((c) >= 32 && (c) < 127))
+#endif
+
+#ifndef isPUNCT
+#  define isPUNCT(c)                     (((c) >= 33 && (c) <= 47) || ((c) >= 58 && (c) <= 64)  || ((c) >= 91 && (c) <= 96) || ((c) >= 123 && (c) <= 126))
+#endif
+
+#ifndef isXDIGIT
