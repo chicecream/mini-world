@@ -4548,3 +4548,46 @@ extern U32 DPPP_(my_PL_signals);
 #  define PL_DBsingle               DBsingle
 #  define PL_DBsub                  DBsub
 #  define PL_DBtrace                DBtrace
+#  define PL_Sv                     Sv
+#  define PL_bufend                 bufend
+#  define PL_bufptr                 bufptr
+#  define PL_compiling              compiling
+#  define PL_copline                copline
+#  define PL_curcop                 curcop
+#  define PL_curstash               curstash
+#  define PL_debstash               debstash
+#  define PL_defgv                  defgv
+#  define PL_diehook                diehook
+#  define PL_dirty                  dirty
+#  define PL_dowarn                 dowarn
+#  define PL_errgv                  errgv
+#  define PL_error_count            error_count
+#  define PL_expect                 expect
+#  define PL_hexdigit               hexdigit
+#  define PL_hints                  hints
+#  define PL_in_my                  in_my
+#  define PL_laststatval            laststatval
+#  define PL_lex_state              lex_state
+#  define PL_lex_stuff              lex_stuff
+#  define PL_linestr                linestr
+#  define PL_na                     na
+#  define PL_perl_destruct_level    perl_destruct_level
+#  define PL_perldb                 perldb
+#  define PL_rsfp_filters           rsfp_filters
+#  define PL_rsfp                   rsfp
+#  define PL_stack_base             stack_base
+#  define PL_stack_sp               stack_sp
+#  define PL_statcache              statcache
+#  define PL_stdingv                stdingv
+#  define PL_sv_arenaroot           sv_arenaroot
+#  define PL_sv_no                  sv_no
+#  define PL_sv_undef               sv_undef
+#  define PL_sv_yes                 sv_yes
+#  define PL_tainted                tainted
+#  define PL_tainting               tainting
+#  define PL_tokenbuf               tokenbuf
+/* Replace: 0 */
+#endif
+
+/* Warning: PL_parser
+ * For perl versions earlier than 5.9.5, this is an always
