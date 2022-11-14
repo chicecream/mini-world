@@ -4591,3 +4591,49 @@ extern U32 DPPP_(my_PL_signals);
 
 /* Warning: PL_parser
  * For perl versions earlier than 5.9.5, this is an always
+ * non-NULL dummy. Also, it cannot be dereferenced. Don't
+ * use it if you can avoid is and unless you absolutely know
+ * what you're doing.
+ * If you always check that PL_parser is non-NULL, you can
+ * define DPPP_PL_parser_NO_DUMMY to avoid the creation of
+ * a dummy parser structure.
+ */
+
+#if (PERL_BCDVERSION >= 0x5009005)
+# ifdef DPPP_PL_parser_NO_DUMMY
+#  define D_PPP_my_PL_parser_var(var) ((PL_parser ? PL_parser : \
+                (croak("panic: PL_parser == NULL in %s:%d", \
+                       __FILE__, __LINE__), (yy_parser *) NULL))->var)
+# else
+#  ifdef DPPP_PL_parser_NO_DUMMY_WARNING
+#   define D_PPP_parser_dummy_warning(var)
+#  else
+#   define D_PPP_parser_dummy_warning(var) \
+             warn("warning: dummy PL_" #var " used in %s:%d", __FILE__, __LINE__),
+#  endif
+#  define D_PPP_my_PL_parser_var(var) ((PL_parser ? PL_parser : \
+                (D_PPP_parser_dummy_warning(var) &DPPP_(dummy_PL_parser)))->var)
+#if defined(NEED_PL_parser)
+static yy_parser DPPP_(dummy_PL_parser);
+#elif defined(NEED_PL_parser_GLOBAL)
+yy_parser DPPP_(dummy_PL_parser);
+#else
+extern yy_parser DPPP_(dummy_PL_parser);
+#endif
+
+# endif
+
+/* PL_expect, PL_copline, PL_rsfp, PL_rsfp_filters, PL_linestr, PL_bufptr, PL_bufend, PL_lex_state, PL_lex_stuff, PL_tokenbuf depends on PL_parser */
+/* Warning: PL_expect, PL_copline, PL_rsfp, PL_rsfp_filters, PL_linestr, PL_bufptr, PL_bufend, PL_lex_state, PL_lex_stuff, PL_tokenbuf
+ * Do not use this variable unless you know exactly what you're
+ * doint. It is internal to the perl parser and may change or even
+ * be removed in the future. As of perl 5.9.5, you have to check
+ * for (PL_parser != NULL) for this variable to have any effect.
+ * An always non-NULL PL_parser dummy is provided for earlier
+ * perl versions.
+ * If PL_parser is NULL when you try to access this variable, a
+ * dummy is being accessed instead and a warning is issued unless
+ * you define DPPP_PL_parser_NO_DUMMY_WARNING.
+ * If DPPP_PL_parser_NO_DUMMY is defined, the code trying to access
+ * this variable will croak with a panic message.
+ */
