@@ -4637,3 +4637,59 @@ extern yy_parser DPPP_(dummy_PL_parser);
  * If DPPP_PL_parser_NO_DUMMY is defined, the code trying to access
  * this variable will croak with a panic message.
  */
+
+# define PL_expect         D_PPP_my_PL_parser_var(expect)
+# define PL_copline        D_PPP_my_PL_parser_var(copline)
+# define PL_rsfp           D_PPP_my_PL_parser_var(rsfp)
+# define PL_rsfp_filters   D_PPP_my_PL_parser_var(rsfp_filters)
+# define PL_linestr        D_PPP_my_PL_parser_var(linestr)
+# define PL_bufptr         D_PPP_my_PL_parser_var(bufptr)
+# define PL_bufend         D_PPP_my_PL_parser_var(bufend)
+# define PL_lex_state      D_PPP_my_PL_parser_var(lex_state)
+# define PL_lex_stuff      D_PPP_my_PL_parser_var(lex_stuff)
+# define PL_tokenbuf       D_PPP_my_PL_parser_var(tokenbuf)
+# define PL_in_my          D_PPP_my_PL_parser_var(in_my)
+# define PL_in_my_stash    D_PPP_my_PL_parser_var(in_my_stash)
+# define PL_error_count    D_PPP_my_PL_parser_var(error_count)
+
+
+#else
+
+/* ensure that PL_parser != NULL and cannot be dereferenced */
+# define PL_parser         ((void *) 1)
+
+#endif
+#ifndef mPUSHs
+#  define mPUSHs(s)                      PUSHs(sv_2mortal(s))
+#endif
+
+#ifndef PUSHmortal
+#  define PUSHmortal                     PUSHs(sv_newmortal())
+#endif
+
+#ifndef mPUSHp
+#  define mPUSHp(p,l)                    sv_setpvn(PUSHmortal, (p), (l))
+#endif
+
+#ifndef mPUSHn
+#  define mPUSHn(n)                      sv_setnv(PUSHmortal, (NV)(n))
+#endif
+
+#ifndef mPUSHi
+#  define mPUSHi(i)                      sv_setiv(PUSHmortal, (IV)(i))
+#endif
+
+#ifndef mPUSHu
+#  define mPUSHu(u)                      sv_setuv(PUSHmortal, (UV)(u))
+#endif
+#ifndef mXPUSHs
+#  define mXPUSHs(s)                     XPUSHs(sv_2mortal(s))
+#endif
+
+#ifndef XPUSHmortal
+#  define XPUSHmortal                    XPUSHs(sv_newmortal())
+#endif
+
+#ifndef mXPUSHp
+#  define mXPUSHp(p,l)                   STMT_START { EXTEND(sp,1); sv_setpvn(PUSHmortal, (p), (l)); } STMT_END
+#endif
