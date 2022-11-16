@@ -4693,3 +4693,53 @@ extern yy_parser DPPP_(dummy_PL_parser);
 #ifndef mXPUSHp
 #  define mXPUSHp(p,l)                   STMT_START { EXTEND(sp,1); sv_setpvn(PUSHmortal, (p), (l)); } STMT_END
 #endif
+
+#ifndef mXPUSHn
+#  define mXPUSHn(n)                     STMT_START { EXTEND(sp,1); sv_setnv(PUSHmortal, (NV)(n)); } STMT_END
+#endif
+
+#ifndef mXPUSHi
+#  define mXPUSHi(i)                     STMT_START { EXTEND(sp,1); sv_setiv(PUSHmortal, (IV)(i)); } STMT_END
+#endif
+
+#ifndef mXPUSHu
+#  define mXPUSHu(u)                     STMT_START { EXTEND(sp,1); sv_setuv(PUSHmortal, (UV)(u)); } STMT_END
+#endif
+
+/* Replace: 1 */
+#ifndef call_sv
+#  define call_sv                        perl_call_sv
+#endif
+
+#ifndef call_pv
+#  define call_pv                        perl_call_pv
+#endif
+
+#ifndef call_argv
+#  define call_argv                      perl_call_argv
+#endif
+
+#ifndef call_method
+#  define call_method                    perl_call_method
+#endif
+#ifndef eval_sv
+#  define eval_sv                        perl_eval_sv
+#endif
+
+/* Replace: 0 */
+#ifndef PERL_LOADMOD_DENY
+#  define PERL_LOADMOD_DENY              0x1
+#endif
+
+#ifndef PERL_LOADMOD_NOIMPORT
+#  define PERL_LOADMOD_NOIMPORT          0x2
+#endif
+
+#ifndef PERL_LOADMOD_IMPORT_OPS
+#  define PERL_LOADMOD_IMPORT_OPS        0x4
+#endif
+
+#ifndef G_METHOD
+# define G_METHOD               64
+# ifdef call_sv
+#  undef call_sv
