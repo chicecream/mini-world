@@ -4743,3 +4743,67 @@ extern yy_parser DPPP_(dummy_PL_parser);
 # define G_METHOD               64
 # ifdef call_sv
 #  undef call_sv
+# endif
+# if (PERL_BCDVERSION < 0x5006000)
+#  define call_sv(sv, flags)  ((flags) & G_METHOD ? perl_call_method((char *) SvPV_nolen_const(sv), \
+                                (flags) & ~G_METHOD) : perl_call_sv(sv, flags))
+# else
+#  define call_sv(sv, flags)  ((flags) & G_METHOD ? Perl_call_method(aTHX_ (char *) SvPV_nolen_const(sv), \
+                                (flags) & ~G_METHOD) : Perl_call_sv(aTHX_ sv, flags))
+# endif
+#endif
+
+/* Replace perl_eval_pv with eval_pv */
+
+#ifndef eval_pv
+#if defined(NEED_eval_pv)
+static SV* DPPP_(my_eval_pv)(char *p, I32 croak_on_error);
+static
+#else
+extern SV* DPPP_(my_eval_pv)(char *p, I32 croak_on_error);
+#endif
+
+#ifdef eval_pv
+#  undef eval_pv
+#endif
+#define eval_pv(a,b) DPPP_(my_eval_pv)(aTHX_ a,b)
+#define Perl_eval_pv DPPP_(my_eval_pv)
+
+#if defined(NEED_eval_pv) || defined(NEED_eval_pv_GLOBAL)
+
+SV*
+DPPP_(my_eval_pv)(char *p, I32 croak_on_error)
+{
+    dSP;
+    SV* sv = newSVpv(p, 0);
+
+    PUSHMARK(sp);
+    eval_sv(sv, G_SCALAR);
+    SvREFCNT_dec(sv);
+
+    SPAGAIN;
+    sv = POPs;
+    PUTBACK;
+
+    if (croak_on_error && SvTRUE(GvSV(errgv)))
+        croak(SvPVx(GvSV(errgv), na));
+
+    return sv;
+}
+
+#endif
+#endif
+
+#ifndef vload_module
+#if defined(NEED_vload_module)
+static void DPPP_(my_vload_module)(U32 flags, SV *name, SV *ver, va_list *args);
+static
+#else
+extern void DPPP_(my_vload_module)(U32 flags, SV *name, SV *ver, va_list *args);
+#endif
+
+#ifdef vload_module
+#  undef vload_module
+#endif
+#define vload_module(a,b,c,d) DPPP_(my_vload_module)(aTHX_ a,b,c,d)
+#define Perl_vload_module DPPP_(my_vload_module)
