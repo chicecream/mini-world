@@ -4807,3 +4807,66 @@ extern void DPPP_(my_vload_module)(U32 flags, SV *name, SV *ver, va_list *args);
 #endif
 #define vload_module(a,b,c,d) DPPP_(my_vload_module)(aTHX_ a,b,c,d)
 #define Perl_vload_module DPPP_(my_vload_module)
+
+#if defined(NEED_vload_module) || defined(NEED_vload_module_GLOBAL)
+
+void
+DPPP_(my_vload_module)(U32 flags, SV *name, SV *ver, va_list *args)
+{
+    dTHR;
+    dVAR;
+    OP *veop, *imop;
+
+    OP * const modname = newSVOP(OP_CONST, 0, name);
+    /* 5.005 has a somewhat hacky force_normal that doesn't croak on
+       SvREADONLY() if PL_compling is true. Current perls take care in
+       ck_require() to correctly turn off SvREADONLY before calling
+       force_normal_flags(). This seems a better fix than fudging PL_compling
+     */
+    SvREADONLY_off(((SVOP*)modname)->op_sv);
+    modname->op_private |= OPpCONST_BARE;
+    if (ver) {
+        veop = newSVOP(OP_CONST, 0, ver);
+    }
+    else
+        veop = NULL;
+    if (flags & PERL_LOADMOD_NOIMPORT) {
+        imop = sawparens(newNULLLIST());
+    }
+    else if (flags & PERL_LOADMOD_IMPORT_OPS) {
+        imop = va_arg(*args, OP*);
+    }
+    else {
+        SV *sv;
+        imop = NULL;
+        sv = va_arg(*args, SV*);
+        while (sv) {
+            imop = append_elem(OP_LIST, imop, newSVOP(OP_CONST, 0, sv));
+            sv = va_arg(*args, SV*);
+        }
+    }
+    {
+        const line_t ocopline = PL_copline;
+        COP * const ocurcop = PL_curcop;
+        const int oexpect = PL_expect;
+
+#if (PERL_BCDVERSION >= 0x5004000)
+        utilize(!(flags & PERL_LOADMOD_DENY), start_subparse(FALSE, 0),
+                veop, modname, imop);
+#elif (PERL_BCDVERSION > 0x5003000)
+        utilize(!(flags & PERL_LOADMOD_DENY), start_subparse(),
+                veop, modname, imop);
+#else
+        utilize(!(flags & PERL_LOADMOD_DENY), start_subparse(),
+                modname, imop);
+#endif
+        PL_expect = oexpect;
+        PL_copline = ocopline;
+        PL_curcop = ocurcop;
+    }
+}
+
+#endif
+#endif
+
+#ifndef load_module
