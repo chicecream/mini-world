@@ -4870,3 +4870,56 @@ DPPP_(my_vload_module)(U32 flags, SV *name, SV *ver, va_list *args)
 #endif
 
 #ifndef load_module
+#if defined(NEED_load_module)
+static void DPPP_(my_load_module)(U32 flags, SV *name, SV *ver, ...);
+static
+#else
+extern void DPPP_(my_load_module)(U32 flags, SV *name, SV *ver, ...);
+#endif
+
+#ifdef load_module
+#  undef load_module
+#endif
+#define load_module DPPP_(my_load_module)
+#define Perl_load_module DPPP_(my_load_module)
+
+#if defined(NEED_load_module) || defined(NEED_load_module_GLOBAL)
+
+void
+DPPP_(my_load_module)(U32 flags, SV *name, SV *ver, ...)
+{
+    va_list args;
+    va_start(args, ver);
+    vload_module(flags, name, ver, &args);
+    va_end(args);
+}
+
+#endif
+#endif
+#ifndef newRV_inc
+#  define newRV_inc(sv)                  newRV(sv)   /* Replace */
+#endif
+
+#ifndef newRV_noinc
+#if defined(NEED_newRV_noinc)
+static SV * DPPP_(my_newRV_noinc)(SV *sv);
+static
+#else
+extern SV * DPPP_(my_newRV_noinc)(SV *sv);
+#endif
+
+#ifdef newRV_noinc
+#  undef newRV_noinc
+#endif
+#define newRV_noinc(a) DPPP_(my_newRV_noinc)(aTHX_ a)
+#define Perl_newRV_noinc DPPP_(my_newRV_noinc)
+
+#if defined(NEED_newRV_noinc) || defined(NEED_newRV_noinc_GLOBAL)
+SV *
+DPPP_(my_newRV_noinc)(SV *sv)
+{
+  SV *rv = (SV *)newRV(sv);
+  SvREFCNT_dec(sv);
+  return rv;
+}
+#endif
