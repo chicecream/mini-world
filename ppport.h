@@ -4923,3 +4923,78 @@ DPPP_(my_newRV_noinc)(SV *sv)
   return rv;
 }
 #endif
+#endif
+
+/* Hint: newCONSTSUB
+ * Returns a CV* as of perl-5.7.1. This return value is not supported
+ * by Devel::PPPort.
+ */
+
+/* newCONSTSUB from IO.xs is in the core starting with 5.004_63 */
+#if (PERL_BCDVERSION < 0x5004063) && (PERL_BCDVERSION != 0x5004005)
+#if defined(NEED_newCONSTSUB)
+static void DPPP_(my_newCONSTSUB)(HV *stash, const char *name, SV *sv);
+static
+#else
+extern void DPPP_(my_newCONSTSUB)(HV *stash, const char *name, SV *sv);
+#endif
+
+#ifdef newCONSTSUB
+#  undef newCONSTSUB
+#endif
+#define newCONSTSUB(a,b,c) DPPP_(my_newCONSTSUB)(aTHX_ a,b,c)
+#define Perl_newCONSTSUB DPPP_(my_newCONSTSUB)
+
+#if defined(NEED_newCONSTSUB) || defined(NEED_newCONSTSUB_GLOBAL)
+
+/* This is just a trick to avoid a dependency of newCONSTSUB on PL_parser */
+/* (There's no PL_parser in perl < 5.005, so this is completely safe)     */
+#define D_PPP_PL_copline PL_copline
+
+void
+DPPP_(my_newCONSTSUB)(HV *stash, const char *name, SV *sv)
+{
+        U32 oldhints = PL_hints;
+        HV *old_cop_stash = PL_curcop->cop_stash;
+        HV *old_curstash = PL_curstash;
+        line_t oldline = PL_curcop->cop_line;
+        PL_curcop->cop_line = D_PPP_PL_copline;
+
+        PL_hints &= ~HINT_BLOCK_SCOPE;
+        if (stash)
+                PL_curstash = PL_curcop->cop_stash = stash;
+
+        newSUB(
+
+#if   (PERL_BCDVERSION < 0x5003022)
+                start_subparse(),
+#elif (PERL_BCDVERSION == 0x5003022)
+                start_subparse(0),
+#else  /* 5.003_23  onwards */
+                start_subparse(FALSE, 0),
+#endif
+
+                newSVOP(OP_CONST, 0, newSVpv((char *) name, 0)),
+                newSVOP(OP_CONST, 0, &PL_sv_no),   /* SvPV(&PL_sv_no) == "" -- GMB */
+                newSTATEOP(0, Nullch, newSVOP(OP_CONST, 0, sv))
+        );
+
+        PL_hints = oldhints;
+        PL_curcop->cop_stash = old_cop_stash;
+        PL_curstash = old_curstash;
+        PL_curcop->cop_line = oldline;
+}
+#endif
+#endif
+
+/*
+ * Boilerplate macros for initializing and accessing interpreter-local
+ * data from C.  All statics in extensions should be reworked to use
+ * this, if you want to make the extension thread-safe.  See ext/re/re.xs
+ * for an example of the use of these macros.
+ *
+ * Code that uses these macros is responsible for the following:
+ * 1. #define MY_CXT_KEY to a unique string, e.g. "DynaLoader_guts"
+ * 2. Declare a typedef named my_cxt_t that is a structure that contains
+ *    all the data that needs to be interpreter-local.
+ * 3. Use the START_MY_CXT macro after the declaration of my_cxt_t.
