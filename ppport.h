@@ -5060,3 +5060,55 @@ DPPP_(my_newCONSTSUB)(HV *stash, const char *name, SV *sv)
 #ifndef MY_CXT_CLONE
 /* Clones the per-interpreter data. */
 #define MY_CXT_CLONE \
+        dMY_CXT_SV;                                                     \
+        my_cxt_t *my_cxtp = (my_cxt_t*)SvPVX(newSV(sizeof(my_cxt_t)-1));\
+        Copy(INT2PTR(my_cxt_t*, SvUV(my_cxt_sv)), my_cxtp, 1, my_cxt_t);\
+        sv_setuv(my_cxt_sv, PTR2UV(my_cxtp))
+#endif
+
+#else /* single interpreter */
+
+#ifndef START_MY_CXT
+
+#define START_MY_CXT    static my_cxt_t my_cxt;
+#define dMY_CXT_SV      dNOOP
+#define dMY_CXT         dNOOP
+#define MY_CXT_INIT     NOOP
+#define MY_CXT          my_cxt
+
+#define pMY_CXT         void
+#define pMY_CXT_
+#define _pMY_CXT
+#define aMY_CXT
+#define aMY_CXT_
+#define _aMY_CXT
+
+#endif /* START_MY_CXT */
+
+#ifndef MY_CXT_CLONE
+#define MY_CXT_CLONE    NOOP
+#endif
+
+#endif
+
+#ifndef IVdf
+#  if IVSIZE == LONGSIZE
+#    define     IVdf      "ld"
+#    define     UVuf      "lu"
+#    define     UVof      "lo"
+#    define     UVxf      "lx"
+#    define     UVXf      "lX"
+#  elif IVSIZE == INTSIZE
+#    define   IVdf      "d"
+#    define   UVuf      "u"
+#    define   UVof      "o"
+#    define   UVxf      "x"
+#    define   UVXf      "X"
+#  else
+#    error "cannot define IV/UV formats"
+#  endif
+#endif
+
+#ifndef NVef
+#  if defined(USE_LONG_DOUBLE) && defined(HAS_LONG_DOUBLE) && \
+      defined(PERL_PRIfldbl) && (PERL_BCDVERSION != 0x5006000)
