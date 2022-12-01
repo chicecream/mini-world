@@ -5112,3 +5112,51 @@ DPPP_(my_newCONSTSUB)(HV *stash, const char *name, SV *sv)
 #ifndef NVef
 #  if defined(USE_LONG_DOUBLE) && defined(HAS_LONG_DOUBLE) && \
       defined(PERL_PRIfldbl) && (PERL_BCDVERSION != 0x5006000)
+            /* Not very likely, but let's try anyway. */
+#    define NVef          PERL_PRIeldbl
+#    define NVff          PERL_PRIfldbl
+#    define NVgf          PERL_PRIgldbl
+#  else
+#    define NVef          "e"
+#    define NVff          "f"
+#    define NVgf          "g"
+#  endif
+#endif
+
+#ifndef SvREFCNT_inc
+#  ifdef PERL_USE_GCC_BRACE_GROUPS
+#    define SvREFCNT_inc(sv)            \
+      ({                                \
+          SV * const _sv = (SV*)(sv);   \
+          if (_sv)                      \
+               (SvREFCNT(_sv))++;       \
+          _sv;                          \
+      })
+#  else
+#    define SvREFCNT_inc(sv)    \
+          ((PL_Sv=(SV*)(sv)) ? (++(SvREFCNT(PL_Sv)),PL_Sv) : NULL)
+#  endif
+#endif
+
+#ifndef SvREFCNT_inc_simple
+#  ifdef PERL_USE_GCC_BRACE_GROUPS
+#    define SvREFCNT_inc_simple(sv)     \
+      ({                                        \
+          if (sv)                               \
+               (SvREFCNT(sv))++;                \
+          (SV *)(sv);                           \
+      })
+#  else
+#    define SvREFCNT_inc_simple(sv) \
+          ((sv) ? (SvREFCNT(sv)++,(SV*)(sv)) : NULL)
+#  endif
+#endif
+
+#ifndef SvREFCNT_inc_NN
+#  ifdef PERL_USE_GCC_BRACE_GROUPS
+#    define SvREFCNT_inc_NN(sv)         \
+      ({                                        \
+          SV * const _sv = (SV*)(sv);   \
+          SvREFCNT(_sv)++;              \
+          _sv;                          \
+      })
