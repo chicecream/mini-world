@@ -5160,3 +5160,39 @@ DPPP_(my_newCONSTSUB)(HV *stash, const char *name, SV *sv)
           SvREFCNT(_sv)++;              \
           _sv;                          \
       })
+#  else
+#    define SvREFCNT_inc_NN(sv) \
+          (PL_Sv=(SV*)(sv),++(SvREFCNT(PL_Sv)),PL_Sv)
+#  endif
+#endif
+
+#ifndef SvREFCNT_inc_void
+#  ifdef PERL_USE_GCC_BRACE_GROUPS
+#    define SvREFCNT_inc_void(sv)               \
+      ({                                        \
+          SV * const _sv = (SV*)(sv);   \
+          if (_sv)                      \
+              (void)(SvREFCNT(_sv)++);  \
+      })
+#  else
+#    define SvREFCNT_inc_void(sv) \
+          (void)((PL_Sv=(SV*)(sv)) ? ++(SvREFCNT(PL_Sv)) : 0)
+#  endif
+#endif
+#ifndef SvREFCNT_inc_simple_void
+#  define SvREFCNT_inc_simple_void(sv)   STMT_START { if (sv) SvREFCNT(sv)++; } STMT_END
+#endif
+
+#ifndef SvREFCNT_inc_simple_NN
+#  define SvREFCNT_inc_simple_NN(sv)     (++SvREFCNT(sv), (SV*)(sv))
+#endif
+
+#ifndef SvREFCNT_inc_void_NN
+#  define SvREFCNT_inc_void_NN(sv)       (void)(++SvREFCNT((SV*)(sv)))
+#endif
+
+#ifndef SvREFCNT_inc_simple_void_NN
+#  define SvREFCNT_inc_simple_void_NN(sv) (void)(++SvREFCNT((SV*)(sv)))
+#endif
+
+#ifndef newSV_type
