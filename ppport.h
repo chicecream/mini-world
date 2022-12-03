@@ -5253,3 +5253,50 @@ extern SV * DPPP_(my_newSVpvn_flags)(pTHX_ const char *s, STRLEN len, U32 flags)
 #ifdef newSVpvn_flags
 #  undef newSVpvn_flags
 #endif
+#define newSVpvn_flags(a,b,c) DPPP_(my_newSVpvn_flags)(aTHX_ a,b,c)
+#define Perl_newSVpvn_flags DPPP_(my_newSVpvn_flags)
+
+#if defined(NEED_newSVpvn_flags) || defined(NEED_newSVpvn_flags_GLOBAL)
+
+SV *
+DPPP_(my_newSVpvn_flags)(pTHX_ const char *s, STRLEN len, U32 flags)
+{
+  SV *sv = newSVpvn(D_PPP_CONSTPV_ARG(s), len);
+  SvFLAGS(sv) |= (flags & SVf_UTF8);
+  return (flags & SVs_TEMP) ? sv_2mortal(sv) : sv;
+}
+
+#endif
+
+#endif
+
+/* Backwards compatibility stuff... :-( */
+#if !defined(NEED_sv_2pv_flags) && defined(NEED_sv_2pv_nolen)
+#  define NEED_sv_2pv_flags
+#endif
+#if !defined(NEED_sv_2pv_flags_GLOBAL) && defined(NEED_sv_2pv_nolen_GLOBAL)
+#  define NEED_sv_2pv_flags_GLOBAL
+#endif
+
+/* Hint: sv_2pv_nolen
+ * Use the SvPV_nolen() or SvPV_nolen_const() macros instead of sv_2pv_nolen().
+ */
+#ifndef sv_2pv_nolen
+#  define sv_2pv_nolen(sv)               SvPV_nolen(sv)
+#endif
+
+#ifdef SvPVbyte
+
+/* Hint: SvPVbyte
+ * Does not work in perl-5.6.1, ppport.h implements a version
+ * borrowed from perl-5.7.3.
+ */
+
+#if (PERL_BCDVERSION < 0x5007000)
+
+#if defined(NEED_sv_2pvbyte)
+static char * DPPP_(my_sv_2pvbyte)(pTHX_ SV *sv, STRLEN *lp);
+static
+#else
+extern char * DPPP_(my_sv_2pvbyte)(pTHX_ SV *sv, STRLEN *lp);
+#endif
