@@ -5461,3 +5461,49 @@ DPPP_(my_sv_pvn_force_flags)(pTHX_ SV *sv, STRLEN *lp, I32 flags)
 #ifndef SvPV_flags_const
 #  define SvPV_flags_const(sv, lp, flags) \
                  ((SvFLAGS(sv) & (SVf_POK)) == SVf_POK \
+                  ? ((lp = SvCUR(sv)), SvPVX_const(sv)) : \
+                  (const char*) sv_2pv_flags(sv, &lp, flags|SV_CONST_RETURN))
+#endif
+#ifndef SvPV_flags_const_nolen
+#  define SvPV_flags_const_nolen(sv, flags) \
+                 ((SvFLAGS(sv) & (SVf_POK)) == SVf_POK \
+                  ? SvPVX_const(sv) : \
+                  (const char*) sv_2pv_flags(sv, DPPP_SVPV_NOLEN_LP_ARG, flags|SV_CONST_RETURN))
+#endif
+#ifndef SvPV_flags_mutable
+#  define SvPV_flags_mutable(sv, lp, flags) \
+                 ((SvFLAGS(sv) & (SVf_POK)) == SVf_POK \
+                  ? ((lp = SvCUR(sv)), SvPVX_mutable(sv)) : \
+                  sv_2pv_flags(sv, &lp, flags|SV_MUTABLE_RETURN))
+#endif
+#ifndef SvPV_force
+#  define SvPV_force(sv, lp)             SvPV_force_flags(sv, lp, SV_GMAGIC)
+#endif
+
+#ifndef SvPV_force_nolen
+#  define SvPV_force_nolen(sv)           SvPV_force_flags_nolen(sv, SV_GMAGIC)
+#endif
+
+#ifndef SvPV_force_mutable
+#  define SvPV_force_mutable(sv, lp)     SvPV_force_flags_mutable(sv, lp, SV_GMAGIC)
+#endif
+
+#ifndef SvPV_force_nomg
+#  define SvPV_force_nomg(sv, lp)        SvPV_force_flags(sv, lp, 0)
+#endif
+
+#ifndef SvPV_force_nomg_nolen
+#  define SvPV_force_nomg_nolen(sv)      SvPV_force_flags_nolen(sv, 0)
+#endif
+#ifndef SvPV_force_flags
+#  define SvPV_force_flags(sv, lp, flags) \
+                 ((SvFLAGS(sv) & (SVf_POK|SVf_THINKFIRST)) == SVf_POK \
+                 ? ((lp = SvCUR(sv)), SvPVX(sv)) : sv_pvn_force_flags(sv, &lp, flags))
+#endif
+#ifndef SvPV_force_flags_nolen
+#  define SvPV_force_flags_nolen(sv, flags) \
+                 ((SvFLAGS(sv) & (SVf_POK|SVf_THINKFIRST)) == SVf_POK \
+                 ? SvPVX(sv) : sv_pvn_force_flags(sv, DPPP_SVPV_NOLEN_LP_ARG, flags))
+#endif
+#ifndef SvPV_force_flags_mutable
+#  define SvPV_force_flags_mutable(sv, lp, flags) \
