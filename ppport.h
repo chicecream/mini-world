@@ -5300,3 +5300,50 @@ static
 #else
 extern char * DPPP_(my_sv_2pvbyte)(pTHX_ SV *sv, STRLEN *lp);
 #endif
+
+#ifdef sv_2pvbyte
+#  undef sv_2pvbyte
+#endif
+#define sv_2pvbyte(a,b) DPPP_(my_sv_2pvbyte)(aTHX_ a,b)
+#define Perl_sv_2pvbyte DPPP_(my_sv_2pvbyte)
+
+#if defined(NEED_sv_2pvbyte) || defined(NEED_sv_2pvbyte_GLOBAL)
+
+char *
+DPPP_(my_sv_2pvbyte)(pTHX_ SV *sv, STRLEN *lp)
+{
+  sv_utf8_downgrade(sv,0);
+  return SvPV(sv,*lp);
+}
+
+#endif
+
+/* Hint: sv_2pvbyte
+ * Use the SvPVbyte() macro instead of sv_2pvbyte().
+ */
+
+#undef SvPVbyte
+
+#define SvPVbyte(sv, lp)                                                \
+        ((SvFLAGS(sv) & (SVf_POK|SVf_UTF8)) == (SVf_POK)                \
+         ? ((lp = SvCUR(sv)), SvPVX(sv)) : sv_2pvbyte(sv, &lp))
+
+#endif
+
+#else
+
+#  define SvPVbyte          SvPV
+#  define sv_2pvbyte        sv_2pv
+
+#endif
+#ifndef sv_2pvbyte_nolen
+#  define sv_2pvbyte_nolen(sv)           sv_2pv_nolen(sv)
+#endif
+
+/* Hint: sv_pvn
+ * Always use the SvPV() macro instead of sv_pvn().
+ */
+
+/* Hint: sv_pvn_force
+ * Always use the SvPV_force() macro instead of sv_pvn_force().
+ */
