@@ -5196,3 +5196,60 @@ DPPP_(my_newCONSTSUB)(HV *stash, const char *name, SV *sv)
 #endif
 
 #ifndef newSV_type
+
+#if defined(NEED_newSV_type)
+static SV* DPPP_(my_newSV_type)(pTHX_ svtype const t);
+static
+#else
+extern SV* DPPP_(my_newSV_type)(pTHX_ svtype const t);
+#endif
+
+#ifdef newSV_type
+#  undef newSV_type
+#endif
+#define newSV_type(a) DPPP_(my_newSV_type)(aTHX_ a)
+#define Perl_newSV_type DPPP_(my_newSV_type)
+
+#if defined(NEED_newSV_type) || defined(NEED_newSV_type_GLOBAL)
+
+SV*
+DPPP_(my_newSV_type)(pTHX_ svtype const t)
+{
+  SV* const sv = newSV(0);
+  sv_upgrade(sv, t);
+  return sv;
+}
+
+#endif
+
+#endif
+
+#if (PERL_BCDVERSION < 0x5006000)
+# define D_PPP_CONSTPV_ARG(x)  ((char *) (x))
+#else
+# define D_PPP_CONSTPV_ARG(x)  (x)
+#endif
+#ifndef newSVpvn
+#  define newSVpvn(data,len)             ((data)                                              \
+                                    ? ((len) ? newSVpv((data), (len)) : newSVpv("", 0)) \
+                                    : newSV(0))
+#endif
+#ifndef newSVpvn_utf8
+#  define newSVpvn_utf8(s, len, u)       newSVpvn_flags((s), (len), (u) ? SVf_UTF8 : 0)
+#endif
+#ifndef SVf_UTF8
+#  define SVf_UTF8                       0
+#endif
+
+#ifndef newSVpvn_flags
+
+#if defined(NEED_newSVpvn_flags)
+static SV * DPPP_(my_newSVpvn_flags)(pTHX_ const char *s, STRLEN len, U32 flags);
+static
+#else
+extern SV * DPPP_(my_newSVpvn_flags)(pTHX_ const char *s, STRLEN len, U32 flags);
+#endif
+
+#ifdef newSVpvn_flags
+#  undef newSVpvn_flags
+#endif
