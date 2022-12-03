@@ -5507,3 +5507,46 @@ DPPP_(my_sv_pvn_force_flags)(pTHX_ SV *sv, STRLEN *lp, I32 flags)
 #endif
 #ifndef SvPV_force_flags_mutable
 #  define SvPV_force_flags_mutable(sv, lp, flags) \
+                 ((SvFLAGS(sv) & (SVf_POK|SVf_THINKFIRST)) == SVf_POK \
+                 ? ((lp = SvCUR(sv)), SvPVX_mutable(sv)) \
+                  : sv_pvn_force_flags(sv, &lp, flags|SV_MUTABLE_RETURN))
+#endif
+#ifndef SvPV_nolen
+#  define SvPV_nolen(sv)                 \
+                 ((SvFLAGS(sv) & (SVf_POK)) == SVf_POK \
+                  ? SvPVX(sv) : sv_2pv_flags(sv, DPPP_SVPV_NOLEN_LP_ARG, SV_GMAGIC))
+#endif
+#ifndef SvPV_nolen_const
+#  define SvPV_nolen_const(sv)           \
+                 ((SvFLAGS(sv) & (SVf_POK)) == SVf_POK \
+                  ? SvPVX_const(sv) : sv_2pv_flags(sv, DPPP_SVPV_NOLEN_LP_ARG, SV_GMAGIC|SV_CONST_RETURN))
+#endif
+#ifndef SvPV_nomg
+#  define SvPV_nomg(sv, lp)              SvPV_flags(sv, lp, 0)
+#endif
+
+#ifndef SvPV_nomg_const
+#  define SvPV_nomg_const(sv, lp)        SvPV_flags_const(sv, lp, 0)
+#endif
+
+#ifndef SvPV_nomg_const_nolen
+#  define SvPV_nomg_const_nolen(sv)      SvPV_flags_const_nolen(sv, 0)
+#endif
+
+#ifndef SvPV_nomg_nolen
+#  define SvPV_nomg_nolen(sv)            ((SvFLAGS(sv) & (SVf_POK)) == SVf_POK \
+                                    ? SvPVX(sv) : sv_2pv_flags(sv, DPPP_SVPV_NOLEN_LP_ARG, 0))
+#endif
+#ifndef SvPV_renew
+#  define SvPV_renew(sv,n)               STMT_START { SvLEN_set(sv, n); \
+                 SvPV_set((sv), (char *) saferealloc(          \
+                       (Malloc_t)SvPVX(sv), (MEM_SIZE)((n)))); \
+               } STMT_END
+#endif
+#ifndef SvMAGIC_set
+#  define SvMAGIC_set(sv, val)           \
+                STMT_START { assert(SvTYPE(sv) >= SVt_PVMG); \
+                (((XPVMG*) SvANY(sv))->xmg_magic = (val)); } STMT_END
+#endif
+
+#if (PERL_BCDVERSION < 0x5009003)
