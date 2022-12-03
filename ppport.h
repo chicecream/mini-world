@@ -5347,3 +5347,53 @@ DPPP_(my_sv_2pvbyte)(pTHX_ SV *sv, STRLEN *lp)
 /* Hint: sv_pvn_force
  * Always use the SvPV_force() macro instead of sv_pvn_force().
  */
+
+/* If these are undefined, they're not handled by the core anyway */
+#ifndef SV_IMMEDIATE_UNREF
+#  define SV_IMMEDIATE_UNREF             0
+#endif
+
+#ifndef SV_GMAGIC
+#  define SV_GMAGIC                      0
+#endif
+
+#ifndef SV_COW_DROP_PV
+#  define SV_COW_DROP_PV                 0
+#endif
+
+#ifndef SV_UTF8_NO_ENCODING
+#  define SV_UTF8_NO_ENCODING            0
+#endif
+
+#ifndef SV_NOSTEAL
+#  define SV_NOSTEAL                     0
+#endif
+
+#ifndef SV_CONST_RETURN
+#  define SV_CONST_RETURN                0
+#endif
+
+#ifndef SV_MUTABLE_RETURN
+#  define SV_MUTABLE_RETURN              0
+#endif
+
+#ifndef SV_SMAGIC
+#  define SV_SMAGIC                      0
+#endif
+
+#ifndef SV_HAS_TRAILING_NUL
+#  define SV_HAS_TRAILING_NUL            0
+#endif
+
+#ifndef SV_COW_SHARED_HASH_KEYS
+#  define SV_COW_SHARED_HASH_KEYS        0
+#endif
+
+#if (PERL_BCDVERSION < 0x5007002)
+
+#if defined(NEED_sv_2pv_flags)
+static char * DPPP_(my_sv_2pv_flags)(pTHX_ SV *sv, STRLEN *lp, I32 flags);
+static
+#else
+extern char * DPPP_(my_sv_2pv_flags)(pTHX_ SV *sv, STRLEN *lp, I32 flags);
+#endif
