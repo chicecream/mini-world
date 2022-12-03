@@ -5397,3 +5397,67 @@ static
 #else
 extern char * DPPP_(my_sv_2pv_flags)(pTHX_ SV *sv, STRLEN *lp, I32 flags);
 #endif
+
+#ifdef sv_2pv_flags
+#  undef sv_2pv_flags
+#endif
+#define sv_2pv_flags(a,b,c) DPPP_(my_sv_2pv_flags)(aTHX_ a,b,c)
+#define Perl_sv_2pv_flags DPPP_(my_sv_2pv_flags)
+
+#if defined(NEED_sv_2pv_flags) || defined(NEED_sv_2pv_flags_GLOBAL)
+
+char *
+DPPP_(my_sv_2pv_flags)(pTHX_ SV *sv, STRLEN *lp, I32 flags)
+{
+  STRLEN n_a = (STRLEN) flags;
+  return sv_2pv(sv, lp ? lp : &n_a);
+}
+
+#endif
+
+#if defined(NEED_sv_pvn_force_flags)
+static char * DPPP_(my_sv_pvn_force_flags)(pTHX_ SV *sv, STRLEN *lp, I32 flags);
+static
+#else
+extern char * DPPP_(my_sv_pvn_force_flags)(pTHX_ SV *sv, STRLEN *lp, I32 flags);
+#endif
+
+#ifdef sv_pvn_force_flags
+#  undef sv_pvn_force_flags
+#endif
+#define sv_pvn_force_flags(a,b,c) DPPP_(my_sv_pvn_force_flags)(aTHX_ a,b,c)
+#define Perl_sv_pvn_force_flags DPPP_(my_sv_pvn_force_flags)
+
+#if defined(NEED_sv_pvn_force_flags) || defined(NEED_sv_pvn_force_flags_GLOBAL)
+
+char *
+DPPP_(my_sv_pvn_force_flags)(pTHX_ SV *sv, STRLEN *lp, I32 flags)
+{
+  STRLEN n_a = (STRLEN) flags;
+  return sv_pvn_force(sv, lp ? lp : &n_a);
+}
+
+#endif
+
+#endif
+
+#if (PERL_BCDVERSION < 0x5008008) || ( (PERL_BCDVERSION >= 0x5009000) && (PERL_BCDVERSION < 0x5009003) )
+# define DPPP_SVPV_NOLEN_LP_ARG &PL_na
+#else
+# define DPPP_SVPV_NOLEN_LP_ARG 0
+#endif
+#ifndef SvPV_const
+#  define SvPV_const(sv, lp)             SvPV_flags_const(sv, lp, SV_GMAGIC)
+#endif
+
+#ifndef SvPV_mutable
+#  define SvPV_mutable(sv, lp)           SvPV_flags_mutable(sv, lp, SV_GMAGIC)
+#endif
+#ifndef SvPV_flags
+#  define SvPV_flags(sv, lp, flags)      \
+                 ((SvFLAGS(sv) & (SVf_POK)) == SVf_POK \
+                  ? ((lp = SvCUR(sv)), SvPVX(sv)) : sv_2pv_flags(sv, &lp, flags))
+#endif
+#ifndef SvPV_flags_const
+#  define SvPV_flags_const(sv, lp, flags) \
+                 ((SvFLAGS(sv) & (SVf_POK)) == SVf_POK \
