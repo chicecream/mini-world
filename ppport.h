@@ -5871,3 +5871,72 @@ DPPP_(my_newSVpvn_share)(pTHX_ const char *src, I32 len, U32 hash)
 #endif
 
 #ifndef WARN_CLOSED
+#  define WARN_CLOSED                    6
+#endif
+
+#ifndef WARN_EXEC
+#  define WARN_EXEC                      7
+#endif
+
+#ifndef WARN_LAYER
+#  define WARN_LAYER                     8
+#endif
+
+#ifndef WARN_NEWLINE
+#  define WARN_NEWLINE                   9
+#endif
+
+#ifndef WARN_PIPE
+#  define WARN_PIPE                      10
+#endif
+
+#ifndef WARN_UNOPENED
+#  define WARN_UNOPENED                  11
+#endif
+
+#ifndef WARN_MISC
+#  define WARN_MISC                      12
+#endif
+
+#ifndef WARN_NUMERIC
+#  define WARN_NUMERIC                   13
+#endif
+
+#ifndef WARN_ONCE
+#  define WARN_ONCE                      14
+#endif
+
+#ifndef WARN_OVERFLOW
+#  define WARN_OVERFLOW                  15
+#endif
+
+#ifndef WARN_PACK
+#  define WARN_PACK                      16
+#endif
+
+#ifndef WARN_PORTABLE
+#  define WARN_PORTABLE                  17
+#endif
+
+#ifndef WARN_RECURSION
+#  define WARN_RECURSION                 18
+#endif
+
+#ifndef WARN_REDEFINE
+#  define WARN_REDEFINE                  19
+#endif
+
+#ifndef WARN_REGEXP
+#  define WARN_REGEXP                    20
+#endif
+
+#ifndef WARN_SEVERE
+#  define WARN_SEVERE                    21
+#endif
+
+#ifndef WARN_DEBUGGING
+#  define WARN_DEBUGGING                 22
+#endif
+
+#ifndef WARN_INPLACE
+#  define WARN_INPLACE                   23
