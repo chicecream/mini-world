@@ -5550,3 +5550,66 @@ DPPP_(my_sv_pvn_force_flags)(pTHX_ SV *sv, STRLEN *lp, I32 flags)
 #endif
 
 #if (PERL_BCDVERSION < 0x5009003)
+#ifndef SvPVX_const
+#  define SvPVX_const(sv)                ((const char*) (0 + SvPVX(sv)))
+#endif
+
+#ifndef SvPVX_mutable
+#  define SvPVX_mutable(sv)              (0 + SvPVX(sv))
+#endif
+#ifndef SvRV_set
+#  define SvRV_set(sv, val)              \
+                STMT_START { assert(SvTYPE(sv) >=  SVt_RV); \
+                (((XRV*) SvANY(sv))->xrv_rv = (val)); } STMT_END
+#endif
+
+#else
+#ifndef SvPVX_const
+#  define SvPVX_const(sv)                ((const char*)((sv)->sv_u.svu_pv))
+#endif
+
+#ifndef SvPVX_mutable
+#  define SvPVX_mutable(sv)              ((sv)->sv_u.svu_pv)
+#endif
+#ifndef SvRV_set
+#  define SvRV_set(sv, val)              \
+                STMT_START { assert(SvTYPE(sv) >=  SVt_RV); \
+                ((sv)->sv_u.svu_rv = (val)); } STMT_END
+#endif
+
+#endif
+#ifndef SvSTASH_set
+#  define SvSTASH_set(sv, val)           \
+                STMT_START { assert(SvTYPE(sv) >= SVt_PVMG); \
+                (((XPVMG*) SvANY(sv))->xmg_stash = (val)); } STMT_END
+#endif
+
+#if (PERL_BCDVERSION < 0x5004000)
+#ifndef SvUV_set
+#  define SvUV_set(sv, val)              \
+                STMT_START { assert(SvTYPE(sv) == SVt_IV || SvTYPE(sv) >= SVt_PVIV); \
+                (((XPVIV*) SvANY(sv))->xiv_iv = (IV) (val)); } STMT_END
+#endif
+
+#else
+#ifndef SvUV_set
+#  define SvUV_set(sv, val)              \
+                STMT_START { assert(SvTYPE(sv) == SVt_IV || SvTYPE(sv) >= SVt_PVIV); \
+                (((XPVUV*) SvANY(sv))->xuv_uv = (val)); } STMT_END
+#endif
+
+#endif
+
+#if (PERL_BCDVERSION >= 0x5004000) && !defined(vnewSVpvf)
+#if defined(NEED_vnewSVpvf)
+static SV * DPPP_(my_vnewSVpvf)(pTHX_ const char *pat, va_list *args);
+static
+#else
+extern SV * DPPP_(my_vnewSVpvf)(pTHX_ const char *pat, va_list *args);
+#endif
+
+#ifdef vnewSVpvf
+#  undef vnewSVpvf
+#endif
+#define vnewSVpvf(a,b) DPPP_(my_vnewSVpvf)(aTHX_ a,b)
+#define Perl_vnewSVpvf DPPP_(my_vnewSVpvf)
