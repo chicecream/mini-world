@@ -5613,3 +5613,66 @@ extern SV * DPPP_(my_vnewSVpvf)(pTHX_ const char *pat, va_list *args);
 #endif
 #define vnewSVpvf(a,b) DPPP_(my_vnewSVpvf)(aTHX_ a,b)
 #define Perl_vnewSVpvf DPPP_(my_vnewSVpvf)
+
+#if defined(NEED_vnewSVpvf) || defined(NEED_vnewSVpvf_GLOBAL)
+
+SV *
+DPPP_(my_vnewSVpvf)(pTHX_ const char *pat, va_list *args)
+{
+  register SV *sv = newSV(0);
+  sv_vsetpvfn(sv, pat, strlen(pat), args, Null(SV**), 0, Null(bool*));
+  return sv;
+}
+
+#endif
+#endif
+
+#if (PERL_BCDVERSION >= 0x5004000) && !defined(sv_vcatpvf)
+#  define sv_vcatpvf(sv, pat, args)  sv_vcatpvfn(sv, pat, strlen(pat), args, Null(SV**), 0, Null(bool*))
+#endif
+
+#if (PERL_BCDVERSION >= 0x5004000) && !defined(sv_vsetpvf)
+#  define sv_vsetpvf(sv, pat, args)  sv_vsetpvfn(sv, pat, strlen(pat), args, Null(SV**), 0, Null(bool*))
+#endif
+
+#if (PERL_BCDVERSION >= 0x5004000) && !defined(sv_catpvf_mg)
+#if defined(NEED_sv_catpvf_mg)
+static void DPPP_(my_sv_catpvf_mg)(pTHX_ SV *sv, const char *pat, ...);
+static
+#else
+extern void DPPP_(my_sv_catpvf_mg)(pTHX_ SV *sv, const char *pat, ...);
+#endif
+
+#define Perl_sv_catpvf_mg DPPP_(my_sv_catpvf_mg)
+
+#if defined(NEED_sv_catpvf_mg) || defined(NEED_sv_catpvf_mg_GLOBAL)
+
+void
+DPPP_(my_sv_catpvf_mg)(pTHX_ SV *sv, const char *pat, ...)
+{
+  va_list args;
+  va_start(args, pat);
+  sv_vcatpvfn(sv, pat, strlen(pat), &args, Null(SV**), 0, Null(bool*));
+  SvSETMAGIC(sv);
+  va_end(args);
+}
+
+#endif
+#endif
+
+#ifdef PERL_IMPLICIT_CONTEXT
+#if (PERL_BCDVERSION >= 0x5004000) && !defined(sv_catpvf_mg_nocontext)
+#if defined(NEED_sv_catpvf_mg_nocontext)
+static void DPPP_(my_sv_catpvf_mg_nocontext)(SV *sv, const char *pat, ...);
+static
+#else
+extern void DPPP_(my_sv_catpvf_mg_nocontext)(SV *sv, const char *pat, ...);
+#endif
+
+#define sv_catpvf_mg_nocontext DPPP_(my_sv_catpvf_mg_nocontext)
+#define Perl_sv_catpvf_mg_nocontext DPPP_(my_sv_catpvf_mg_nocontext)
+
+#if defined(NEED_sv_catpvf_mg_nocontext) || defined(NEED_sv_catpvf_mg_nocontext_GLOBAL)
+
+void
+DPPP_(my_sv_catpvf_mg_nocontext)(SV *sv, const char *pat, ...)
