@@ -5676,3 +5676,47 @@ extern void DPPP_(my_sv_catpvf_mg_nocontext)(SV *sv, const char *pat, ...);
 
 void
 DPPP_(my_sv_catpvf_mg_nocontext)(SV *sv, const char *pat, ...)
+{
+  dTHX;
+  va_list args;
+  va_start(args, pat);
+  sv_vcatpvfn(sv, pat, strlen(pat), &args, Null(SV**), 0, Null(bool*));
+  SvSETMAGIC(sv);
+  va_end(args);
+}
+
+#endif
+#endif
+#endif
+
+/* sv_catpvf_mg depends on sv_catpvf_mg_nocontext */
+#ifndef sv_catpvf_mg
+#  ifdef PERL_IMPLICIT_CONTEXT
+#    define sv_catpvf_mg   Perl_sv_catpvf_mg_nocontext
+#  else
+#    define sv_catpvf_mg   Perl_sv_catpvf_mg
+#  endif
+#endif
+
+#if (PERL_BCDVERSION >= 0x5004000) && !defined(sv_vcatpvf_mg)
+#  define sv_vcatpvf_mg(sv, pat, args)                                     \
+   STMT_START {                                                            \
+     sv_vcatpvfn(sv, pat, strlen(pat), args, Null(SV**), 0, Null(bool*));  \
+     SvSETMAGIC(sv);                                                       \
+   } STMT_END
+#endif
+
+#if (PERL_BCDVERSION >= 0x5004000) && !defined(sv_setpvf_mg)
+#if defined(NEED_sv_setpvf_mg)
+static void DPPP_(my_sv_setpvf_mg)(pTHX_ SV *sv, const char *pat, ...);
+static
+#else
+extern void DPPP_(my_sv_setpvf_mg)(pTHX_ SV *sv, const char *pat, ...);
+#endif
+
+#define Perl_sv_setpvf_mg DPPP_(my_sv_setpvf_mg)
+
+#if defined(NEED_sv_setpvf_mg) || defined(NEED_sv_setpvf_mg_GLOBAL)
+
+void
+DPPP_(my_sv_setpvf_mg)(pTHX_ SV *sv, const char *pat, ...)
