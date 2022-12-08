@@ -5977,3 +5977,59 @@ DPPP_(my_newSVpvn_share)(pTHX_ const char *src, I32 len, U32 hash)
 #ifndef WARN_PARENTHESIS
 #  define WARN_PARENTHESIS               32
 #endif
+
+#ifndef WARN_PRECEDENCE
+#  define WARN_PRECEDENCE                33
+#endif
+
+#ifndef WARN_PRINTF
+#  define WARN_PRINTF                    34
+#endif
+
+#ifndef WARN_PROTOTYPE
+#  define WARN_PROTOTYPE                 35
+#endif
+
+#ifndef WARN_QW
+#  define WARN_QW                        36
+#endif
+
+#ifndef WARN_RESERVED
+#  define WARN_RESERVED                  37
+#endif
+
+#ifndef WARN_SEMICOLON
+#  define WARN_SEMICOLON                 38
+#endif
+
+#ifndef WARN_TAINT
+#  define WARN_TAINT                     39
+#endif
+
+#ifndef WARN_THREADS
+#  define WARN_THREADS                   40
+#endif
+
+#ifndef WARN_UNINITIALIZED
+#  define WARN_UNINITIALIZED             41
+#endif
+
+#ifndef WARN_UNPACK
+#  define WARN_UNPACK                    42
+#endif
+
+#ifndef WARN_UNTIE
+#  define WARN_UNTIE                     43
+#endif
+
+#ifndef WARN_UTF8
+#  define WARN_UTF8                      44
+#endif
+
+#ifndef WARN_VOID
+#  define WARN_VOID                      45
+#endif
+
+#ifndef WARN_ASSERTIONS
+#  define WARN_ASSERTIONS                46
+#endif
