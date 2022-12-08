@@ -5770,3 +5770,50 @@ DPPP_(my_sv_setpvf_mg_nocontext)(SV *sv, const char *pat, ...)
 #endif
 
 #if (PERL_BCDVERSION >= 0x5004000) && !defined(sv_vsetpvf_mg)
+#  define sv_vsetpvf_mg(sv, pat, args)                                     \
+   STMT_START {                                                            \
+     sv_vsetpvfn(sv, pat, strlen(pat), args, Null(SV**), 0, Null(bool*));  \
+     SvSETMAGIC(sv);                                                       \
+   } STMT_END
+#endif
+
+/* Hint: newSVpvn_share
+ * The SVs created by this function only mimic the behaviour of
+ * shared PVs without really being shared. Only use if you know
+ * what you're doing.
+ */
+
+#ifndef newSVpvn_share
+
+#if defined(NEED_newSVpvn_share)
+static SV * DPPP_(my_newSVpvn_share)(pTHX_ const char *src, I32 len, U32 hash);
+static
+#else
+extern SV * DPPP_(my_newSVpvn_share)(pTHX_ const char *src, I32 len, U32 hash);
+#endif
+
+#ifdef newSVpvn_share
+#  undef newSVpvn_share
+#endif
+#define newSVpvn_share(a,b,c) DPPP_(my_newSVpvn_share)(aTHX_ a,b,c)
+#define Perl_newSVpvn_share DPPP_(my_newSVpvn_share)
+
+#if defined(NEED_newSVpvn_share) || defined(NEED_newSVpvn_share_GLOBAL)
+
+SV *
+DPPP_(my_newSVpvn_share)(pTHX_ const char *src, I32 len, U32 hash)
+{
+  SV *sv;
+  if (len < 0)
+    len = -len;
+  if (!hash)
+    PERL_HASH(hash, (char*) src, len);
+  sv = newSVpvn((char *) src, len);
+  sv_upgrade(sv, SVt_PVIV);
+  SvIVX(sv) = hash;
+  SvREADONLY_on(sv);
+  SvPOK_on(sv);
+  return sv;
+}
+
+#endif
