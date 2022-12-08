@@ -5817,3 +5817,57 @@ DPPP_(my_newSVpvn_share)(pTHX_ const char *src, I32 len, U32 hash)
 }
 
 #endif
+
+#endif
+#ifndef SvSHARED_HASH
+#  define SvSHARED_HASH(sv)              (0 + SvUVX(sv))
+#endif
+#ifndef HvNAME_get
+#  define HvNAME_get(hv)                 HvNAME(hv)
+#endif
+#ifndef HvNAMELEN_get
+#  define HvNAMELEN_get(hv)              (HvNAME_get(hv) ? (I32)strlen(HvNAME_get(hv)) : 0)
+#endif
+#ifndef GvSVn
+#  define GvSVn(gv)                      GvSV(gv)
+#endif
+
+#ifndef isGV_with_GP
+#  define isGV_with_GP(gv)               isGV(gv)
+#endif
+
+#ifndef gv_fetchpvn_flags
+#  define gv_fetchpvn_flags(name, len, flags, svt) gv_fetchpv(name, flags, svt)
+#endif
+
+#ifndef gv_fetchsv
+#  define gv_fetchsv(name, flags, svt)   gv_fetchpv(SvPV_nolen_const(name), flags, svt)
+#endif
+#ifndef get_cvn_flags
+#  define get_cvn_flags(name, namelen, flags) get_cv(name, flags)
+#endif
+#ifndef WARN_ALL
+#  define WARN_ALL                       0
+#endif
+
+#ifndef WARN_CLOSURE
+#  define WARN_CLOSURE                   1
+#endif
+
+#ifndef WARN_DEPRECATED
+#  define WARN_DEPRECATED                2
+#endif
+
+#ifndef WARN_EXITING
+#  define WARN_EXITING                   3
+#endif
+
+#ifndef WARN_GLOB
+#  define WARN_GLOB                      4
+#endif
+
+#ifndef WARN_IO
+#  define WARN_IO                        5
+#endif
+
+#ifndef WARN_CLOSED
