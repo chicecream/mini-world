@@ -6212,3 +6212,52 @@ DPPP_(my_warner)(U32 err, const char *pat, ...)
 
 #ifndef PERL_MAGIC_shared
 #  define PERL_MAGIC_shared              'N'
+#endif
+
+#ifndef PERL_MAGIC_shared_scalar
+#  define PERL_MAGIC_shared_scalar       'n'
+#endif
+
+#ifndef PERL_MAGIC_collxfrm
+#  define PERL_MAGIC_collxfrm            'o'
+#endif
+
+#ifndef PERL_MAGIC_tied
+#  define PERL_MAGIC_tied                'P'
+#endif
+
+#ifndef PERL_MAGIC_tiedelem
+#  define PERL_MAGIC_tiedelem            'p'
+#endif
+
+#ifndef PERL_MAGIC_tiedscalar
+#  define PERL_MAGIC_tiedscalar          'q'
+#endif
+
+#ifndef PERL_MAGIC_qr
+#  define PERL_MAGIC_qr                  'r'
+#endif
+
+#ifndef PERL_MAGIC_sig
+#  define PERL_MAGIC_sig                 'S'
+#endif
+
+#ifndef PERL_MAGIC_sigelem
+#  define PERL_MAGIC_sigelem             's'
+#endif
+
+#ifndef PERL_MAGIC_taint
+#  define PERL_MAGIC_taint               't'
+#endif
+
+#ifndef PERL_MAGIC_uvar
+#  define PERL_MAGIC_uvar                'U'
+#endif
+
+#ifndef PERL_MAGIC_uvar_elem
+#  define PERL_MAGIC_uvar_elem           'u'
+#endif
+
+#ifndef PERL_MAGIC_vstring
+#  define PERL_MAGIC_vstring             'V'
+#endif
