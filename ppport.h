@@ -6151,3 +6151,64 @@ DPPP_(my_warner)(U32 err, const char *pat, ...)
 #endif
 
 #ifndef PERL_MAGIC_overload_elem
+#  define PERL_MAGIC_overload_elem       'a'
+#endif
+
+#ifndef PERL_MAGIC_overload_table
+#  define PERL_MAGIC_overload_table      'c'
+#endif
+
+#ifndef PERL_MAGIC_bm
+#  define PERL_MAGIC_bm                  'B'
+#endif
+
+#ifndef PERL_MAGIC_regdata
+#  define PERL_MAGIC_regdata             'D'
+#endif
+
+#ifndef PERL_MAGIC_regdatum
+#  define PERL_MAGIC_regdatum            'd'
+#endif
+
+#ifndef PERL_MAGIC_env
+#  define PERL_MAGIC_env                 'E'
+#endif
+
+#ifndef PERL_MAGIC_envelem
+#  define PERL_MAGIC_envelem             'e'
+#endif
+
+#ifndef PERL_MAGIC_fm
+#  define PERL_MAGIC_fm                  'f'
+#endif
+
+#ifndef PERL_MAGIC_regex_global
+#  define PERL_MAGIC_regex_global        'g'
+#endif
+
+#ifndef PERL_MAGIC_isa
+#  define PERL_MAGIC_isa                 'I'
+#endif
+
+#ifndef PERL_MAGIC_isaelem
+#  define PERL_MAGIC_isaelem             'i'
+#endif
+
+#ifndef PERL_MAGIC_nkeys
+#  define PERL_MAGIC_nkeys               'k'
+#endif
+
+#ifndef PERL_MAGIC_dbfile
+#  define PERL_MAGIC_dbfile              'L'
+#endif
+
+#ifndef PERL_MAGIC_dbline
+#  define PERL_MAGIC_dbline              'l'
+#endif
+
+#ifndef PERL_MAGIC_mutex
+#  define PERL_MAGIC_mutex               'm'
+#endif
+
+#ifndef PERL_MAGIC_shared
+#  define PERL_MAGIC_shared              'N'
