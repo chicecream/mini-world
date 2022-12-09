@@ -6033,3 +6033,50 @@ DPPP_(my_newSVpvn_share)(pTHX_ const char *src, I32 len, U32 hash)
 #ifndef WARN_ASSERTIONS
 #  define WARN_ASSERTIONS                46
 #endif
+#ifndef packWARN
+#  define packWARN(a)                    (a)
+#endif
+
+#ifndef ckWARN
+#  ifdef G_WARN_ON
+#    define  ckWARN(a)                  (PL_dowarn & G_WARN_ON)
+#  else
+#    define  ckWARN(a)                  PL_dowarn
+#  endif
+#endif
+
+#if (PERL_BCDVERSION >= 0x5004000) && !defined(warner)
+#if defined(NEED_warner)
+static void DPPP_(my_warner)(U32 err, const char *pat, ...);
+static
+#else
+extern void DPPP_(my_warner)(U32 err, const char *pat, ...);
+#endif
+
+#define Perl_warner DPPP_(my_warner)
+
+#if defined(NEED_warner) || defined(NEED_warner_GLOBAL)
+
+void
+DPPP_(my_warner)(U32 err, const char *pat, ...)
+{
+  SV *sv;
+  va_list args;
+
+  PERL_UNUSED_ARG(err);
+
+  va_start(args, pat);
+  sv = vnewSVpvf(pat, &args);
+  va_end(args);
+  sv_2mortal(sv);
+  warn("%s", SvPV_nolen(sv));
+}
+
+#define warner  Perl_warner
+
+#define Perl_warner_nocontext  Perl_warner
+
+#endif
+#endif
+
+/* concatenating with "" ensures that only literal strings are accepted as argument
