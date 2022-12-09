@@ -6080,3 +6080,74 @@ DPPP_(my_warner)(U32 err, const char *pat, ...)
 #endif
 
 /* concatenating with "" ensures that only literal strings are accepted as argument
+ * note that STR_WITH_LEN() can't be used as argument to macros or functions that
+ * under some configurations might be macros
+ */
+#ifndef STR_WITH_LEN
+#  define STR_WITH_LEN(s)                (s ""), (sizeof(s)-1)
+#endif
+#ifndef newSVpvs
+#  define newSVpvs(str)                  newSVpvn(str "", sizeof(str) - 1)
+#endif
+
+#ifndef newSVpvs_flags
+#  define newSVpvs_flags(str, flags)     newSVpvn_flags(str "", sizeof(str) - 1, flags)
+#endif
+
+#ifndef newSVpvs_share
+#  define newSVpvs_share(str)            newSVpvn_share(str "", sizeof(str) - 1, 0)
+#endif
+
+#ifndef sv_catpvs
+#  define sv_catpvs(sv, str)             sv_catpvn(sv, str "", sizeof(str) - 1)
+#endif
+
+#ifndef sv_setpvs
+#  define sv_setpvs(sv, str)             sv_setpvn(sv, str "", sizeof(str) - 1)
+#endif
+
+#ifndef hv_fetchs
+#  define hv_fetchs(hv, key, lval)       hv_fetch(hv, key "", sizeof(key) - 1, lval)
+#endif
+
+#ifndef hv_stores
+#  define hv_stores(hv, key, val)        hv_store(hv, key "", sizeof(key) - 1, val, 0)
+#endif
+#ifndef gv_fetchpvs
+#  define gv_fetchpvs(name, flags, svt)  gv_fetchpvn_flags(name "", sizeof(name) - 1, flags, svt)
+#endif
+
+#ifndef gv_stashpvs
+#  define gv_stashpvs(name, flags)       gv_stashpvn(name "", sizeof(name) - 1, flags)
+#endif
+#ifndef get_cvs
+#  define get_cvs(name, flags)           get_cvn_flags(name "", sizeof(name)-1, flags)
+#endif
+#ifndef SvGETMAGIC
+#  define SvGETMAGIC(x)                  STMT_START { if (SvGMAGICAL(x)) mg_get(x); } STMT_END
+#endif
+
+/* Some random bits for sv_unmagicext. These should probably be pulled in for
+   real and organized at some point */
+#ifndef HEf_SVKEY
+#  define HEf_SVKEY                      -2
+#endif
+
+#if defined(__GNUC__) && !defined(PERL_GCC_BRACE_GROUPS_FORBIDDEN)
+#  define MUTABLE_PTR(p) ({ void *_p = (p); _p; })
+#else
+#  define MUTABLE_PTR(p) ((void *) (p))
+#endif
+
+#define MUTABLE_SV(p)   ((SV *)MUTABLE_PTR(p))
+
+/* end of random bits */
+#ifndef PERL_MAGIC_sv
+#  define PERL_MAGIC_sv                  '\0'
+#endif
+
+#ifndef PERL_MAGIC_overload
+#  define PERL_MAGIC_overload            'A'
+#endif
+
+#ifndef PERL_MAGIC_overload_elem
