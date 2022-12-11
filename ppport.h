@@ -6261,3 +6261,67 @@ DPPP_(my_warner)(U32 err, const char *pat, ...)
 #ifndef PERL_MAGIC_vstring
 #  define PERL_MAGIC_vstring             'V'
 #endif
+
+#ifndef PERL_MAGIC_vec
+#  define PERL_MAGIC_vec                 'v'
+#endif
+
+#ifndef PERL_MAGIC_utf8
+#  define PERL_MAGIC_utf8                'w'
+#endif
+
+#ifndef PERL_MAGIC_substr
+#  define PERL_MAGIC_substr              'x'
+#endif
+
+#ifndef PERL_MAGIC_defelem
+#  define PERL_MAGIC_defelem             'y'
+#endif
+
+#ifndef PERL_MAGIC_glob
+#  define PERL_MAGIC_glob                '*'
+#endif
+
+#ifndef PERL_MAGIC_arylen
+#  define PERL_MAGIC_arylen              '#'
+#endif
+
+#ifndef PERL_MAGIC_pos
+#  define PERL_MAGIC_pos                 '.'
+#endif
+
+#ifndef PERL_MAGIC_backref
+#  define PERL_MAGIC_backref             '<'
+#endif
+
+#ifndef PERL_MAGIC_ext
+#  define PERL_MAGIC_ext                 '~'
+#endif
+
+/* That's the best we can do... */
+#ifndef sv_catpvn_nomg
+#  define sv_catpvn_nomg                 sv_catpvn
+#endif
+
+#ifndef sv_catsv_nomg
+#  define sv_catsv_nomg                  sv_catsv
+#endif
+
+#ifndef sv_setsv_nomg
+#  define sv_setsv_nomg                  sv_setsv
+#endif
+
+#ifndef sv_pvn_nomg
+#  define sv_pvn_nomg                    sv_pvn
+#endif
+
+#ifndef SvIV_nomg
+#  define SvIV_nomg                      SvIV
+#endif
+
+#ifndef SvUV_nomg
+#  define SvUV_nomg                      SvUV
+#endif
+
+#ifndef sv_catpv_mg
+#  define sv_catpv_mg(sv, ptr)          \
