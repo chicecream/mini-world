@@ -6325,3 +6325,45 @@ DPPP_(my_warner)(U32 err, const char *pat, ...)
 
 #ifndef sv_catpv_mg
 #  define sv_catpv_mg(sv, ptr)          \
+   STMT_START {                         \
+     SV *TeMpSv = sv;                   \
+     sv_catpv(TeMpSv,ptr);              \
+     SvSETMAGIC(TeMpSv);                \
+   } STMT_END
+#endif
+
+#ifndef sv_catpvn_mg
+#  define sv_catpvn_mg(sv, ptr, len)    \
+   STMT_START {                         \
+     SV *TeMpSv = sv;                   \
+     sv_catpvn(TeMpSv,ptr,len);         \
+     SvSETMAGIC(TeMpSv);                \
+   } STMT_END
+#endif
+
+#ifndef sv_catsv_mg
+#  define sv_catsv_mg(dsv, ssv)         \
+   STMT_START {                         \
+     SV *TeMpSv = dsv;                  \
+     sv_catsv(TeMpSv,ssv);              \
+     SvSETMAGIC(TeMpSv);                \
+   } STMT_END
+#endif
+
+#ifndef sv_setiv_mg
+#  define sv_setiv_mg(sv, i)            \
+   STMT_START {                         \
+     SV *TeMpSv = sv;                   \
+     sv_setiv(TeMpSv,i);                \
+     SvSETMAGIC(TeMpSv);                \
+   } STMT_END
+#endif
+
+#ifndef sv_setnv_mg
+#  define sv_setnv_mg(sv, num)          \
+   STMT_START {                         \
+     SV *TeMpSv = sv;                   \
+     sv_setnv(TeMpSv,num);              \
+     SvSETMAGIC(TeMpSv);                \
+   } STMT_END
+#endif
