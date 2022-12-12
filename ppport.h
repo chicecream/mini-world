@@ -6367,3 +6367,57 @@ DPPP_(my_warner)(U32 err, const char *pat, ...)
      SvSETMAGIC(TeMpSv);                \
    } STMT_END
 #endif
+
+#ifndef sv_setpv_mg
+#  define sv_setpv_mg(sv, ptr)          \
+   STMT_START {                         \
+     SV *TeMpSv = sv;                   \
+     sv_setpv(TeMpSv,ptr);              \
+     SvSETMAGIC(TeMpSv);                \
+   } STMT_END
+#endif
+
+#ifndef sv_setpvn_mg
+#  define sv_setpvn_mg(sv, ptr, len)    \
+   STMT_START {                         \
+     SV *TeMpSv = sv;                   \
+     sv_setpvn(TeMpSv,ptr,len);         \
+     SvSETMAGIC(TeMpSv);                \
+   } STMT_END
+#endif
+
+#ifndef sv_setsv_mg
+#  define sv_setsv_mg(dsv, ssv)         \
+   STMT_START {                         \
+     SV *TeMpSv = dsv;                  \
+     sv_setsv(TeMpSv,ssv);              \
+     SvSETMAGIC(TeMpSv);                \
+   } STMT_END
+#endif
+
+#ifndef sv_setuv_mg
+#  define sv_setuv_mg(sv, i)            \
+   STMT_START {                         \
+     SV *TeMpSv = sv;                   \
+     sv_setuv(TeMpSv,i);                \
+     SvSETMAGIC(TeMpSv);                \
+   } STMT_END
+#endif
+
+#ifndef sv_usepvn_mg
+#  define sv_usepvn_mg(sv, ptr, len)    \
+   STMT_START {                         \
+     SV *TeMpSv = sv;                   \
+     sv_usepvn(TeMpSv,ptr,len);         \
+     SvSETMAGIC(TeMpSv);                \
+   } STMT_END
+#endif
+#ifndef SvVSTRING_mg
+#  define SvVSTRING_mg(sv)               (SvMAGICAL(sv) ? mg_find(sv, PERL_MAGIC_vstring) : NULL)
+#endif
+
+/* Hint: sv_magic_portable
+ * This is a compatibility function that is only available with
+ * Devel::PPPort. It is NOT in the perl core.
+ * Its purpose is to mimic the 5.8.0 behaviour of sv_magic() when
+ * it is being passed a name pointer with namlen == 0. In that
