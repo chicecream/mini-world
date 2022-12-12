@@ -6421,3 +6421,54 @@ DPPP_(my_warner)(U32 err, const char *pat, ...)
  * Devel::PPPort. It is NOT in the perl core.
  * Its purpose is to mimic the 5.8.0 behaviour of sv_magic() when
  * it is being passed a name pointer with namlen == 0. In that
+ * case, perl 5.8.0 and later store the pointer, not a copy of it.
+ * The compatibility can be provided back to perl 5.004. With
+ * earlier versions, the code will not compile.
+ */
+
+#if (PERL_BCDVERSION < 0x5004000)
+
+  /* code that uses sv_magic_portable will not compile */
+
+#elif (PERL_BCDVERSION < 0x5008000)
+
+#  define sv_magic_portable(sv, obj, how, name, namlen)     \
+   STMT_START {                                             \
+     SV *SvMp_sv = (sv);                                    \
+     char *SvMp_name = (char *) (name);                     \
+     I32 SvMp_namlen = (namlen);                            \
+     if (SvMp_name && SvMp_namlen == 0)                     \
+     {                                                      \
+       MAGIC *mg;                                           \
+       sv_magic(SvMp_sv, obj, how, 0, 0);                   \
+       mg = SvMAGIC(SvMp_sv);                               \
+       mg->mg_len = -42; /* XXX: this is the tricky part */ \
+       mg->mg_ptr = SvMp_name;                              \
+     }                                                      \
+     else                                                   \
+     {                                                      \
+       sv_magic(SvMp_sv, obj, how, SvMp_name, SvMp_namlen); \
+     }                                                      \
+   } STMT_END
+
+#else
+
+#  define sv_magic_portable(a, b, c, d, e)  sv_magic(a, b, c, d, e)
+
+#endif
+
+#if !defined(mg_findext)
+#if defined(NEED_mg_findext)
+static MAGIC * DPPP_(my_mg_findext)(SV * sv, int type, const MGVTBL *vtbl);
+static
+#else
+extern MAGIC * DPPP_(my_mg_findext)(SV * sv, int type, const MGVTBL *vtbl);
+#endif
+
+#define mg_findext DPPP_(my_mg_findext)
+#define Perl_mg_findext DPPP_(my_mg_findext)
+
+#if defined(NEED_mg_findext) || defined(NEED_mg_findext_GLOBAL)
+
+MAGIC *
+DPPP_(my_mg_findext)(SV * sv, int type, const MGVTBL *vtbl) {
