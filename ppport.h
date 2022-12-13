@@ -6642,3 +6642,64 @@ DPPP_(my_sv_unmagicext)(pTHX_ SV *const sv, const int type, MGVTBL *vtbl)
 #endif /* USE_ITHREADS */
 
 #if (PERL_BCDVERSION >= 0x5006000)
+#ifndef caller_cx
+
+# if defined(NEED_caller_cx) || defined(NEED_caller_cx_GLOBAL)
+static I32
+DPPP_dopoptosub_at(const PERL_CONTEXT *cxstk, I32 startingblock)
+{
+    I32 i;
+
+    for (i = startingblock; i >= 0; i--) {
+	register const PERL_CONTEXT * const cx = &cxstk[i];
+	switch (CxTYPE(cx)) {
+	default:
+	    continue;
+	case CXt_EVAL:
+	case CXt_SUB:
+	case CXt_FORMAT:
+	    return i;
+	}
+    }
+    return i;
+}
+# endif
+
+# if defined(NEED_caller_cx)
+static const PERL_CONTEXT * DPPP_(my_caller_cx)(pTHX_ I32 count, const PERL_CONTEXT **dbcxp);
+static
+#else
+extern const PERL_CONTEXT * DPPP_(my_caller_cx)(pTHX_ I32 count, const PERL_CONTEXT **dbcxp);
+#endif
+
+#ifdef caller_cx
+#  undef caller_cx
+#endif
+#define caller_cx(a,b) DPPP_(my_caller_cx)(aTHX_ a,b)
+#define Perl_caller_cx DPPP_(my_caller_cx)
+
+#if defined(NEED_caller_cx) || defined(NEED_caller_cx_GLOBAL)
+
+const PERL_CONTEXT *
+DPPP_(my_caller_cx)(pTHX_ I32 count, const PERL_CONTEXT **dbcxp)
+{
+    register I32 cxix = DPPP_dopoptosub_at(cxstack, cxstack_ix);
+    register const PERL_CONTEXT *cx;
+    register const PERL_CONTEXT *ccstack = cxstack;
+    const PERL_SI *top_si = PL_curstackinfo;
+
+    for (;;) {
+	/* we may be in a higher stacklevel, so dig down deeper */
+	while (cxix < 0 && top_si->si_type != PERLSI_MAIN) {
+	    top_si = top_si->si_prev;
+	    ccstack = top_si->si_cxstack;
+	    cxix = DPPP_dopoptosub_at(ccstack, top_si->si_cxix);
+	}
+	if (cxix < 0)
+	    return NULL;
+	/* caller() should not report the automatic calls to &DB::sub */
+	if (PL_DBsub && GvCV(PL_DBsub) && cxix >= 0 &&
+		ccstack[cxix].blk_sub.cv == GvCV(PL_DBsub))
+	    count++;
+	if (!count--)
+	    break;
