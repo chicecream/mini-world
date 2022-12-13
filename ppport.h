@@ -6539,3 +6539,62 @@ DPPP_(my_sv_unmagicext)(pTHX_ SV *const sv, const int type, MGVTBL *vtbl)
     }
     if (SvMAGIC(sv)) {
 	if (SvMAGICAL(sv))	/* if we're under save_magic, wait for restore_magic; */
+	    mg_magical(sv);	/*    else fix the flags now */
+    }
+    else {
+	SvMAGICAL_off(sv);
+	SvFLAGS(sv) |= (SvFLAGS(sv) & (SVp_IOK|SVp_NOK|SVp_POK)) >> PRIVSHIFT;
+    }
+    return 0;
+}
+
+#endif
+#endif
+
+#ifdef USE_ITHREADS
+#ifndef CopFILE
+#  define CopFILE(c)                     ((c)->cop_file)
+#endif
+
+#ifndef CopFILEGV
+#  define CopFILEGV(c)                   (CopFILE(c) ? gv_fetchfile(CopFILE(c)) : Nullgv)
+#endif
+
+#ifndef CopFILE_set
+#  define CopFILE_set(c,pv)              ((c)->cop_file = savepv(pv))
+#endif
+
+#ifndef CopFILESV
+#  define CopFILESV(c)                   (CopFILE(c) ? GvSV(gv_fetchfile(CopFILE(c))) : Nullsv)
+#endif
+
+#ifndef CopFILEAV
+#  define CopFILEAV(c)                   (CopFILE(c) ? GvAV(gv_fetchfile(CopFILE(c))) : Nullav)
+#endif
+
+#ifndef CopSTASHPV
+#  define CopSTASHPV(c)                  ((c)->cop_stashpv)
+#endif
+
+#ifndef CopSTASHPV_set
+#  define CopSTASHPV_set(c,pv)           ((c)->cop_stashpv = ((pv) ? savepv(pv) : Nullch))
+#endif
+
+#ifndef CopSTASH
+#  define CopSTASH(c)                    (CopSTASHPV(c) ? gv_stashpv(CopSTASHPV(c),GV_ADD) : Nullhv)
+#endif
+
+#ifndef CopSTASH_set
+#  define CopSTASH_set(c,hv)             CopSTASHPV_set(c, (hv) ? HvNAME(hv) : Nullch)
+#endif
+
+#ifndef CopSTASH_eq
+#  define CopSTASH_eq(c,hv)              ((hv) && (CopSTASHPV(c) == HvNAME(hv) \
+                                        || (CopSTASHPV(c) && HvNAME(hv) \
+                                        && strEQ(CopSTASHPV(c), HvNAME(hv)))))
+#endif
+
+#else
+#ifndef CopFILEGV
+#  define CopFILEGV(c)                   ((c)->cop_filegv)
+#endif
