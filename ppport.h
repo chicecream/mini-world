@@ -6819,3 +6819,60 @@ DPPP_(my_grok_numeric_radix)(pTHX_ const char **sp, const char *send)
     char *radix = lc->decimal_point;
     if (radix && IN_LOCALE) {
         STRLEN len = strlen(radix);
+        if (*sp + len <= send && memEQ(*sp, radix, len)) {
+            *sp += len;
+            return TRUE;
+        }
+    }
+#endif
+#endif /* USE_LOCALE_NUMERIC */
+    /* always try "." if numeric radix didn't match because
+     * we may have data from different locales mixed */
+    if (*sp < send && **sp == '.') {
+        ++*sp;
+        return TRUE;
+    }
+    return FALSE;
+}
+#endif
+#endif
+
+#ifndef grok_number
+#if defined(NEED_grok_number)
+static int DPPP_(my_grok_number)(pTHX_ const char * pv, STRLEN len, UV * valuep);
+static
+#else
+extern int DPPP_(my_grok_number)(pTHX_ const char * pv, STRLEN len, UV * valuep);
+#endif
+
+#ifdef grok_number
+#  undef grok_number
+#endif
+#define grok_number(a,b,c) DPPP_(my_grok_number)(aTHX_ a,b,c)
+#define Perl_grok_number DPPP_(my_grok_number)
+
+#if defined(NEED_grok_number) || defined(NEED_grok_number_GLOBAL)
+int
+DPPP_(my_grok_number)(pTHX_ const char *pv, STRLEN len, UV *valuep)
+{
+  const char *s = pv;
+  const char *send = pv + len;
+  const UV max_div_10 = UV_MAX / 10;
+  const char max_mod_10 = UV_MAX % 10;
+  int numtype = 0;
+  int sawinf = 0;
+  int sawnan = 0;
+
+  while (s < send && isSPACE(*s))
+    s++;
+  if (s == send) {
+    return 0;
+  } else if (*s == '-') {
+    s++;
+    numtype = IS_NUMBER_NEG;
+  }
+  else if (*s == '+')
+  s++;
+
+  if (s == send)
+    return 0;
