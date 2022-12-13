@@ -6931,3 +6931,57 @@ DPPP_(my_grok_number)(pTHX_ const char *pv, STRLEN len, UV *valuep)
                                         if (++s < send)
                                           digit = *s - '0';
                                         else
+                                          break;
+                                      }
+                                      if (digit >= 0 && digit <= 9
+                                          && (s < send)) {
+                                        /* value overflowed.
+                                           skip the remaining digits, don't
+                                           worry about setting *valuep.  */
+                                        do {
+                                          s++;
+                                        } while (s < send && isDIGIT(*s));
+                                        numtype |=
+                                          IS_NUMBER_GREATER_THAN_UV_MAX;
+                                        goto skip_value;
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    numtype |= IS_NUMBER_IN_UV;
+    if (valuep)
+      *valuep = value;
+
+  skip_value:
+    if (GROK_NUMERIC_RADIX(&s, send)) {
+      numtype |= IS_NUMBER_NOT_INT;
+      while (s < send && isDIGIT(*s))  /* optional digits after the radix */
+        s++;
+    }
+  }
+  else if (GROK_NUMERIC_RADIX(&s, send)) {
+    numtype |= IS_NUMBER_NOT_INT | IS_NUMBER_IN_UV; /* valuep assigned below */
+    /* no digits before the radix means we need digits after it */
+    if (s < send && isDIGIT(*s)) {
+      do {
+        s++;
+      } while (s < send && isDIGIT(*s));
+      if (valuep) {
+        /* integer approximation is valid - it's 0.  */
+        *valuep = 0;
+      }
+    }
