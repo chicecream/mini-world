@@ -6703,3 +6703,57 @@ DPPP_(my_caller_cx)(pTHX_ I32 count, const PERL_CONTEXT **dbcxp)
 	    count++;
 	if (!count--)
 	    break;
+	cxix = DPPP_dopoptosub_at(ccstack, cxix - 1);
+    }
+
+    cx = &ccstack[cxix];
+    if (dbcxp) *dbcxp = cx;
+
+    if (CxTYPE(cx) == CXt_SUB || CxTYPE(cx) == CXt_FORMAT) {
+        const I32 dbcxix = DPPP_dopoptosub_at(ccstack, cxix - 1);
+	/* We expect that ccstack[dbcxix] is CXt_SUB, anyway, the
+	   field below is defined for any cx. */
+	/* caller() should not report the automatic calls to &DB::sub */
+	if (PL_DBsub && GvCV(PL_DBsub) && dbcxix >= 0 && ccstack[dbcxix].blk_sub.cv == GvCV(PL_DBsub))
+	    cx = &ccstack[dbcxix];
+    }
+
+    return cx;
+}
+
+# endif
+#endif /* caller_cx */
+#endif /* 5.6.0 */
+#ifndef IN_PERL_COMPILETIME
+#  define IN_PERL_COMPILETIME            (PL_curcop == &PL_compiling)
+#endif
+
+#ifndef IN_LOCALE_RUNTIME
+#  define IN_LOCALE_RUNTIME              (PL_curcop->op_private & HINT_LOCALE)
+#endif
+
+#ifndef IN_LOCALE_COMPILETIME
+#  define IN_LOCALE_COMPILETIME          (PL_hints & HINT_LOCALE)
+#endif
+
+#ifndef IN_LOCALE
+#  define IN_LOCALE                      (IN_PERL_COMPILETIME ? IN_LOCALE_COMPILETIME : IN_LOCALE_RUNTIME)
+#endif
+#ifndef IS_NUMBER_IN_UV
+#  define IS_NUMBER_IN_UV                0x01
+#endif
+
+#ifndef IS_NUMBER_GREATER_THAN_UV_MAX
+#  define IS_NUMBER_GREATER_THAN_UV_MAX  0x02
+#endif
+
+#ifndef IS_NUMBER_NOT_INT
+#  define IS_NUMBER_NOT_INT              0x04
+#endif
+
+#ifndef IS_NUMBER_NEG
+#  define IS_NUMBER_NEG                  0x08
+#endif
+
+#ifndef IS_NUMBER_INFINITY
+#  define IS_NUMBER_INFINITY             0x10
