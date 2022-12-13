@@ -6598,3 +6598,47 @@ DPPP_(my_sv_unmagicext)(pTHX_ SV *const sv, const int type, MGVTBL *vtbl)
 #ifndef CopFILEGV
 #  define CopFILEGV(c)                   ((c)->cop_filegv)
 #endif
+
+#ifndef CopFILEGV_set
+#  define CopFILEGV_set(c,gv)            ((c)->cop_filegv = (GV*)SvREFCNT_inc(gv))
+#endif
+
+#ifndef CopFILE_set
+#  define CopFILE_set(c,pv)              CopFILEGV_set((c), gv_fetchfile(pv))
+#endif
+
+#ifndef CopFILESV
+#  define CopFILESV(c)                   (CopFILEGV(c) ? GvSV(CopFILEGV(c)) : Nullsv)
+#endif
+
+#ifndef CopFILEAV
+#  define CopFILEAV(c)                   (CopFILEGV(c) ? GvAV(CopFILEGV(c)) : Nullav)
+#endif
+
+#ifndef CopFILE
+#  define CopFILE(c)                     (CopFILESV(c) ? SvPVX(CopFILESV(c)) : Nullch)
+#endif
+
+#ifndef CopSTASH
+#  define CopSTASH(c)                    ((c)->cop_stash)
+#endif
+
+#ifndef CopSTASH_set
+#  define CopSTASH_set(c,hv)             ((c)->cop_stash = (hv))
+#endif
+
+#ifndef CopSTASHPV
+#  define CopSTASHPV(c)                  (CopSTASH(c) ? HvNAME(CopSTASH(c)) : Nullch)
+#endif
+
+#ifndef CopSTASHPV_set
+#  define CopSTASHPV_set(c,pv)           CopSTASH_set((c), gv_stashpv(pv,GV_ADD))
+#endif
+
+#ifndef CopSTASH_eq
+#  define CopSTASH_eq(c,hv)              (CopSTASH(c) == (hv))
+#endif
+
+#endif /* USE_ITHREADS */
+
+#if (PERL_BCDVERSION >= 0x5006000)
