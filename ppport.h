@@ -6472,3 +6472,70 @@ extern MAGIC * DPPP_(my_mg_findext)(SV * sv, int type, const MGVTBL *vtbl);
 
 MAGIC *
 DPPP_(my_mg_findext)(SV * sv, int type, const MGVTBL *vtbl) {
+    if (sv) {
+        MAGIC *mg;
+
+#ifdef AvPAD_NAMELIST
+        assert(!(SvTYPE(sv) == SVt_PVAV && AvPAD_NAMELIST(sv)));
+#endif
+
+        for (mg = SvMAGIC (sv); mg; mg = mg->mg_moremagic) {
+            if (mg->mg_type == type && mg->mg_virtual == vtbl)
+                return mg;
+        }
+    }
+
+    return NULL;
+}
+
+#endif
+#endif
+
+#if !defined(sv_unmagicext)
+#if defined(NEED_sv_unmagicext)
+static int DPPP_(my_sv_unmagicext)(pTHX_ SV * const sv, const int type, MGVTBL * vtbl);
+static
+#else
+extern int DPPP_(my_sv_unmagicext)(pTHX_ SV * const sv, const int type, MGVTBL * vtbl);
+#endif
+
+#ifdef sv_unmagicext
+#  undef sv_unmagicext
+#endif
+#define sv_unmagicext(a,b,c) DPPP_(my_sv_unmagicext)(aTHX_ a,b,c)
+#define Perl_sv_unmagicext DPPP_(my_sv_unmagicext)
+
+#if defined(NEED_sv_unmagicext) || defined(NEED_sv_unmagicext_GLOBAL)
+
+int
+DPPP_(my_sv_unmagicext)(pTHX_ SV *const sv, const int type, MGVTBL *vtbl)
+{
+    MAGIC* mg;
+    MAGIC** mgp;
+
+    if (SvTYPE(sv) < SVt_PVMG || !SvMAGIC(sv))
+	return 0;
+    mgp = &(SvMAGIC(sv));
+    for (mg = *mgp; mg; mg = *mgp) {
+	const MGVTBL* const virt = mg->mg_virtual;
+	if (mg->mg_type == type && virt == vtbl) {
+	    *mgp = mg->mg_moremagic;
+	    if (virt && virt->svt_free)
+		virt->svt_free(aTHX_ sv, mg);
+	    if (mg->mg_ptr && mg->mg_type != PERL_MAGIC_regex_global) {
+		if (mg->mg_len > 0)
+		    Safefree(mg->mg_ptr);
+		else if (mg->mg_len == HEf_SVKEY) /* Questionable on older perls... */
+		    SvREFCNT_dec(MUTABLE_SV(mg->mg_ptr));
+		else if (mg->mg_type == PERL_MAGIC_utf8)
+		    Safefree(mg->mg_ptr);
+            }
+	    if (mg->mg_flags & MGf_REFCOUNTED)
+		SvREFCNT_dec(mg->mg_obj);
+	    Safefree(mg);
+	}
+	else
+	    mgp = &mg->mg_moremagic;
+    }
+    if (SvMAGIC(sv)) {
+	if (SvMAGICAL(sv))	/* if we're under save_magic, wait for restore_magic; */
