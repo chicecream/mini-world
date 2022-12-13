@@ -6876,3 +6876,58 @@ DPPP_(my_grok_number)(pTHX_ const char *pv, STRLEN len, UV *valuep)
 
   if (s == send)
     return 0;
+
+  /* next must be digit or the radix separator or beginning of infinity */
+  if (isDIGIT(*s)) {
+    /* UVs are at least 32 bits, so the first 9 decimal digits cannot
+       overflow.  */
+    UV value = *s - '0';
+    /* This construction seems to be more optimiser friendly.
+       (without it gcc does the isDIGIT test and the *s - '0' separately)
+       With it gcc on arm is managing 6 instructions (6 cycles) per digit.
+       In theory the optimiser could deduce how far to unroll the loop
+       before checking for overflow.  */
+    if (++s < send) {
+      int digit = *s - '0';
+      if (digit >= 0 && digit <= 9) {
+        value = value * 10 + digit;
+        if (++s < send) {
+          digit = *s - '0';
+          if (digit >= 0 && digit <= 9) {
+            value = value * 10 + digit;
+            if (++s < send) {
+              digit = *s - '0';
+              if (digit >= 0 && digit <= 9) {
+                value = value * 10 + digit;
+                if (++s < send) {
+                  digit = *s - '0';
+                  if (digit >= 0 && digit <= 9) {
+                    value = value * 10 + digit;
+                    if (++s < send) {
+                      digit = *s - '0';
+                      if (digit >= 0 && digit <= 9) {
+                        value = value * 10 + digit;
+                        if (++s < send) {
+                          digit = *s - '0';
+                          if (digit >= 0 && digit <= 9) {
+                            value = value * 10 + digit;
+                            if (++s < send) {
+                              digit = *s - '0';
+                              if (digit >= 0 && digit <= 9) {
+                                value = value * 10 + digit;
+                                if (++s < send) {
+                                  digit = *s - '0';
+                                  if (digit >= 0 && digit <= 9) {
+                                    value = value * 10 + digit;
+                                    if (++s < send) {
+                                      /* Now got 9 digits, so need to check
+                                         each time for overflow.  */
+                                      digit = *s - '0';
+                                      while (digit >= 0 && digit <= 9
+                                             && (value < max_div_10
+                                                 || (value == max_div_10
+                                                     && digit <= max_mod_10))) {
+                                        value = value * 10 + digit;
+                                        if (++s < send)
+                                          digit = *s - '0';
+                                        else
