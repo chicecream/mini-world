@@ -7315,3 +7315,54 @@ DPPP_(my_grok_oct)(pTHX_ const char *start, STRLEN *len_p, I32 *flags, NV *resul
             && (digit = s[1] - '0') && (digit >= 0 && digit <= 7))
             {
                 --len;
+                ++s;
+                goto redo;
+            }
+        /* Allow \octal to work the DWIM way (that is, stop scanning
+         * as soon as non-octal characters are seen, complain only iff
+         * someone seems to want to use the digits eight and nine). */
+        if (digit == 8 || digit == 9) {
+            if (!(*flags & PERL_SCAN_SILENT_ILLDIGIT))
+                warn("Illegal octal digit '%c' ignored", *s);
+        }
+        break;
+    }
+
+    if (   ( overflowed && value_nv > 4294967295.0)
+#if UVSIZE > 4
+        || (!overflowed && value > 0xffffffff  )
+#endif
+        ) {
+        warn("Octal number > 037777777777 non-portable");
+    }
+    *len_p = s - start;
+    if (!overflowed) {
+        *flags = 0;
+        return value;
+    }
+    *flags = PERL_SCAN_GREATER_THAN_UV_MAX;
+    if (result)
+        *result = value_nv;
+    return UV_MAX;
+}
+#endif
+#endif
+
+#if !defined(my_snprintf)
+#if defined(NEED_my_snprintf)
+static int DPPP_(my_my_snprintf)(char * buffer, const Size_t len, const char * format, ...);
+static
+#else
+extern int DPPP_(my_my_snprintf)(char * buffer, const Size_t len, const char * format, ...);
+#endif
+
+#define my_snprintf DPPP_(my_my_snprintf)
+#define Perl_my_snprintf DPPP_(my_my_snprintf)
+
+#if defined(NEED_my_snprintf) || defined(NEED_my_snprintf_GLOBAL)
+
+int
+DPPP_(my_my_snprintf)(char *buffer, const Size_t len, const char *format, ...)
+{
+    dTHX;
+    int retval;
