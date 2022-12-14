@@ -7266,3 +7266,52 @@ extern UV DPPP_(my_grok_oct)(pTHX_ const char * start, STRLEN * len_p, I32 * fla
 #ifdef grok_oct
 #  undef grok_oct
 #endif
+#define grok_oct(a,b,c,d) DPPP_(my_grok_oct)(aTHX_ a,b,c,d)
+#define Perl_grok_oct DPPP_(my_grok_oct)
+
+#if defined(NEED_grok_oct) || defined(NEED_grok_oct_GLOBAL)
+UV
+DPPP_(my_grok_oct)(pTHX_ const char *start, STRLEN *len_p, I32 *flags, NV *result)
+{
+    const char *s = start;
+    STRLEN len = *len_p;
+    UV value = 0;
+    NV value_nv = 0;
+
+    const UV max_div_8 = UV_MAX / 8;
+    bool allow_underscores = *flags & PERL_SCAN_ALLOW_UNDERSCORES;
+    bool overflowed = FALSE;
+
+    for (; len-- && *s; s++) {
+         /* gcc 2.95 optimiser not smart enough to figure that this subtraction
+            out front allows slicker code.  */
+        int digit = *s - '0';
+        if (digit >= 0 && digit <= 7) {
+            /* Write it in this wonky order with a goto to attempt to get the
+               compiler to make the common case integer-only loop pretty tight.
+            */
+          redo:
+            if (!overflowed) {
+                if (value <= max_div_8) {
+                    value = (value << 3) | digit;
+                    continue;
+                }
+                /* Bah. We're just overflowed.  */
+                warn("Integer overflow in octal number");
+                overflowed = TRUE;
+                value_nv = (NV) value;
+            }
+            value_nv *= 8.0;
+            /* If an NV has not enough bits in its mantissa to
+             * represent a UV this summing of small low-order numbers
+             * is a waste of time (because the NV cannot preserve
+             * the low-order bits anyway): we could just remember when
+             * did we overflow and in the end just multiply value_nv by the
+             * right amount of 8-tuples. */
+            value_nv += (NV)digit;
+            continue;
+        }
+        if (digit == ('_' - '0') && len && allow_underscores
+            && (digit = s[1] - '0') && (digit >= 0 && digit <= 7))
+            {
+                --len;
