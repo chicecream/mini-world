@@ -7104,3 +7104,63 @@ DPPP_(my_grok_bin)(pTHX_ const char *start, STRLEN *len_p, I32 *flags, NV *resul
             if (!overflowed) {
                 if (value <= max_div_2) {
                     value = (value << 1) | (bit - '0');
+                    continue;
+                }
+                /* Bah. We're just overflowed.  */
+                warn("Integer overflow in binary number");
+                overflowed = TRUE;
+                value_nv = (NV) value;
+            }
+            value_nv *= 2.0;
+            /* If an NV has not enough bits in its mantissa to
+             * represent a UV this summing of small low-order numbers
+             * is a waste of time (because the NV cannot preserve
+             * the low-order bits anyway): we could just remember when
+             * did we overflow and in the end just multiply value_nv by the
+             * right amount. */
+            value_nv += (NV)(bit - '0');
+            continue;
+        }
+        if (bit == '_' && len && allow_underscores && (bit = s[1])
+            && (bit == '0' || bit == '1'))
+            {
+                --len;
+                ++s;
+                goto redo;
+            }
+        if (!(*flags & PERL_SCAN_SILENT_ILLDIGIT))
+            warn("Illegal binary digit '%c' ignored", *s);
+        break;
+    }
+
+    if (   ( overflowed && value_nv > 4294967295.0)
+#if UVSIZE > 4
+        || (!overflowed && value > 0xffffffff  )
+#endif
+        ) {
+        warn("Binary number > 0b11111111111111111111111111111111 non-portable");
+    }
+    *len_p = s - start;
+    if (!overflowed) {
+        *flags = 0;
+        return value;
+    }
+    *flags = PERL_SCAN_GREATER_THAN_UV_MAX;
+    if (result)
+        *result = value_nv;
+    return UV_MAX;
+}
+#endif
+#endif
+
+#ifndef grok_hex
+#if defined(NEED_grok_hex)
+static UV DPPP_(my_grok_hex)(pTHX_ const char * start, STRLEN * len_p, I32 * flags, NV * result);
+static
+#else
+extern UV DPPP_(my_grok_hex)(pTHX_ const char * start, STRLEN * len_p, I32 * flags, NV * result);
+#endif
+
+#ifdef grok_hex
+#  undef grok_hex
+#endif
