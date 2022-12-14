@@ -7050,3 +7050,57 @@ DPPP_(my_grok_number)(pTHX_ const char *pv, STRLEN len, UV *valuep)
  * Perl_warner(). Also, 'hexdigit' was the former name of PL_hexdigit,
  * which is why the stack variable has been renamed to 'xdigit'.
  */
+
+#ifndef grok_bin
+#if defined(NEED_grok_bin)
+static UV DPPP_(my_grok_bin)(pTHX_ const char * start, STRLEN * len_p, I32 * flags, NV * result);
+static
+#else
+extern UV DPPP_(my_grok_bin)(pTHX_ const char * start, STRLEN * len_p, I32 * flags, NV * result);
+#endif
+
+#ifdef grok_bin
+#  undef grok_bin
+#endif
+#define grok_bin(a,b,c,d) DPPP_(my_grok_bin)(aTHX_ a,b,c,d)
+#define Perl_grok_bin DPPP_(my_grok_bin)
+
+#if defined(NEED_grok_bin) || defined(NEED_grok_bin_GLOBAL)
+UV
+DPPP_(my_grok_bin)(pTHX_ const char *start, STRLEN *len_p, I32 *flags, NV *result)
+{
+    const char *s = start;
+    STRLEN len = *len_p;
+    UV value = 0;
+    NV value_nv = 0;
+
+    const UV max_div_2 = UV_MAX / 2;
+    bool allow_underscores = *flags & PERL_SCAN_ALLOW_UNDERSCORES;
+    bool overflowed = FALSE;
+
+    if (!(*flags & PERL_SCAN_DISALLOW_PREFIX)) {
+        /* strip off leading b or 0b.
+           for compatibility silently suffer "b" and "0b" as valid binary
+           numbers. */
+        if (len >= 1) {
+            if (s[0] == 'b') {
+                s++;
+                len--;
+            }
+            else if (len >= 2 && s[0] == '0' && s[1] == 'b') {
+                s+=2;
+                len-=2;
+            }
+        }
+    }
+
+    for (; len-- && *s; s++) {
+        char bit = *s;
+        if (bit == '0' || bit == '1') {
+            /* Write it in this wonky order with a goto to attempt to get the
+               compiler to make the common case integer-only loop pretty tight.
+               With gcc seems to be much straighter code than old scan_bin.  */
+          redo:
+            if (!overflowed) {
+                if (value <= max_div_2) {
+                    value = (value << 1) | (bit - '0');
