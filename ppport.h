@@ -7423,3 +7423,73 @@ DPPP_(my_my_sprintf)(char *buffer, const char* pat, ...)
 #    define XCPT_RETHROW      Siglongjmp(top_env, rEtV)
 #  endif
 #endif
+
+#if !defined(my_strlcat)
+#if defined(NEED_my_strlcat)
+static Size_t DPPP_(my_my_strlcat)(char * dst, const char * src, Size_t size);
+static
+#else
+extern Size_t DPPP_(my_my_strlcat)(char * dst, const char * src, Size_t size);
+#endif
+
+#define my_strlcat DPPP_(my_my_strlcat)
+#define Perl_my_strlcat DPPP_(my_my_strlcat)
+
+#if defined(NEED_my_strlcat) || defined(NEED_my_strlcat_GLOBAL)
+
+Size_t
+DPPP_(my_my_strlcat)(char *dst, const char *src, Size_t size)
+{
+    Size_t used, length, copy;
+
+    used = strlen(dst);
+    length = strlen(src);
+    if (size > 0 && used < size - 1) {
+        copy = (length >= size - used) ? size - used - 1 : length;
+        memcpy(dst + used, src, copy);
+        dst[used + copy] = '\0';
+    }
+    return used + length;
+}
+#endif
+#endif
+
+#if !defined(my_strlcpy)
+#if defined(NEED_my_strlcpy)
+static Size_t DPPP_(my_my_strlcpy)(char * dst, const char * src, Size_t size);
+static
+#else
+extern Size_t DPPP_(my_my_strlcpy)(char * dst, const char * src, Size_t size);
+#endif
+
+#define my_strlcpy DPPP_(my_my_strlcpy)
+#define Perl_my_strlcpy DPPP_(my_my_strlcpy)
+
+#if defined(NEED_my_strlcpy) || defined(NEED_my_strlcpy_GLOBAL)
+
+Size_t
+DPPP_(my_my_strlcpy)(char *dst, const char *src, Size_t size)
+{
+    Size_t length, copy;
+
+    length = strlen(src);
+    if (size > 0) {
+        copy = (length >= size) ? size - 1 : length;
+        memcpy(dst, src, copy);
+        dst[copy] = '\0';
+    }
+    return length;
+}
+
+#endif
+#endif
+#ifndef PERL_PV_ESCAPE_QUOTE
+#  define PERL_PV_ESCAPE_QUOTE           0x0001
+#endif
+
+#ifndef PERL_PV_PRETTY_QUOTE
+#  define PERL_PV_PRETTY_QUOTE           PERL_PV_ESCAPE_QUOTE
+#endif
+
+#ifndef PERL_PV_PRETTY_ELLIPSES
+#  define PERL_PV_PRETTY_ELLIPSES        0x0002
