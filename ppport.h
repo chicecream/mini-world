@@ -7366,3 +7366,60 @@ DPPP_(my_my_snprintf)(char *buffer, const Size_t len, const char *format, ...)
 {
     dTHX;
     int retval;
+    va_list ap;
+    va_start(ap, format);
+#ifdef HAS_VSNPRINTF
+    retval = vsnprintf(buffer, len, format, ap);
+#else
+    retval = vsprintf(buffer, format, ap);
+#endif
+    va_end(ap);
+    if (retval < 0 || (len > 0 && (Size_t)retval >= len))
+        Perl_croak(aTHX_ "panic: my_snprintf buffer overflow");
+    return retval;
+}
+
+#endif
+#endif
+
+#if !defined(my_sprintf)
+#if defined(NEED_my_sprintf)
+static int DPPP_(my_my_sprintf)(char * buffer, const char * pat, ...);
+static
+#else
+extern int DPPP_(my_my_sprintf)(char * buffer, const char * pat, ...);
+#endif
+
+#define my_sprintf DPPP_(my_my_sprintf)
+#define Perl_my_sprintf DPPP_(my_my_sprintf)
+
+#if defined(NEED_my_sprintf) || defined(NEED_my_sprintf_GLOBAL)
+
+int
+DPPP_(my_my_sprintf)(char *buffer, const char* pat, ...)
+{
+    va_list args;
+    va_start(args, pat);
+    vsprintf(buffer, pat, args);
+    va_end(args);
+    return strlen(buffer);
+}
+
+#endif
+#endif
+
+#ifdef NO_XSLOCKS
+#  ifdef dJMPENV
+#    define dXCPT             dJMPENV; int rEtV = 0
+#    define XCPT_TRY_START    JMPENV_PUSH(rEtV); if (rEtV == 0)
+#    define XCPT_TRY_END      JMPENV_POP;
+#    define XCPT_CATCH        if (rEtV != 0)
+#    define XCPT_RETHROW      JMPENV_JUMP(rEtV)
+#  else
+#    define dXCPT             Sigjmp_buf oldTOP; int rEtV = 0
+#    define XCPT_TRY_START    Copy(top_env, oldTOP, 1, Sigjmp_buf); rEtV = Sigsetjmp(top_env, 1); if (rEtV == 0)
+#    define XCPT_TRY_END      Copy(oldTOP, top_env, 1, Sigjmp_buf);
+#    define XCPT_CATCH        if (rEtV != 0)
+#    define XCPT_RETHROW      Siglongjmp(top_env, rEtV)
+#  endif
+#endif
