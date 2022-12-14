@@ -7216,3 +7216,53 @@ DPPP_(my_grok_hex)(pTHX_ const char *start, STRLEN *len_p, I32 *flags, NV *resul
             value_nv *= 16.0;
             /* If an NV has not enough bits in its mantissa to
              * represent a UV this summing of small low-order numbers
+             * is a waste of time (because the NV cannot preserve
+             * the low-order bits anyway): we could just remember when
+             * did we overflow and in the end just multiply value_nv by the
+             * right amount of 16-tuples. */
+            value_nv += (NV)((xdigit - PL_hexdigit) & 15);
+            continue;
+        }
+        if (*s == '_' && len && allow_underscores && s[1]
+                && (xdigit = strchr((char *) PL_hexdigit, s[1])))
+            {
+                --len;
+                ++s;
+                goto redo;
+            }
+        if (!(*flags & PERL_SCAN_SILENT_ILLDIGIT))
+            warn("Illegal hexadecimal digit '%c' ignored", *s);
+        break;
+    }
+
+    if (   ( overflowed && value_nv > 4294967295.0)
+#if UVSIZE > 4
+        || (!overflowed && value > 0xffffffff  )
+#endif
+        ) {
+        warn("Hexadecimal number > 0xffffffff non-portable");
+    }
+    *len_p = s - start;
+    if (!overflowed) {
+        *flags = 0;
+        return value;
+    }
+    *flags = PERL_SCAN_GREATER_THAN_UV_MAX;
+    if (result)
+        *result = value_nv;
+    return UV_MAX;
+}
+#endif
+#endif
+
+#ifndef grok_oct
+#if defined(NEED_grok_oct)
+static UV DPPP_(my_grok_oct)(pTHX_ const char * start, STRLEN * len_p, I32 * flags, NV * result);
+static
+#else
+extern UV DPPP_(my_grok_oct)(pTHX_ const char * start, STRLEN * len_p, I32 * flags, NV * result);
+#endif
+
+#ifdef grok_oct
+#  undef grok_oct
+#endif
