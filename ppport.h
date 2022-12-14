@@ -6985,3 +6985,68 @@ DPPP_(my_grok_number)(pTHX_ const char *pv, STRLEN len, UV *valuep)
         *valuep = 0;
       }
     }
+    else
+      return 0;
+  } else if (*s == 'I' || *s == 'i') {
+    s++; if (s == send || (*s != 'N' && *s != 'n')) return 0;
+    s++; if (s == send || (*s != 'F' && *s != 'f')) return 0;
+    s++; if (s < send && (*s == 'I' || *s == 'i')) {
+      s++; if (s == send || (*s != 'N' && *s != 'n')) return 0;
+      s++; if (s == send || (*s != 'I' && *s != 'i')) return 0;
+      s++; if (s == send || (*s != 'T' && *s != 't')) return 0;
+      s++; if (s == send || (*s != 'Y' && *s != 'y')) return 0;
+      s++;
+    }
+    sawinf = 1;
+  } else if (*s == 'N' || *s == 'n') {
+    /* XXX TODO: There are signaling NaNs and quiet NaNs. */
+    s++; if (s == send || (*s != 'A' && *s != 'a')) return 0;
+    s++; if (s == send || (*s != 'N' && *s != 'n')) return 0;
+    s++;
+    sawnan = 1;
+  } else
+    return 0;
+
+  if (sawinf) {
+    numtype &= IS_NUMBER_NEG; /* Keep track of sign  */
+    numtype |= IS_NUMBER_INFINITY | IS_NUMBER_NOT_INT;
+  } else if (sawnan) {
+    numtype &= IS_NUMBER_NEG; /* Keep track of sign  */
+    numtype |= IS_NUMBER_NAN | IS_NUMBER_NOT_INT;
+  } else if (s < send) {
+    /* we can have an optional exponent part */
+    if (*s == 'e' || *s == 'E') {
+      /* The only flag we keep is sign.  Blow away any "it's UV"  */
+      numtype &= IS_NUMBER_NEG;
+      numtype |= IS_NUMBER_NOT_INT;
+      s++;
+      if (s < send && (*s == '-' || *s == '+'))
+        s++;
+      if (s < send && isDIGIT(*s)) {
+        do {
+          s++;
+        } while (s < send && isDIGIT(*s));
+      }
+      else
+      return 0;
+    }
+  }
+  while (s < send && isSPACE(*s))
+    s++;
+  if (s >= send)
+    return numtype;
+  if (len == 10 && memEQ(pv, "0 but true", 10)) {
+    if (valuep)
+      *valuep = 0;
+    return IS_NUMBER_IN_UV;
+  }
+  return 0;
+}
+#endif
+#endif
+
+/*
+ * The grok_* routines have been modified to use warn() instead of
+ * Perl_warner(). Also, 'hexdigit' was the former name of PL_hexdigit,
+ * which is why the stack variable has been renamed to 'xdigit'.
+ */
