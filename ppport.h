@@ -7164,3 +7164,55 @@ extern UV DPPP_(my_grok_hex)(pTHX_ const char * start, STRLEN * len_p, I32 * fla
 #ifdef grok_hex
 #  undef grok_hex
 #endif
+#define grok_hex(a,b,c,d) DPPP_(my_grok_hex)(aTHX_ a,b,c,d)
+#define Perl_grok_hex DPPP_(my_grok_hex)
+
+#if defined(NEED_grok_hex) || defined(NEED_grok_hex_GLOBAL)
+UV
+DPPP_(my_grok_hex)(pTHX_ const char *start, STRLEN *len_p, I32 *flags, NV *result)
+{
+    const char *s = start;
+    STRLEN len = *len_p;
+    UV value = 0;
+    NV value_nv = 0;
+
+    const UV max_div_16 = UV_MAX / 16;
+    bool allow_underscores = *flags & PERL_SCAN_ALLOW_UNDERSCORES;
+    bool overflowed = FALSE;
+    const char *xdigit;
+
+    if (!(*flags & PERL_SCAN_DISALLOW_PREFIX)) {
+        /* strip off leading x or 0x.
+           for compatibility silently suffer "x" and "0x" as valid hex numbers.
+        */
+        if (len >= 1) {
+            if (s[0] == 'x') {
+                s++;
+                len--;
+            }
+            else if (len >= 2 && s[0] == '0' && s[1] == 'x') {
+                s+=2;
+                len-=2;
+            }
+        }
+    }
+
+    for (; len-- && *s; s++) {
+        xdigit = strchr((char *) PL_hexdigit, *s);
+        if (xdigit) {
+            /* Write it in this wonky order with a goto to attempt to get the
+               compiler to make the common case integer-only loop pretty tight.
+               With gcc seems to be much straighter code than old scan_hex.  */
+          redo:
+            if (!overflowed) {
+                if (value <= max_div_16) {
+                    value = (value << 4) | ((xdigit - PL_hexdigit) & 15);
+                    continue;
+                }
+                warn("Integer overflow in hexadecimal number");
+                overflowed = TRUE;
+                value_nv = (NV) value;
+            }
+            value_nv *= 16.0;
+            /* If an NV has not enough bits in its mantissa to
+             * represent a UV this summing of small low-order numbers
