@@ -7493,3 +7493,59 @@ DPPP_(my_my_strlcpy)(char *dst, const char *src, Size_t size)
 
 #ifndef PERL_PV_PRETTY_ELLIPSES
 #  define PERL_PV_PRETTY_ELLIPSES        0x0002
+#endif
+
+#ifndef PERL_PV_PRETTY_LTGT
+#  define PERL_PV_PRETTY_LTGT            0x0004
+#endif
+
+#ifndef PERL_PV_ESCAPE_FIRSTCHAR
+#  define PERL_PV_ESCAPE_FIRSTCHAR       0x0008
+#endif
+
+#ifndef PERL_PV_ESCAPE_UNI
+#  define PERL_PV_ESCAPE_UNI             0x0100
+#endif
+
+#ifndef PERL_PV_ESCAPE_UNI_DETECT
+#  define PERL_PV_ESCAPE_UNI_DETECT      0x0200
+#endif
+
+#ifndef PERL_PV_ESCAPE_ALL
+#  define PERL_PV_ESCAPE_ALL             0x1000
+#endif
+
+#ifndef PERL_PV_ESCAPE_NOBACKSLASH
+#  define PERL_PV_ESCAPE_NOBACKSLASH     0x2000
+#endif
+
+#ifndef PERL_PV_ESCAPE_NOCLEAR
+#  define PERL_PV_ESCAPE_NOCLEAR         0x4000
+#endif
+
+#ifndef PERL_PV_ESCAPE_RE
+#  define PERL_PV_ESCAPE_RE              0x8000
+#endif
+
+#ifndef PERL_PV_PRETTY_NOCLEAR
+#  define PERL_PV_PRETTY_NOCLEAR         PERL_PV_ESCAPE_NOCLEAR
+#endif
+#ifndef PERL_PV_PRETTY_DUMP
+#  define PERL_PV_PRETTY_DUMP            PERL_PV_PRETTY_ELLIPSES|PERL_PV_PRETTY_QUOTE
+#endif
+
+#ifndef PERL_PV_PRETTY_REGPROP
+#  define PERL_PV_PRETTY_REGPROP         PERL_PV_PRETTY_ELLIPSES|PERL_PV_PRETTY_LTGT|PERL_PV_ESCAPE_RE
+#endif
+
+/* Hint: pv_escape
+ * Note that unicode functionality is only backported to
+ * those perl versions that support it. For older perl
+ * versions, the implementation will fall back to bytes.
+ */
+
+#ifndef pv_escape
+#if defined(NEED_pv_escape)
+static char * DPPP_(my_pv_escape)(pTHX_ SV * dsv, char const * const str, const STRLEN count, const STRLEN max, STRLEN * const escaped, const U32 flags);
+static
+#else
