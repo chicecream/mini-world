@@ -7549,3 +7549,56 @@ DPPP_(my_my_strlcpy)(char *dst, const char *src, Size_t size)
 static char * DPPP_(my_pv_escape)(pTHX_ SV * dsv, char const * const str, const STRLEN count, const STRLEN max, STRLEN * const escaped, const U32 flags);
 static
 #else
+extern char * DPPP_(my_pv_escape)(pTHX_ SV * dsv, char const * const str, const STRLEN count, const STRLEN max, STRLEN * const escaped, const U32 flags);
+#endif
+
+#ifdef pv_escape
+#  undef pv_escape
+#endif
+#define pv_escape(a,b,c,d,e,f) DPPP_(my_pv_escape)(aTHX_ a,b,c,d,e,f)
+#define Perl_pv_escape DPPP_(my_pv_escape)
+
+#if defined(NEED_pv_escape) || defined(NEED_pv_escape_GLOBAL)
+
+char *
+DPPP_(my_pv_escape)(pTHX_ SV *dsv, char const * const str,
+  const STRLEN count, const STRLEN max,
+  STRLEN * const escaped, const U32 flags)
+{
+    const char esc = flags & PERL_PV_ESCAPE_RE ? '%' : '\\';
+    const char dq = flags & PERL_PV_ESCAPE_QUOTE ? '"' : esc;
+    char octbuf[32] = "%123456789ABCDF";
+    STRLEN wrote = 0;
+    STRLEN chsize = 0;
+    STRLEN readsize = 1;
+#if defined(is_utf8_string) && defined(utf8_to_uvchr)
+    bool isuni = flags & PERL_PV_ESCAPE_UNI ? 1 : 0;
+#endif
+    const char *pv  = str;
+    const char * const end = pv + count;
+    octbuf[0] = esc;
+
+    if (!(flags & PERL_PV_ESCAPE_NOCLEAR))
+        sv_setpvs(dsv, "");
+
+#if defined(is_utf8_string) && defined(utf8_to_uvchr)
+    if ((flags & PERL_PV_ESCAPE_UNI_DETECT) && is_utf8_string((U8*)pv, count))
+        isuni = 1;
+#endif
+
+    for (; pv < end && (!max || wrote < max) ; pv += readsize) {
+        const UV u =
+#if defined(is_utf8_string) && defined(utf8_to_uvchr)
+                     isuni ? utf8_to_uvchr((U8*)pv, &readsize) :
+#endif
+                             (U8)*pv;
+        const U8 c = (U8)u & 0xFF;
+
+        if (u > 255 || (flags & PERL_PV_ESCAPE_ALL)) {
+            if (flags & PERL_PV_ESCAPE_FIRSTCHAR)
+                chsize = my_snprintf(octbuf, sizeof octbuf,
+                                      "%" UVxf, u);
+            else
+                chsize = my_snprintf(octbuf, sizeof octbuf,
+                                      "%cx{%" UVxf "}", esc, u);
+        } else if (flags & PERL_PV_ESCAPE_NOBACKSLASH) {
