@@ -7602,3 +7602,61 @@ DPPP_(my_pv_escape)(pTHX_ SV *dsv, char const * const str,
                 chsize = my_snprintf(octbuf, sizeof octbuf,
                                       "%cx{%" UVxf "}", esc, u);
         } else if (flags & PERL_PV_ESCAPE_NOBACKSLASH) {
+            chsize = 1;
+        } else {
+            if (c == dq || c == esc || !isPRINT(c)) {
+                chsize = 2;
+                switch (c) {
+                case '\\' : /* fallthrough */
+                case '%'  : if (c == esc)
+                                octbuf[1] = esc;
+                            else
+                                chsize = 1;
+                            break;
+                case '\v' : octbuf[1] = 'v'; break;
+                case '\t' : octbuf[1] = 't'; break;
+                case '\r' : octbuf[1] = 'r'; break;
+                case '\n' : octbuf[1] = 'n'; break;
+                case '\f' : octbuf[1] = 'f'; break;
+                case '"'  : if (dq == '"')
+                                octbuf[1] = '"';
+                            else
+                                chsize = 1;
+                            break;
+                default:    chsize = my_snprintf(octbuf, sizeof octbuf,
+                                pv < end && isDIGIT((U8)*(pv+readsize))
+                                ? "%c%03o" : "%c%o", esc, c);
+                }
+            } else {
+                chsize = 1;
+            }
+        }
+        if (max && wrote + chsize > max) {
+            break;
+        } else if (chsize > 1) {
+            sv_catpvn(dsv, octbuf, chsize);
+            wrote += chsize;
+        } else {
+            char tmp[2];
+            my_snprintf(tmp, sizeof tmp, "%c", c);
+            sv_catpvn(dsv, tmp, 1);
+            wrote++;
+        }
+        if (flags & PERL_PV_ESCAPE_FIRSTCHAR)
+            break;
+    }
+    if (escaped != NULL)
+        *escaped= pv - str;
+    return SvPVX(dsv);
+}
+
+#endif
+#endif
+
+#ifndef pv_pretty
+#if defined(NEED_pv_pretty)
+static char * DPPP_(my_pv_pretty)(pTHX_ SV * dsv, char const * const str, const STRLEN count, const STRLEN max, char const * const start_color, char const * const end_color, const U32 flags);
+static
+#else
+extern char * DPPP_(my_pv_pretty)(pTHX_ SV * dsv, char const * const str, const STRLEN count, const STRLEN max, char const * const start_color, char const * const end_color, const U32 flags);
+#endif
