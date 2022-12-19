@@ -7660,3 +7660,54 @@ static
 #else
 extern char * DPPP_(my_pv_pretty)(pTHX_ SV * dsv, char const * const str, const STRLEN count, const STRLEN max, char const * const start_color, char const * const end_color, const U32 flags);
 #endif
+
+#ifdef pv_pretty
+#  undef pv_pretty
+#endif
+#define pv_pretty(a,b,c,d,e,f,g) DPPP_(my_pv_pretty)(aTHX_ a,b,c,d,e,f,g)
+#define Perl_pv_pretty DPPP_(my_pv_pretty)
+
+#if defined(NEED_pv_pretty) || defined(NEED_pv_pretty_GLOBAL)
+
+char *
+DPPP_(my_pv_pretty)(pTHX_ SV *dsv, char const * const str, const STRLEN count,
+  const STRLEN max, char const * const start_color, char const * const end_color,
+  const U32 flags)
+{
+    const U8 dq = (flags & PERL_PV_PRETTY_QUOTE) ? '"' : '%';
+    STRLEN escaped;
+
+    if (!(flags & PERL_PV_PRETTY_NOCLEAR))
+        sv_setpvs(dsv, "");
+
+    if (dq == '"')
+        sv_catpvs(dsv, "\"");
+    else if (flags & PERL_PV_PRETTY_LTGT)
+        sv_catpvs(dsv, "<");
+
+    if (start_color != NULL)
+        sv_catpv(dsv, D_PPP_CONSTPV_ARG(start_color));
+
+    pv_escape(dsv, str, count, max, &escaped, flags | PERL_PV_ESCAPE_NOCLEAR);
+
+    if (end_color != NULL)
+        sv_catpv(dsv, D_PPP_CONSTPV_ARG(end_color));
+
+    if (dq == '"')
+        sv_catpvs(dsv, "\"");
+    else if (flags & PERL_PV_PRETTY_LTGT)
+        sv_catpvs(dsv, ">");
+
+    if ((flags & PERL_PV_PRETTY_ELLIPSES) && escaped < count)
+        sv_catpvs(dsv, "...");
+
+    return SvPVX(dsv);
+}
+
+#endif
+#endif
+
+#ifndef pv_display
+#if defined(NEED_pv_display)
+static char * DPPP_(my_pv_display)(pTHX_ SV * dsv, const char * pv, STRLEN cur, STRLEN len, STRLEN pvlim);
+static
