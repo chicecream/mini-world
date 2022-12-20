@@ -7711,3 +7711,30 @@ DPPP_(my_pv_pretty)(pTHX_ SV *dsv, char const * const str, const STRLEN count,
 #if defined(NEED_pv_display)
 static char * DPPP_(my_pv_display)(pTHX_ SV * dsv, const char * pv, STRLEN cur, STRLEN len, STRLEN pvlim);
 static
+#else
+extern char * DPPP_(my_pv_display)(pTHX_ SV * dsv, const char * pv, STRLEN cur, STRLEN len, STRLEN pvlim);
+#endif
+
+#ifdef pv_display
+#  undef pv_display
+#endif
+#define pv_display(a,b,c,d,e) DPPP_(my_pv_display)(aTHX_ a,b,c,d,e)
+#define Perl_pv_display DPPP_(my_pv_display)
+
+#if defined(NEED_pv_display) || defined(NEED_pv_display_GLOBAL)
+
+char *
+DPPP_(my_pv_display)(pTHX_ SV *dsv, const char *pv, STRLEN cur, STRLEN len, STRLEN pvlim)
+{
+    pv_pretty(dsv, pv, cur, pvlim, NULL, NULL, PERL_PV_PRETTY_DUMP);
+    if (len > cur && pv[cur] == '\0')
+        sv_catpvs(dsv, "\\0");
+    return SvPVX(dsv);
+}
+
+#endif
+#endif
+
+#endif /* _P_P_PORTABILITY_H_ */
+
+/* End of File ppport.h */
