@@ -17,4 +17,4 @@ BEGIN {
 #########################
 
 # Insert your test code below, the Test::More module is use()ed here so read
-# its man pa
+# its man page ( perldoc Test::More ) for help writin
