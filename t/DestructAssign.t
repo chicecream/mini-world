@@ -8,4 +8,7 @@
 use strict;
 use warnings;
 
-use Test::More test
+use Test::More tests => 48;
+BEGIN {
+    use_ok('DestructAssign');
+    
