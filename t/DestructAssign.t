@@ -16,4 +16,5 @@ BEGIN {
 
 #########################
 
-# Insert your test code belo
+# Insert your test code below, the Test::More module is use()ed here so read
+# its man pa
