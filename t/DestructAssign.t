@@ -11,4 +11,6 @@ use warnings;
 use Test::More tests => 48;
 BEGIN {
     use_ok('DestructAssign');
-    
+    DestructAssign->import('des', 'des_alias');
+};
+
