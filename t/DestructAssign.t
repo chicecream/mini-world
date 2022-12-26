@@ -21,4 +21,5 @@ BEGIN {
 
 # Synopsis
 {
-  my($w, $x, 
+  my($w, $x, $y, $z);
+  des [$x, [undef, {y => $y}, undef, $w], $z
