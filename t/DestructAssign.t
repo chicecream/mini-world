@@ -22,4 +22,5 @@ BEGIN {
 # Synopsis
 {
   my($w, $x, $y, $z);
-  des [$x, [undef, {y => $y}, undef, $w], $z
+  des [$x, [undef, {y => $y}, undef, $w], $z] = [2, [25, {x => 'x', y => 3}, 26, 1], 4];
+  is_
