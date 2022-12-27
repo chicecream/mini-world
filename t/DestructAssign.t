@@ -23,4 +23,5 @@ BEGIN {
 {
   my($w, $x, $y, $z);
   des [$x, [undef, {y => $y}, undef, $w], $z] = [2, [25, {x => 'x', y => 3}, 26, 1], 4];
-  is_
+  is_deeply [$w, $x, $y, $z], [1, 2, 3, 4], 'Synopsis1';
+  # (us
