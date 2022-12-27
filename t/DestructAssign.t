@@ -30,4 +30,5 @@ BEGIN {
   des [3 => $w, $x, -2 => $y, $z] = [1..9];
   is_deeply [$w, $x, $y, $z], [4, 5, 8, 9], 'Synopsis2';
 
-  # put @array or @hash in the list p
+  # put @array or @hash in the list pattern to eat all the remaining element
+  my(@array, %has
