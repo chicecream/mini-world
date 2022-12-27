@@ -35,4 +35,5 @@ BEGIN {
   des [3 => @array, -4 => %hash] = [1..8];
   is_deeply [\@array, \%hash], [[4..8], {5..8}], 'Synopsis3';
 
-  # put th
+  # put the same index or hash key
+  #  when you need to capt
