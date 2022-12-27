@@ -26,4 +26,5 @@ BEGIN {
   is_deeply [$w, $x, $y, $z], [1, 2, 3, 4], 'Synopsis1';
   # (use undef as the skipping placeholder)
 
-  # put skip i
+  # put skip index in the list pattern
+  des [3 => $w, $x, 
