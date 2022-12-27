@@ -33,4 +33,6 @@ BEGIN {
   # put @array or @hash in the list pattern to eat all the remaining element
   my(@array, %hash);
   des [3 => @array, -4 => %hash] = [1..8];
-  is_deeply [\@
+  is_deeply [\@array, \%hash], [[4..8], {5..8}], 'Synopsis3';
+
+  # put th
