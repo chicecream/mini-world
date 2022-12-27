@@ -27,4 +27,5 @@ BEGIN {
   # (use undef as the skipping placeholder)
 
   # put skip index in the list pattern
-  des [3 => $w, $x, 
+  des [3 => $w, $x, -2 => $y, $z] = [1..9];
+  is_deeply [$w, $x, $y, $z], [4, 5
