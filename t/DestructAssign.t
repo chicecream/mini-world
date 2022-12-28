@@ -36,4 +36,4 @@ BEGIN {
   is_deeply [\@array, \%hash], [[4..8], {5..8}], 'Synopsis3';
 
   # put the same index or hash key
-  #  when you need to capt
+  #  when you need to capture different granularity on the same data struct
