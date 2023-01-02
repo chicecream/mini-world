@@ -37,4 +37,5 @@ BEGIN {
 
   # put the same index or hash key
   #  when you need to capture different granularity on the same data structure
-  des {x => $x, x => [$y, $z]} = {x => [1
+  des {x => $x, x => [$y, $z]} = {x => [1, 2]};
+  is_deeply [$x, $y, $z], [[1,2], 1
