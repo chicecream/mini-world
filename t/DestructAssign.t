@@ -41,3 +41,5 @@ BEGIN {
   is_deeply [$x, $y, $z], [[1,2], 1, 2], 'Synopsis4';
 
   # use the alias semantics
+  my $data = [1, 2, 3];
+  des_alias [undef, $x] = $data;
