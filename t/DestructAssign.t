@@ -44,4 +44,10 @@ BEGIN {
   my $data = [1, 2, 3];
   des_alias [undef, $x] = $data;
   $x = 20;
-  is_deeply $data, [1, 20, 3], 'Synops
+  is_deeply $data, [1, 20, 3], 'Synopsis5';
+}
+
+# mix des with my/local
+{
+    my $a = 5;
+    
