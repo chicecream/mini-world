@@ -43,3 +43,5 @@ BEGIN {
   # use the alias semantics
   my $data = [1, 2, 3];
   des_alias [undef, $x] = $data;
+  $x = 20;
+  is_deeply $data, [1, 20, 3], 'Synops
