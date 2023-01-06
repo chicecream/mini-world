@@ -53,4 +53,5 @@ BEGIN {
     our $y = 7;
     {
         des [my $a] = [10];
-    
+        is($a, 10, 'new my');
+        des [local $y] = [11];
