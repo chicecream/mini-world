@@ -50,4 +50,7 @@ BEGIN {
 # mix des with my/local
 {
     my $a = 5;
+    our $y = 7;
+    {
+        des [my $a] = [10];
     
