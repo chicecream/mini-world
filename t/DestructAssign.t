@@ -55,3 +55,6 @@ BEGIN {
         des [my $a] = [10];
         is($a, 10, 'new my');
         des [local $y] = [11];
+        is($y, 11, 'new local');
+    }
+    
