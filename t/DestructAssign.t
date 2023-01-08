@@ -57,4 +57,8 @@ BEGIN {
         des [local $y] = [11];
         is($y, 11, 'new local');
     }
-    
+    is($a, 5, 'orig my');
+    is($y, 7, 'orig our');
+}
+
+#
