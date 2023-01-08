@@ -61,4 +61,7 @@ BEGIN {
     is($y, 7, 'orig our');
 }
 
-#
+# mix des_alias with my/local
+{
+    my $data = [10];
+    my $a =
