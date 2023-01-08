@@ -64,4 +64,7 @@ BEGIN {
 # mix des_alias with my/local
 {
     my $data = [10];
-    my $a =
+    my $a = 5;
+    our $y = 7;
+    {
+        des_alias [my $a] 
