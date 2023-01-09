@@ -67,4 +67,7 @@ BEGIN {
     my $a = 5;
     our $y = 7;
     {
-        des_alias [my $a] 
+        des_alias [my $a] = $data;
+        is($a, 10, 'new my');
+        $a = 11;
+        is
