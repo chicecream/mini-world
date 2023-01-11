@@ -70,4 +70,5 @@ BEGIN {
         des_alias [my $a] = $data;
         is($a, 10, 'new my');
         $a = 11;
-        is
+        is($data->[0], 11, 'alter by des_alias my');
+        des_alias
