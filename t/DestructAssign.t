@@ -71,4 +71,5 @@ BEGIN {
         is($a, 10, 'new my');
         $a = 11;
         is($data->[0], 11, 'alter by des_alias my');
-        des_alias
+        des_alias [local $y] = $data;
+        is($y, 11, 'new loca
