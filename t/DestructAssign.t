@@ -78,3 +78,5 @@ BEGIN {
     }
     is($a, 5, 'orig my');
     $a = 6;
+    is($data->[0], 12, 'unchange by orig my');
+    is($y,
