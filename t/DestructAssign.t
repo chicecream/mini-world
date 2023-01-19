@@ -85,3 +85,6 @@ BEGIN {
 }
 
 # two vars alias same field
+{
+    my $data = [5];
+    des_alias [my $a, 0 => my $b]
