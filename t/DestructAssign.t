@@ -81,4 +81,7 @@ BEGIN {
     is($data->[0], 12, 'unchange by orig my');
     is($y, 7, 'orig our');
     $y = 8;
-    is($data->[0], 12, 'uncha
+    is($data->[0], 12, 'unchange by orig our');
+}
+
+# two vars alias same field
