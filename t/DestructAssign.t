@@ -87,4 +87,6 @@ BEGIN {
 # two vars alias same field
 {
     my $data = [5];
-    des_alias [my $a, 0 => my $b]
+    des_alias [my $a, 0 => my $b] = $data;
+    $a = 6;
+    is($data->[0], 6
