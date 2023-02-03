@@ -89,4 +89,5 @@ BEGIN {
     my $data = [5];
     des_alias [my $a, 0 => my $b] = $data;
     $a = 6;
-    is($data->[0], 6
+    is($data->[0], 6, 'data change by a');
+    is($a, 6, 'a change by 
