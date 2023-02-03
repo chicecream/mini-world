@@ -90,4 +90,7 @@ BEGIN {
     des_alias [my $a, 0 => my $b] = $data;
     $a = 6;
     is($data->[0], 6, 'data change by a');
-    is($a, 6, 'a change by 
+    is($a, 6, 'a change by a');
+    is($b, 6, 'b change by a');
+    $b = 7;
+    
