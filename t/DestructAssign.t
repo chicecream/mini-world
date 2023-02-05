@@ -105,4 +105,7 @@ BEGIN {
     is($a, 1, 'bug fix');
 }
 
-# to fix
+# to fix recursive sub bug
+{
+    my $f; $f = sub {
+        des {a
