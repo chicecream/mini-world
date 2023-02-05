@@ -108,4 +108,5 @@ BEGIN {
 # to fix recursive sub bug
 {
     my $f; $f = sub {
-        des {a
+        des {a => my $a} = {a => $_[0]};
+        is($a, $_[0], '
