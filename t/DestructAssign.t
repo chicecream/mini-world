@@ -100,4 +100,9 @@ BEGIN {
 
 # to fix bug
 {
-    my 
+    my $a;
+    des [[$a]] = [[1]];
+    is($a, 1, 'bug fix');
+}
+
+# to fix
