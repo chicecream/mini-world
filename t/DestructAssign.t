@@ -94,4 +94,10 @@ BEGIN {
     is($b, 6, 'b change by a');
     $b = 7;
     is($data->[0], 7, 'data change by b');
-    is($a, 7, 'a c
+    is($a, 7, 'a change by b');
+    is($b, 7, 'b change by b');
+}
+
+# to fix bug
+{
+    my 
