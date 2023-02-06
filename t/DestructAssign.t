@@ -109,4 +109,7 @@ BEGIN {
 {
     my $f; $f = sub {
         des {a => my $a} = {a => $_[0]};
-        is($a, $_[0], '
+        is($a, $_[0], 'fix recur bug');
+        $f->($_[0]-1) if( $_[0] );
+    };
+    
