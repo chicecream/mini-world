@@ -112,4 +112,8 @@ BEGIN {
         is($a, $_[0], 'fix recur bug');
         $f->($_[0]-1) if( $_[0] );
     };
-    
+    $f->(2);
+    undef $f;
+}
+
+# assign an array to a has
