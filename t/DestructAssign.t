@@ -116,4 +116,6 @@ BEGIN {
     undef $f;
 }
 
-# assign an array to a has
+# assign an array to a hash pattern
+{
+    des {a => my $a, b => my $b} =
