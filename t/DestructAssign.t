@@ -118,4 +118,5 @@ BEGIN {
 
 # assign an array to a hash pattern
 {
-    des {a => my $a, b => my $b} =
+    des {a => my $a, b => my $b} = [b => 3, a => 4];
+    is($a, 4, 'assign hash to arra
