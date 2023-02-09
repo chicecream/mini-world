@@ -120,4 +120,8 @@ BEGIN {
 {
     des {a => my $a, b => my $b} = [b => 3, a => 4];
     is($a, 4, 'assign hash to array 1');
-    is($b, 3, 'assign hash to array
+    is($b, 3, 'assign hash to array 2');
+}
+
+# use the names of the variables as keys
+for(1
