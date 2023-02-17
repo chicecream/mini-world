@@ -124,4 +124,5 @@ BEGIN {
 }
 
 # use the names of the variables as keys
-for(1
+for(1,2) {
+    des { my $a, our $b, $c::d } = {b => 2, a => 1,
