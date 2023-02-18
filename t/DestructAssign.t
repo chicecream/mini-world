@@ -130,4 +130,5 @@ for(1,2) {
     is($b, 2, 'use the name of the variable b');
     is($c::d, 4, 'use the name of the variable c::d');
 
-    des {my($x
+    des {my($x, $y, $z)} = [x => 1, y => 2, z => 3];
+    is($x, 1, 'us
