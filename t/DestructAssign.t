@@ -127,4 +127,7 @@ BEGIN {
 for(1,2) {
     des { my $a, our $b, $c::d } = {b => 2, a => 1, c => 3, d => 4};
     is($a, 1, 'use the name of the variable a');
-    is($b, 2, 'use the name of the variable
+    is($b, 2, 'use the name of the variable b');
+    is($c::d, 4, 'use the name of the variable c::d');
+
+    des {my($x
