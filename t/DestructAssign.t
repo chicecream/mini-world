@@ -133,4 +133,10 @@ for(1,2) {
     des {my($x, $y, $z)} = [x => 1, y => 2, z => 3];
     is($x, 1, 'use the name of the variable x');
     is($y, 2, 'use the name of the variable y');
-    is($z, 3, 'use the 
+    is($z, 3, 'use the name of the variable z');
+}
+
+# bug fix
+{
+    des{
+    
