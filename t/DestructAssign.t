@@ -145,4 +145,5 @@ for(1,2) {
     } = {a => 1, b => 2, c => 3, d => {x => 10, y => 11, z => 12}};
 
     is($a, 1, 'nest hash key by var name');
-    is($b,
+    is($b, 2, 'nest hash key by var name');
+    is($c, 3,
