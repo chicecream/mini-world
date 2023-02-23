@@ -146,4 +146,5 @@ for(1,2) {
 
     is($a, 1, 'nest hash key by var name');
     is($b, 2, 'nest hash key by var name');
-    is($c, 3,
+    is($c, 3, 'nest hash key by var name');
+    is($x, 10, 'nest hash ke
