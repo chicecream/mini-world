@@ -139,4 +139,7 @@ for(1,2) {
 # bug fix
 {
     des{
-    
+        my($a, $b, $c), d => {
+            my($x, $y, $z)
+        },
+   
