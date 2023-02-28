@@ -159,3 +159,58 @@ BEGIN {
 
     #print B::Deparse->new('-p', '-P')->coderef2text(\&f),$/;
 }
+
+f(qw(X Y Z));
+
+{
+    my $data = [1, {x => [2,3,4], y => 6}, 3];
+    des_alias [my $a, {y => my $b, x => [2 => my $c]}] = $data;
+    print '$data=', Dumper($data), $/;
+    print "\$a=$a, \$b=$b, \$c=$c\n";
+    ($a, $b, $c) = (4, 5, 6);
+    print '$data=', Dumper($data), $/;
+}
+
+{
+    des [my($a, $b), {a => my $c}] = [1,2,{a => 3}];
+    print "$a $b $c\n";
+}
+
+{
+    my $data = [1,2];
+    my $a = 5;
+    print "$a $data->[0]\n";
+    {
+        des_alias [my $a] = $data;
+        print "$a $data->[0]\n";
+        $a =20;
+        print "$a $data->[0]\n";
+    }
+    print "$a $data->[0]\n";
+    $a = 6;
+    print "$a $data->[0]\n";
+}
+
+{
+    my $a;
+    des [[$a]] = [[1]];
+    print "$a\n";
+}
+
+{
+    my %hash = (a => 1, b => 2);
+    my @array = ('a','b','c');
+
+    use constant {
+        A => 'a',
+        B => 'b',
+        ONE => 1,
+        TWO => 2,
+    };
+    des{ A, my $a, B, my $b } = \%hash;
+    des[ ONE, my $c, TWO, my $d ] = \@array;
+    print "$a,$b,$c,$d\n";
+}
+use constant {
+    O => 5,
+};
