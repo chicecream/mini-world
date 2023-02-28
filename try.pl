@@ -102,3 +102,60 @@ BEGIN {
                     if( wantarray ) {
                         my @res = &$f;
                         $silent = $ori_silent;
+                        return @res;
+                    } elsif( defined wantarray ) {
+                        my $res = &$f;
+                        $silent = $ori_silent;
+                        return $res;
+                    } else {
+                        &$f;
+                        $silent = $ori_silent;
+                        return;
+                    }
+                }
+                my($package, $filename, $line) = caller;
+                for (1..$depth) {
+                    print " ";
+                }
+                local $" = ',';
+                print "> $entry(@_) from $filename:$line\n";
+                ++$depth;
+                my $leave = sub {
+                    --$depth;
+                    for (1..$depth) {
+                        print " ";
+                    }
+                    if( defined $_[0] ) {
+                        print "< $entry -> ($_[0])\n";
+                    } else {
+                        print "< $entry\n";
+                    }
+                };
+
+                if( wantarray ) {
+                    my @res = &$f;
+                    if( $entry eq 'gv_name' || $entry eq 'padname' || $entry eq 'const' ) {
+                        $leave->($res[0]);
+                    } else {
+                        $leave->();
+                    }
+                    return @res;
+                } elsif( defined wantarray ) {
+                    my $res = &$f;
+                    if( $entry eq 'padname_sv' || $entry eq 'gv_name' || $entry eq 'padname' || $entry eq 'const' ) {
+                        $leave->($res);
+                    } else {
+                        $leave->();
+                    }
+                    return $res;
+                } else {
+                    &$f;
+                    $leave->();
+                    return;
+                }
+            };
+        }
+    }
+
+    #print B::Deparse->new('-p', '-P')->coderef2text(\&f),$/;
+}
