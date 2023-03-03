@@ -214,3 +214,54 @@ f(qw(X Y Z));
 use constant {
     O => 5,
 };
+
+{
+    my $f = sub {
+        my($acceptor) = @_;
+        #$acceptor->{a} = 123;
+        $_[0]{a} = 123;
+    };
+    $f->(des { a => my $a, b => my $b });
+    print "a=$a, b=$b\n";
+}
+
+sub g {
+    my $h = des { a => my $a, b => my $b } = { a => 1, b => 2 };
+    print Dumper($h),$/;
+
+    if( $_[0]>0 ) {
+        g($_[0]-1);
+    }
+}
+
+g(3);
+
+for(1,2) {
+    our $A;
+    des { $A::b, $A, my $c } = { A => 2, b => 3, c => 4 };
+    print $A,$/;
+    print $A::b,$/;
+    print $c,$/;
+}
+
+sub modify {
+    des_alias[my($a, $b, $c)] = \@_;
+    $c = $a + $b;
+}
+
+{
+    my($a, $b, $c) = (1, 2, 0);
+    modify($a, $b, $c);
+    print $c, $/;
+}
+
+{
+    my($a, $b, $c, $d, $x, $y, $z);
+    des{
+        $a, $b, $c,
+        d => {
+            $x, $y, $z
+        },
+    } = {a => 1, b => 2, c => 3, d => {x => 10, y => 11, z => 12}};
+    print "$a $b $c $x $y $z\n";
+}
